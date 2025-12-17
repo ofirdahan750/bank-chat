@@ -1,0 +1,30 @@
+// --- Media Queries ---
+@mixin tablet {
+    @media (min-width: #{$tablet-min}) { @content; }
+  }
+  
+  @mixin desktop {
+    @media (min-width: #{$desktop-min}) { @content; }
+  }
+  
+  // --- Layout ---
+  @mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  @mixin flex-col {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  // --- Typography ---
+  @mixin font-setting($size, $line-height: null) {
+    font-size: rem($size);
+    @if $line-height {
+      line-height: lh($size, $line-height);
+    } @else {
+      line-height: normal;
+    }
+  }

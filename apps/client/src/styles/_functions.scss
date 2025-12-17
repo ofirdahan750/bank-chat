@@ -1,0 +1,13 @@
+// Utils
+$base-size: 16px;
+
+// px to rem
+@function rem($pixels) {
+  $normalized: $pixels / ($pixels * 0 + 1);
+  @return ($normalized / 16) * 1rem;
+}
+
+// calc line-height ratio
+@function lh($font-size, $line-height) {
+  @return $line-height / $font-size;
+}
