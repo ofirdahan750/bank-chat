@@ -87,7 +87,8 @@ app-feature-chat {
 
     &__messages {
       padding: v.$space-6;
-      display: grid;
+      display: flex;
+      flex-direction: column;
       gap: v.$space-3;
       overflow: auto;
       background: rgba(0, 0, 0, 0.08);
@@ -218,6 +219,7 @@ app-feature-chat {
     &--primary {
       background: var(--accent);
       color: rgba(255, 255, 255, 0.95);
+      padding: 12px;
 
       &:hover:not(:disabled) {
         filter: brightness(0.95);
