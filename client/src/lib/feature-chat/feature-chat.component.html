@@ -1,0 +1,76 @@
+<section class="feature-chat">
+  @if (!hasNickname()) {
+    <div class="feature-chat__card surface" role="region" aria-label="Nickname">
+      <h2 class="feature-chat__title">{{ uiText.LOGIN.TITLE }}</h2>
+      <p class="feature-chat__subtitle">{{ uiText.LOGIN.SUBTITLE }}</p>
+
+      <form class="feature-chat__form" [formGroup]="nicknameForm" (ngSubmit)="submitNickname()">
+        <input
+          class="app-input"
+          type="text"
+          autocomplete="nickname"
+          [attr.maxlength]="24"
+          [placeholder]="uiText.LOGIN.INPUT_PLACEHOLDER"
+          formControlName="username"
+        />
+
+        @if (nicknameForm.controls.username.touched && nicknameForm.controls.username.invalid) {
+          <div class="feature-chat__error" role="alert">
+            {{ uiText.LOGIN.ERROR_MIN_LENGTH }}
+          </div>
+        }
+
+        <button class="app-btn app-btn--primary feature-chat__btn" type="submit">
+          {{ uiText.LOGIN.BUTTON }}
+        </button>
+      </form>
+    </div>
+  } @else {
+    <div class="feature-chat__room surface" role="region" aria-label="Chat room">
+      <header class="feature-chat__room-header">
+        <div class="feature-chat__room-title">{{ username() }}</div>
+        <div class="feature-chat__room-subtitle">{{ config.BOT_NAME }}</div>
+      </header>
+
+      <div class="feature-chat__messages" role="log" aria-live="polite" aria-relevant="additions">
+        @if (messages().length === 0) {
+          <div class="feature-chat__empty">
+            <div>{{ uiText.CHAT.INPUT_PLACEHOLDER }}</div>
+          </div>
+        } @else {
+          @for (m of messages(); track trackById($index, m)) {
+            <div
+              class="chat-bubble"
+              [class.chat-bubble--mine]="m.sender.id === me().id && !m.sender.isBot"
+              [class.chat-bubble--bot]="m.sender.isBot"
+            >
+              @if (!(m.sender.id === me().id) && !m.sender.isBot) {
+                <div class="chat-bubble__sender">{{ m.sender.username }}</div>
+              }
+
+              <div class="chat-bubble__content">{{ m.content }}</div>
+
+              <div class="chat-bubble__meta">
+                <div>{{ m.timestamp | chatTime }}</div>
+              </div>
+            </div>
+          }
+        }
+      </div>
+
+      <form class="feature-chat__composer" [formGroup]="composerForm" (ngSubmit)="send()">
+        <input
+          class="app-input feature-chat__composer-input"
+          type="text"
+          [attr.maxlength]="config.MAX_MSG_LENGTH"
+          [placeholder]="uiText.CHAT.INPUT_PLACEHOLDER"
+          formControlName="content"
+        />
+
+        <button class="app-btn app-btn--primary feature-chat__composer-btn" type="submit">
+          <mat-icon aria-hidden="true"></mat-icon>
+        </button>
+      </form>
+    </div>
+  }
+</section>

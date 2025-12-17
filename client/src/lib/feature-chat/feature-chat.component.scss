@@ -1,0 +1,171 @@
+@use '../../../../apps/client/src/styles/variables' as v;
+@use '../../../../apps/client/src/styles/functions' as fn;
+@use '../../../../apps/client/src/styles/mixins' as m;
+
+app-feature-chat {
+  .feature-chat {
+    padding: v.$space-6 v.$space-4;
+    min-height: 100dvh;
+    display: grid;
+    place-items: start center;
+
+    @include m.respond-up(v.$bp-md) {
+      padding: v.$space-8 v.$space-6;
+    }
+
+    /* Nickname card */
+    &__card {
+      width: 100%;
+      max-width: fn.rem(520px);
+      padding: v.$space-6;
+
+      @include m.respond-up(v.$bp-md) {
+        padding: v.$space-7;
+      }
+    }
+
+    &__title {
+      margin: 0 0 v.$space-2;
+      text-align: center;
+    }
+
+    &__subtitle {
+      margin: 0 0 v.$space-6;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.64);
+    }
+
+    &__form {
+      display: grid;
+      gap: v.$space-3;
+    }
+
+    &__error {
+      font-size: fn.rem(12px);
+      line-height: fn.lh(12px, 16px);
+      color: v.$danger-color;
+    }
+
+    &__btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* Chat room panel */
+    &__room {
+      width: 100%;
+      max-width: fn.rem(920px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: fn.rem(520px);
+
+      @include m.respond-up(v.$bp-md) {
+        min-height: fn.rem(620px);
+      }
+    }
+
+    &__room-header {
+      padding: v.$space-4;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: grid;
+      gap: v.$space-1;
+    }
+
+    &__room-title {
+      font-weight: v.$font-weight-semibold;
+    }
+
+    &__room-subtitle {
+      font-size: fn.rem(12px);
+      line-height: fn.lh(12px, 16px);
+      color: rgba(255, 255, 255, 0.64);
+    }
+
+    /* Messages area */
+    &__messages {
+      flex: 1;
+      padding: v.$space-4;
+      display: grid;
+      gap: v.$space-3;
+      overflow: auto;
+      scrollbar-gutter: stable;
+
+      /* Keeps the first bubble away from the top edge */
+      align-content: start;
+    }
+
+    &__empty {
+      padding: v.$space-6;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.64);
+    }
+
+    /* Composer */
+    &__composer {
+      padding: v.$space-3 v.$space-4 v.$space-4;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: v.$space-3;
+      align-items: center;
+    }
+
+    &__composer-input {
+      min-width: 0; /* Prevents overflow in grid */
+    }
+
+    &__composer-btn {
+      white-space: nowrap;
+      justify-content: center;
+
+      mat-icon {
+        font-size: fn.rem(18px);
+        width: fn.rem(18px);
+        height: fn.rem(18px);
+        line-height: 1;
+      }
+    }
+  }
+
+  /* Message bubble */
+  .chat-bubble {
+    width: fit-content;
+    max-width: 85%;
+    padding: v.$space-3 v.$space-4;
+    border-radius: v.$radius-md;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.06);
+    display: grid;
+    gap: v.$space-2;
+
+    &--mine {
+      margin-left: auto;
+      background: rgba(237, 29, 36, 0.14);
+      border-color: rgba(237, 29, 36, 0.3);
+    }
+
+    &--bot {
+      margin-inline: auto;
+      background: rgba(11, 95, 255, 0.1);
+      border-color: rgba(11, 95, 255, 0.28);
+    }
+
+    &__sender {
+      font-size: fn.rem(12px);
+      line-height: fn.lh(12px, 16px);
+      color: rgba(255, 255, 255, 0.64);
+    }
+
+    &__content {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    &__meta {
+      font-size: fn.rem(11px);
+      line-height: fn.lh(11px, 14px);
+      color: rgba(255, 255, 255, 0.52);
+    }
+  }
+}

@@ -2,20 +2,21 @@
 @use './styles/variables' as v;
 @use './styles/mixins' as m;
 
-/* Dark theme tokens (ChatGPT-like) */
 :root {
+  /* ChatGPT-like dark */
   --bg: #0b0f14;
   --surface: #0f1620;
   --surface-2: #111b27;
+
   --text: rgba(255, 255, 255, 0.92);
   --text-muted: rgba(255, 255, 255, 0.64);
   --border: rgba(255, 255, 255, 0.1);
 
-  --accent: #{v.$color-brand-red}; /* keep your brand red */
+  /* Brand */
+  --accent: #{v.$color-brand-red};
   --focus: rgba(11, 95, 255, 0.85);
 }
 
-/* Reset */
 *,
 *::before,
 *::after {
@@ -44,7 +45,6 @@ body {
 
   color: var(--text);
 
-  /* ChatGPT dark-like background */
   background-color: var(--bg);
   background-image: radial-gradient(
       circle at 20% 10%,
@@ -61,7 +61,6 @@ body {
       rgba(255, 255, 255, 0.04) 0%,
       rgba(255, 255, 255, 0) 45%
     );
-
   background-attachment: fixed;
 
   -webkit-font-smoothing: antialiased;
@@ -95,13 +94,11 @@ a {
   text-decoration: none;
 }
 
-/* A11y focus */
 :focus-visible {
   outline: fn.rem(2px) solid var(--focus);
   outline-offset: fn.rem(2px);
 }
 
-/* Typography */
 h1,
 h2,
 h3,
@@ -138,12 +135,10 @@ small {
   color: var(--text-muted);
 }
 
-/* Selection */
 ::selection {
   background: rgba(237, 29, 36, 0.22);
 }
 
-/* Helpers */
 .container {
   @include m.container;
 }
@@ -159,8 +154,7 @@ small {
   @include m.sr-only;
 }
 
-/* Buttons */
-.poalim-btn {
+.app-btn {
   @include m.button-base;
 
   &--primary {
@@ -174,7 +168,7 @@ small {
 
   &--ghost {
     background: transparent;
-    border-color: var(--border);
+    border: 1px solid var(--border);
     color: var(--text);
 
     &:hover:not(:disabled) {
@@ -183,27 +177,22 @@ small {
   }
 }
 
-/* Inputs */
-.poalim-input {
-  width: 100%;
-  border-radius: v.$radius-sm;
-  border: 1px solid var(--border);
+.app-input {
+  @include m.input-base;
+
+  color: var(--text);
+  caret-color: var(--text);
   background: var(--surface-2);
-  padding: v.$space-2 v.$space-3;
+  border-color: var(--border);
 
-  font-size: fn.rem(14px);
-  line-height: fn.lh(14px, 20px);
-
-  transition: border-color v.$transition-base, box-shadow v.$transition-base;
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+  }
 
   &:focus-visible {
     border-color: rgba(11, 95, 255, 0.85);
     box-shadow: 0 0 0 fn.rem(3px) rgba(11, 95, 255, 0.22);
     outline: none;
-  }
-
-  &::placeholder {
-    color: rgba(255, 255, 255, 0.45);
   }
 
   &:disabled {
@@ -212,7 +201,6 @@ small {
   }
 }
 
-/* Reduce motion */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 1ms !important;

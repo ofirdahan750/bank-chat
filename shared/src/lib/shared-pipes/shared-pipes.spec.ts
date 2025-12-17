@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FeatureChat } from './feature-chat.component';
+import { SharedPipes } from './shared-pipes';
 
-describe('FeatureChat', () => {
-  let component: FeatureChat;
-  let fixture: ComponentFixture<FeatureChat>;
+describe('SharedPipes', () => {
+  let component: SharedPipes;
+  let fixture: ComponentFixture<SharedPipes>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FeatureChat],
+      imports: [SharedPipes],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FeatureChat);
+    fixture = TestBed.createComponent(SharedPipes);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

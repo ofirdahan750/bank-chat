@@ -24,7 +24,8 @@
       "@poalim/socket-handler": ["libs/server/socket-handler/src/index.ts"],
       "@poalim/interfaces": ["shared/interfaces/src/index.ts"],
       "@poalim/constants": ["shared/constants/src/index.ts"],
-      "@poalim-challenge/feature-chat": ["client/src/index.ts"]
+      "@poalim-challenge/feature-chat": ["client/src/index.ts"],
+      "@poalim-challenge/shared-pipes": ["shared/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

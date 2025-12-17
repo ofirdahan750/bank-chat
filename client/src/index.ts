@@ -1,1 +1,1 @@
-export * from './lib/feature-chat/feature-chat';
+export * from './lib/feature-chat/feature-chat.component';
