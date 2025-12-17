@@ -11,6 +11,14 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/client",
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "apps/client/src/styles",
+            "apps/client/src",
+            "src/styles",
+            "src"
+          ]
+        },
         "browser": "apps/client/src/main.ts",
         "polyfills": ["zone.js"],
         "tsConfig": "apps/client/tsconfig.app.json",

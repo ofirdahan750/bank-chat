@@ -4,12 +4,12 @@
     "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2015",
-    "module": "esnext",
+    "target": "ES2022",
+    "module": "ES2022",
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
@@ -23,7 +23,8 @@
       "@poalim/bot-engine": ["libs/server/bot-engine/src/index.ts"],
       "@poalim/socket-handler": ["libs/server/socket-handler/src/index.ts"],
       "@poalim/interfaces": ["shared/interfaces/src/index.ts"],
-      "@poalim/constants": ["shared/constants/src/index.ts"]
+      "@poalim/constants": ["shared/constants/src/index.ts"],
+      "@poalim-challenge/feature-chat": ["client/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

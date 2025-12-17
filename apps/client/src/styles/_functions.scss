@@ -1,15 +1,36 @@
-@use "sass:math";
+/* _functions.scss */
+@use 'sass:math';
+@use 'sass:meta';
 
-$base-size: 16px;
-
-// Function to convert px to rem
-@function rem($pixels) {
-  // divide($dividend, $divisor)
-  $normalized: math.div($pixels, ($pixels * 0 + 1));
-  @return math.div($normalized, 16) * 1rem;
+@function strip-unit($value) {
+  @if meta.type-of($value) == 'number' and not math.is-unitless($value) {
+    @return math.div($value, ($value * 0 + 1));
+  }
+  @return $value;
 }
 
-// Function for line-height
+@function rem($px, $base: 16px) {
+  $px-val: strip-unit($px);
+  $base-val: strip-unit($base);
+  @return math.div($px-val, $base-val) * 1rem;
+}
+
 @function lh($font-size, $line-height) {
-  @return math.div($line-height, $font-size);
+  @return math.div(strip-unit($line-height), strip-unit($font-size));
+}
+
+@function fluid($min, $max, $min-vw: 360px, $max-vw: 1440px) {
+  $min-val: strip-unit($min);
+  $max-val: strip-unit($max);
+  $min-vw-val: strip-unit($min-vw);
+  $max-vw-val: strip-unit($max-vw);
+
+  $slope: math.div(($max-val - $min-val), ($max-vw-val - $min-vw-val));
+  $intercept: $min-val - ($slope * $min-vw-val);
+
+  @return clamp(
+    rem($min),
+    calc(#{rem($intercept * 1px)} + #{$slope * 100}vw),
+    rem($max)
+  );
 }

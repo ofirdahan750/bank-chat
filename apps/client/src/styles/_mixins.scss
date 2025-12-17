@@ -1,35 +1,117 @@
-@use './variables' as vars;
-@use './functions' as func;  // <-- Import the functions here
+/* _mixins.scss */
+@use './variables' as v;
+@use './functions' as fn;
 
-// --- Media Queries ---
-@mixin tablet {
-  @media (min-width: #{vars.$tablet-min}) { @content; }
+/* Media queries (mobile-first) */
+@mixin respond-up($bp) {
+  @media (min-width: $bp) {
+    @content;
+  }
 }
 
-@mixin desktop {
-  @media (min-width: #{vars.$desktop-min}) { @content; }
+@mixin container {
+  width: 100%;
+  max-width: v.$container-max;
+  margin-inline: auto;
+  padding-inline: v.$container-pad;
+
+  @include respond-up(v.$bp-lg) {
+    padding-inline: v.$container-pad-lg;
+  }
 }
 
-// --- Layout ---
-@mixin flex-center {
-  display: flex;
+/* Accessible focus ring */
+@mixin focus-ring($color: v.$color-focus) {
+  outline: fn.rem(2px) solid $color;
+  outline-offset: fn.rem(2px);
+}
+
+/* Screen reader only */
+@mixin sr-only {
+  position: absolute;
+  width: fn.rem(1px);
+  height: fn.rem(1px);
+  padding: 0;
+  margin: fn.rem(-1px);
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 1-line or multi-line truncation */
+@mixin truncate($lines: 1) {
+  @if $lines == 1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  } @else {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+  }
+}
+
+/* Card surface */
+@mixin surface($shadow: v.$shadow-sm) {
+  background: v.$color-surface;
+  border: 1px solid v.$color-border;
+  border-radius: v.$radius-md;
+  box-shadow: $shadow;
+}
+
+/* Button base */
+@mixin button-base {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: v.$space-2;
+  border-radius: v.$radius-sm;
+  font-weight: v.$font-weight-medium;
+  font-size: fn.rem(14px);
+  line-height: fn.lh(14px, 20px);
+  padding: v.$space-2 v.$space-4;
+  border: 1px solid transparent;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color v.$transition-base,
+    border-color v.$transition-base, color v.$transition-base,
+    transform v.$transition-fast;
+
+  &:active {
+    transform: translateY(fn.rem(1px));
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 }
 
-@mixin flex-col {
-  display: flex;
-  flex-direction: column;
-}
+/* Input base */
+@mixin input-base {
+  width: 100%;
+  border-radius: v.$radius-sm;
+  border: 1px solid v.$color-border;
+  background: v.$color-surface;
+  padding: v.$space-2 v.$space-3;
+  font-size: fn.rem(14px);
+  line-height: fn.lh(14px, 20px);
+  transition: border-color v.$transition-base, box-shadow v.$transition-base;
 
-// --- Typography ---
-@mixin font-setting($size, $line-height: null) {
-  // Use 'func.rem' to call the function from the imported file
-  font-size: func.rem($size);
-  
-  @if $line-height {
-    line-height: func.lh($size, $line-height);
-  } @else {
-    line-height: normal;
+  &:focus-visible {
+    border-color: v.$color-focus;
+    box-shadow: 0 0 0 fn.rem(3px) rgba(11, 95, 255, 0.18);
+    outline: none;
+  }
+
+  &::placeholder {
+    color: rgba(17, 17, 17, 0.45);
+  }
+
+  &:disabled {
+    background: v.$color-surface-2;
+    cursor: not-allowed;
   }
 }

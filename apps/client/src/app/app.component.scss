@@ -1,0 +1,26 @@
+@use '../styles/variables' as vars;
+@use '../styles/mixins' as mix;
+
+app-root {
+  display: block;  
+
+  .app-shell {
+    min-height: 100dvh;
+    color: vars.$text-color;
+
+    &__container {
+      @include mix.container;
+      padding-top: vars.$space-6;
+      padding-bottom: vars.$space-6;
+    }
+
+    &__header {
+      padding-bottom: vars.$space-3;
+    }
+
+    &__title {
+      margin: 0;
+      text-align: center;
+    }
+  }
+}
