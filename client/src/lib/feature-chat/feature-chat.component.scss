@@ -74,6 +74,9 @@ app-feature-chat {
 
     &__room-title {
       font-weight: v.$font-weight-semibold;
+      color: var(--text);
+      text-transform: capitalize;
+      letter-spacing: fn.rem(0.5px);
     }
 
     &__room-subtitle {
