@@ -1,7 +1,7 @@
 {
-  "name": "interfaces",
+  "name": "constants",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "shared/interfaces/src",
+  "sourceRoot": "shared/constants/src",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -9,17 +9,17 @@
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/shared/interfaces",
-        "main": "shared/interfaces/src/index.ts",
-        "tsConfig": "shared/interfaces/tsconfig.lib.json",
-        "assets": ["shared/interfaces/*.md"]
+        "outputPath": "dist/shared/constants",
+        "main": "shared/constants/src/index.ts",
+        "tsConfig": "shared/constants/tsconfig.lib.json",
+        "assets": ["shared/constants/*.md"]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "shared/interfaces/jest.config.ts"
+        "jestConfig": "shared/constants/jest.config.ts"
       }
     }
   }

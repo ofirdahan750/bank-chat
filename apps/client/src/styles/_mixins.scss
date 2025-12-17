@@ -1,30 +1,35 @@
+@use './variables' as vars;
+@use './functions' as func;  // <-- Import the functions here
+
 // --- Media Queries ---
 @mixin tablet {
-    @media (min-width: #{$tablet-min}) { @content; }
-  }
+  @media (min-width: #{vars.$tablet-min}) { @content; }
+}
+
+@mixin desktop {
+  @media (min-width: #{vars.$desktop-min}) { @content; }
+}
+
+// --- Layout ---
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+// --- Typography ---
+@mixin font-setting($size, $line-height: null) {
+  // Use 'func.rem' to call the function from the imported file
+  font-size: func.rem($size);
   
-  @mixin desktop {
-    @media (min-width: #{$desktop-min}) { @content; }
+  @if $line-height {
+    line-height: func.lh($size, $line-height);
+  } @else {
+    line-height: normal;
   }
-  
-  // --- Layout ---
-  @mixin flex-center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  @mixin flex-col {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  // --- Typography ---
-  @mixin font-setting($size, $line-height: null) {
-    font-size: rem($size);
-    @if $line-height {
-      line-height: lh($size, $line-height);
-    } @else {
-      line-height: normal;
-    }
-  }
+}

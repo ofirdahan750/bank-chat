@@ -1,0 +1,21 @@
+export const UIText = {
+  LOGIN: {
+    TITLE: 'Welcome to Poalim Chat',
+    SUBTITLE: 'Please choose a nickname to start',
+    INPUT_PLACEHOLDER: 'Enter your nickname...',
+    BUTTON: 'Start Chatting',
+    ERROR_MIN_LENGTH: 'Nickname must be at least 2 characters',
+  },
+
+  CHAT: {
+    INPUT_PLACEHOLDER: 'Type your message here...',
+    SEND_BUTTON: 'Send',
+    TYPING: 'is typing...',
+  },
+
+  BOT: {
+    DEFAULT_GREETING: 'Hello! I am the Poalim Bot. Ask me anything!',
+    DUPLICATE_ANSWER_PREFIX:
+      'I remember someone asking that! Here is the answer:',
+  },
+};

@@ -1,14 +1,15 @@
-// Imports
+// 1. Config (Must be first)
+// Notice the path: ./styles/...
+@use './styles/functions' as func;
+@use './styles/variables' as vars;
+@use './styles/mixins' as mix;
+
+// 2. External
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
-// Config
-@import './styles/functions';
-@import './styles/variables';
-@import './styles/mixins';
-
-// Reset
+// 3. Reset
 html {
   font-size: 100%;
   box-sizing: border-box;
@@ -21,47 +22,33 @@ html {
 body {
   height: 100%;
   margin: 0;
-  background-color: $bg-color;
-  color: $text-primary;
-  font-family: $font-family-main;
+  background-color: vars.$bg-color;
+  color: vars.$text-primary;
+  font-family: vars.$font-family-main;
   overflow: hidden;
 
-  @include font-setting(16px, 24px);
+  @include mix.font-setting(16px, 24px);
 }
 
-// Material Overrides
+// 4. Material Overrides
 .mat-mdc-raised-button.mat-primary, 
 .mat-mdc-fab.mat-primary, 
 .mat-mdc-mini-fab.mat-primary {
-  --mdc-protected-button-container-color: #{$poalim-red} !important;
+  --mdc-protected-button-container-color: #{vars.$poalim-red} !important;
   --mdc-protected-button-label-text-color: white !important;
-  --mdc-fab-container-color: #{$poalim-red} !important;
+  --mdc-fab-container-color: #{vars.$poalim-red} !important;
 }
 
-// Icons fix
-.material-icons {
-  font-family: 'Material Icons';
-  font-weight: normal;
-  font-style: normal;
-  font-size: 24px;
-  display: inline-block;
-  line-height: 1;
-  text-transform: none;
-  white-space: nowrap;
-  direction: ltr;
-  -webkit-font-smoothing: antialiased;
-}
-
-// Helpers
-.text-poalim { color: $poalim-red !important; }
-.bg-poalim   { background-color: $poalim-red !important; }
+// 5. Utils
+.text-poalim { color: vars.$poalim-red !important; }
+.bg-poalim   { background-color: vars.$poalim-red !important; }
 
 .page-layout {
-  @include flex-col;
+  @include mix.flex-col;
   height: 100%;
-  padding: rem(16px);
+  padding: func.rem(16px);
   
-  @include tablet {
-    padding: rem(32px);
+  @include mix.tablet {
+    padding: func.rem(32px);
   }
 }
