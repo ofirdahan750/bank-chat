@@ -51,7 +51,7 @@
               <div class="chat-bubble__content">{{ m.content }}</div>
 
               <div class="chat-bubble__meta">
-                <div>{{ m.timestamp | chatTime }}</div>
+                <div>{{  formatChatTime(m.timestamp) }}</div>
               </div>
             </div>
           }

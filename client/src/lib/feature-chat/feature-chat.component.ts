@@ -14,12 +14,11 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { AppConfig, ChatUi, UIText } from '@poalim/constants';
 import { ChatMessage, User } from '@poalim/shared-interfaces';
-import { ChatTimePipe } from '@poalim/shared-interfaces';
 
 @Component({
   selector: 'app-feature-chat',
   standalone: true,
-  imports: [ReactiveFormsModule, MatIconModule, ChatTimePipe],
+  imports: [ReactiveFormsModule, MatIconModule],
   templateUrl: './feature-chat.component.html',
   styleUrl: './feature-chat.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,27 +27,34 @@ import { ChatTimePipe } from '@poalim/shared-interfaces';
 export class FeatureChat {
   private readonly fb = inject(NonNullableFormBuilder);
 
+  // Shared text/config (no hardcoded strings in the component)
   protected readonly uiText = UIText;
   protected readonly config = AppConfig;
   protected readonly chatUi = ChatUi;
 
+  // Restore nickname after refresh
   private readonly storedUsername =
     localStorage.getItem(AppConfig.STORAGE_KEYS.USERNAME) ?? '';
 
+  // Local state
   protected readonly username = signal<string>(this.storedUsername);
   protected readonly messages = signal<ChatMessage[]>([]);
 
-  protected readonly hasNickname = computed(
-    () => this.username().trim().length >= AppConfig.MIN_USERNAME_LENGTH
-  );
+  // UI toggle: login vs chat room
+  protected readonly hasNickname = computed(() => {
+    const name = this.username().trim();
+    return name.length >= AppConfig.MIN_USERNAME_LENGTH;
+  });
 
+  // Current user derived from nickname
   protected readonly me = computed<User>(() => ({
-    id: this.storedUsername ? this.storedUsername : ChatUi.USER.DEFAULT_ID,
+    id: this.storedUsername || ChatUi.USER.DEFAULT_ID,
     username: this.username().trim(),
     isBot: false,
     color: ChatUi.USER.DEFAULT_COLOR,
   }));
 
+  // Bot identity is constant
   protected readonly bot = computed<User>(() => ({
     id: ChatUi.BOT.ID,
     username: AppConfig.BOT_NAME,
@@ -56,6 +62,7 @@ export class FeatureChat {
     color: ChatUi.BOT.DEFAULT_COLOR,
   }));
 
+  // Nickname form (typed, reactive)
   protected readonly nicknameForm = this.fb.group({
     username: this.fb.control(this.storedUsername, {
       validators: [
@@ -66,6 +73,7 @@ export class FeatureChat {
     }),
   });
 
+  // Message input form (typed, reactive)
   protected readonly composerForm = this.fb.group({
     content: this.fb.control('', {
       validators: [
@@ -76,27 +84,33 @@ export class FeatureChat {
   });
 
   protected submitNickname(): void {
+    // Standard UX: show validation errors on submit
     if (this.nicknameForm.invalid) {
       this.nicknameForm.markAllAsTouched();
       return;
     }
 
     const username = this.nicknameForm.controls.username.value.trim();
+
+    // Handle "spaces only" edge case
     if (username.length < AppConfig.MIN_USERNAME_LENGTH) {
       this.nicknameForm.controls.username.setValue(username);
       this.nicknameForm.markAllAsTouched();
       return;
     }
 
+    // Persist + update state
     localStorage.setItem(AppConfig.STORAGE_KEYS.USERNAME, username);
     this.username.set(username);
 
+    // First entry only: bot greets the user
     if (this.messages().length === 0) {
       this.enqueueBotGreeting();
     }
   }
 
   protected send(): void {
+    // No nickname, no chat
     if (!this.hasNickname()) return;
 
     if (this.composerForm.invalid) {
@@ -107,6 +121,7 @@ export class FeatureChat {
     const content = this.composerForm.controls.content.value.trim();
     if (!content) return;
 
+    // Build a message object that matches the shared interface
     const msg: ChatMessage = {
       id: crypto.randomUUID(),
       sender: this.me(),
@@ -115,6 +130,7 @@ export class FeatureChat {
       type: 'text',
     };
 
+    // Append message + clear input
     this.messages.update((prev) => [...prev, msg]);
     this.composerForm.reset({ content: '' });
   }
@@ -128,10 +144,22 @@ export class FeatureChat {
       type: 'system',
     };
 
+    // Small delay so it feels less "instant"
     window.setTimeout(() => {
       this.messages.update((prev) => [...prev, msg]);
     }, AppConfig.BOT_DELAY_MS);
   }
 
+  formatChatTime(timestamp: number): string {
+    const date = new Date(timestamp);
+    if (Number.isNaN(date.getTime())) return '';
+
+    return new Intl.DateTimeFormat(undefined, {
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(date);
+  }
+
+  // Helps Angular keep DOM nodes stable while list grows
   protected trackById = (_: number, m: ChatMessage) => m.id;
 }
