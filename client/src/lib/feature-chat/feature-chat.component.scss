@@ -1,35 +1,43 @@
+@use 'functions' as fn;
+@use 'mixins' as mix;
+@use 'variables' as v;
+
 app-feature-chat {
   .feature-chat {
     display: grid;
     place-items: center;
-    padding: 1.25rem;
+    padding: v.$space-6;
 
     &__card,
     &__room {
-      width: min(100%, 64rem); // wider chat
+      width: min(100%, fn.rem(900px));
     }
 
     &__card {
-      padding: 1.25rem;
+      padding: v.$space-6;
     }
 
     &__header {
       text-align: center;
-      margin-bottom: 1rem;
+      margin-bottom: v.$space-4;
     }
 
     &__title {
       margin: 0;
+      font-size: fn.fluid(22px, 28px);
+      line-height: fn.lh(28px, 34px);
     }
 
     &__subtitle {
-      margin: 0.5rem 0 0;
+      margin: v.$space-2 0 0;
       color: var(--text-muted);
+      font-size: fn.rem(14px);
+      line-height: fn.lh(14px, 20px);
     }
 
     &__form {
       display: grid;
-      gap: 0.75rem;
+      gap: v.$space-3;
     }
 
     &__btn {
@@ -38,12 +46,12 @@ app-feature-chat {
 
     &__error {
       color: #ff6b6b;
-      font-size: 0.875rem;
-      line-height: 1.2;
+      font-size: fn.rem(13px);
+      line-height: fn.lh(13px, 18px);
 
       &--composer {
-        margin-top: 0.5rem;
-        padding: 10px 0 6px 12px;
+        margin-top: v.$space-2;
+        padding: fn.rem(10px) 0 fn.rem(6px) fn.rem(12px);
       }
     }
 
@@ -57,27 +65,30 @@ app-feature-chat {
 
     &__room-header {
       display: grid;
-      gap: 0.25rem;
-      padding: 1rem 1.25rem;
+      gap: v.$space-1;
+      padding: v.$space-4 v.$space-6;
       border-bottom: 1px solid var(--border);
       background: rgba(255, 255, 255, 0.03);
     }
 
     &__room-title {
-      font-weight: 600;
+      font-weight: v.$font-weight-semibold;
       text-transform: capitalize;
       color: var(--text);
+      font-size: fn.rem(16px);
+      line-height: fn.lh(16px, 22px);
     }
 
     &__room-subtitle {
-      font-size: 0.875rem;
       color: var(--text-muted);
+      font-size: fn.rem(13px);
+      line-height: fn.lh(13px, 18px);
     }
 
     &__messages {
-      padding: 1.25rem;
+      padding: v.$space-6;
       display: grid;
-      gap: 0.75rem;
+      gap: v.$space-3;
       overflow: auto;
       background: rgba(0, 0, 0, 0.08);
     }
@@ -85,44 +96,47 @@ app-feature-chat {
     &__empty {
       display: grid;
       place-items: center;
-      padding: 2rem 0;
+      padding: v.$space-10 0;
       color: var(--text-muted);
+      font-size: fn.rem(14px);
+      line-height: fn.lh(14px, 20px);
     }
 
     &__composer {
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 0.75rem;
-      padding: 1rem 1.25rem;
+      gap: v.$space-3;
+      padding: v.$space-4 v.$space-6;
       border-top: 1px solid var(--border);
       background: rgba(255, 255, 255, 0.03);
       align-items: center;
     }
 
     &__composer-btn {
-      width: 3rem;
-      height: 3rem;
+      width: fn.rem(48px);
+      height: fn.rem(48px);
       display: grid;
       place-items: center;
       padding: 0;
-      border-radius: 9999px;
+      border-radius: v.$radius-pill;
     }
   }
 
   .chat-bubble {
     width: fit-content;
     max-width: 72%;
-    padding: 0.75rem 0.9rem;
+    padding: v.$space-3 v.$space-4;
     border: 1px solid var(--border);
-    border-radius: 1rem;
+    border-radius: v.$radius-lg;
     background: rgba(255, 255, 255, 0.04);
     color: var(--text);
     box-shadow: var(--shadow-sm);
 
     &__sender {
-      font-size: 0.8125rem;
-      font-weight: 600;
-      margin-bottom: 0.35rem;
+      font-size: fn.rem(13px);
+      line-height: fn.lh(13px, 18px);
+      font-weight: v.$font-weight-semibold;
+      margin-bottom: fn.rem(6px);
       color: var(--text-muted);
       text-transform: capitalize;
     }
@@ -130,15 +144,17 @@ app-feature-chat {
     &__content {
       white-space: pre-wrap;
       word-break: break-word;
-      line-height: 1.35;
+      font-size: fn.rem(14px);
+      line-height: fn.lh(14px, 20px);
     }
 
     &__meta {
-      margin-top: 0.35rem;
+      margin-top: fn.rem(6px);
       display: flex;
       justify-content: flex-end;
       color: var(--text-muted);
-      font-size: 0.75rem;
+      font-size: fn.rem(12px);
+      line-height: fn.lh(12px, 16px);
     }
 
     &--mine {
@@ -154,18 +170,17 @@ app-feature-chat {
     }
   }
 
-  // Fix input "black" look by forcing background + text on the actual input element
   .app-input {
     width: 100%;
     border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 0.75rem;
-    background: rgba(17, 27, 39, 0.9); // visible dark surface (not black)
+    border-radius: v.$radius-md;
+    background: rgba(17, 27, 39, 0.9);
     color: rgba(255, 255, 255, 0.92);
-    padding: 0.75rem 0.9rem;
-    font-size: 0.95rem;
-    line-height: 1.25rem;
-    transition: border-color 180ms ease, box-shadow 180ms ease,
-      background-color 180ms ease;
+    padding: v.$space-3 v.$space-4;
+    font-size: fn.rem(15px);
+    line-height: fn.lh(15px, 22px);
+    transition: border-color v.$transition-base, box-shadow v.$transition-base,
+      background-color v.$transition-base;
 
     &::placeholder {
       color: rgba(255, 255, 255, 0.45);
@@ -180,7 +195,7 @@ app-feature-chat {
     &:focus-visible {
       outline: none;
       border-color: rgba(11, 95, 255, 0.85);
-      box-shadow: 0 0 0 0.1875rem rgba(11, 95, 255, 0.22);
+      box-shadow: 0 0 0 fn.rem(3px) rgba(11, 95, 255, 0.22);
       background: rgba(17, 27, 39, 1);
     }
 
@@ -190,7 +205,6 @@ app-feature-chat {
     }
   }
 
-  // Material adds this class: make sure it doesn't override our colors
   .app-input.mat-mdc-input-element {
     color: rgba(255, 255, 255, 0.92);
     caret-color: rgba(255, 255, 255, 0.92);
@@ -198,8 +212,21 @@ app-feature-chat {
     background: transparent;
   }
 
-  .app-btn:disabled {
-    pointer-events: none;
-    opacity: 0.6;
+  .app-btn {
+    @include mix.button-base;
+
+    &--primary {
+      background: var(--accent);
+      color: rgba(255, 255, 255, 0.95);
+
+      &:hover:not(:disabled) {
+        filter: brightness(0.95);
+      }
+    }
+
+    &:disabled {
+      pointer-events: none;
+      opacity: 0.6;
+    }
   }
 }
