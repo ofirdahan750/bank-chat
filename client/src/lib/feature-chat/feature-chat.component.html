@@ -1,76 +1,118 @@
 <section class="feature-chat">
   @if (!hasNickname()) {
-    <div class="feature-chat__card surface" role="region" aria-label="Nickname">
+  <div class="feature-chat__card surface" role="region" aria-label="Nickname">
+    <header class="feature-chat__header">
       <h2 class="feature-chat__title">{{ uiText.LOGIN.TITLE }}</h2>
       <p class="feature-chat__subtitle">{{ uiText.LOGIN.SUBTITLE }}</p>
+    </header>
 
-      <form class="feature-chat__form" [formGroup]="nicknameForm" (ngSubmit)="submitNickname()">
-        <input
-          class="app-input"
-          type="text"
-          autocomplete="nickname"
-          [attr.maxlength]="24"
-          [placeholder]="uiText.LOGIN.INPUT_PLACEHOLDER"
-          formControlName="username"
-        />
+    <form
+      class="feature-chat__form"
+      [formGroup]="nicknameForm"
+      (ngSubmit)="submitNickname()"
+    >
+      <input
+        matInput
+        class="app-input feature-chat__nickname-input"
+        type="text"
+        autocomplete="nickname"
+        [attr.maxlength]="chatUi.USER.MAX_USERNAME_LENGTH"
+        [placeholder]="uiText.LOGIN.INPUT_PLACEHOLDER"
+        [formControl]="nicknameForm.controls.username"
+      />
 
-        @if (nicknameForm.controls.username.touched && nicknameForm.controls.username.invalid) {
-          <div class="feature-chat__error" role="alert">
-            {{ uiText.LOGIN.ERROR_MIN_LENGTH }}
-          </div>
-        }
-
-        <button class="app-btn app-btn--primary feature-chat__btn" type="submit">
-          {{ uiText.LOGIN.BUTTON }}
-        </button>
-      </form>
-    </div>
-  } @else {
-    <div class="feature-chat__room surface" role="region" aria-label="Chat room">
-      <header class="feature-chat__room-header">
-        <div class="feature-chat__room-title">{{ username() }}</div>
-        <div class="feature-chat__room-subtitle">{{ config.BOT_NAME }}</div>
-      </header>
-
-      <div class="feature-chat__messages" role="log" aria-live="polite" aria-relevant="additions">
-        @if (messages().length === 0) {
-          <div class="feature-chat__empty">
-            <div>{{ uiText.CHAT.INPUT_PLACEHOLDER }}</div>
-          </div>
-        } @else {
-          @for (m of messages(); track trackById($index, m)) {
-            <div
-              class="chat-bubble"
-              [class.chat-bubble--mine]="m.sender.id === me().id && !m.sender.isBot"
-              [class.chat-bubble--bot]="m.sender.isBot"
-            >
-              @if (!(m.sender.id === me().id) && !m.sender.isBot) {
-                <div class="chat-bubble__sender">{{ m.sender.username }}</div>
-              }
-
-              <div class="chat-bubble__content">{{ m.content }}</div>
-
-              <div class="chat-bubble__meta">
-                <div>{{  formatChatTime(m.timestamp) }}</div>
-              </div>
-            </div>
-          }
-        }
+      @if (nicknameForm.controls.username.touched &&
+      nicknameForm.controls.username.hasError('required')) {
+      <div class="feature-chat__error" role="alert">
+        {{ uiText.LOGIN.ERROR_REQUIRED }}
       </div>
+      } @else if (nicknameForm.controls.username.touched &&
+      nicknameForm.controls.username.hasError('minlength')) {
+      <div class="feature-chat__error" role="alert">
+        {{ uiText.LOGIN.ERROR_MIN_LENGTH }}
+      </div>
+      }
 
-      <form class="feature-chat__composer" [formGroup]="composerForm" (ngSubmit)="send()">
-        <input
-          class="app-input feature-chat__composer-input"
-          type="text"
-          [attr.maxlength]="config.MAX_MSG_LENGTH"
-          [placeholder]="uiText.CHAT.INPUT_PLACEHOLDER"
-          formControlName="content"
-        />
+      <button
+        class="app-btn app-btn--primary feature-chat__btn"
+        type="submit"
+        [disabled]="nicknameForm.invalid"
+        [attr.aria-disabled]="nicknameForm.invalid"
+      >
+        {{ uiText.LOGIN.BUTTON }}
+      </button>
+    </form>
+  </div>
+  } @else {
+  <div class="feature-chat__room surface" role="region" aria-label="Chat room">
+    <header class="feature-chat__room-header">
+      <div class="feature-chat__room-title">{{ username() }}</div>
+      <div class="feature-chat__room-subtitle">{{ config.BOT_NAME }}</div>
+    </header>
 
-        <button class="app-btn app-btn--primary feature-chat__composer-btn" type="submit">
-          <mat-icon aria-hidden="true">send</mat-icon>
-        </button>
-      </form>
+    <div
+      class="feature-chat__messages"
+      role="log"
+      aria-live="polite"
+      aria-relevant="additions"
+    >
+      @if (messages().length === 0) {
+      <div class="feature-chat__empty">
+        <div>{{ uiText.CHAT.INPUT_PLACEHOLDER }}</div>
+      </div>
+      } @else { @for (m of messages(); track trackById($index, m)) {
+      <article
+        class="chat-bubble"
+        [class.chat-bubble--mine]="m.sender.id === me().id && !m.sender.isBot"
+        [class.chat-bubble--bot]="m.sender.isBot"
+      >
+        @if (m.sender.id !== me().id && !m.sender.isBot) {
+        <div class="chat-bubble__sender">{{ m.sender.username }}</div>
+        }
+
+        <div class="chat-bubble__content">{{ m.content }}</div>
+
+        <div class="chat-bubble__meta">
+          <span class="chat-bubble__time">{{
+            formatChatTime(m.timestamp)
+          }}</span>
+        </div>
+      </article>
+      } }
     </div>
+
+    <form
+      class="feature-chat__composer"
+      [formGroup]="composerForm"
+      (submit)="$event.preventDefault()"
+    >
+      <input
+        matInput
+        class="app-input feature-chat__composer-input"
+        type="text"
+        [attr.maxlength]="config.MAX_MSG_LENGTH"
+        [placeholder]="uiText.CHAT.INPUT_PLACEHOLDER"
+        [formControl]="composerForm.controls.content"
+        (keydown.enter)="onComposerEnter($event)"
+      />
+
+      <button
+        class="app-btn app-btn--primary feature-chat__composer-btn"
+        type="button"
+        (click)="send()"
+        [disabled]="composerForm.invalid || !hasNickname()"
+        [attr.aria-disabled]="composerForm.invalid || !hasNickname()"
+      >
+        <mat-icon aria-hidden="true">send</mat-icon>
+      </button>
+    </form>
+
+    @if (composerForm.controls.content.touched &&
+    composerForm.controls.content.hasError('required')) {
+    <div class="feature-chat__error feature-chat__error--composer" role="alert">
+      {{ uiText.CHAT.ERROR_REQUIRED }}
+    </div>
+    }
+  </div>
   }
 </section>

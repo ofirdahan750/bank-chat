@@ -1,174 +1,204 @@
-@use '../../../../apps/client/src/styles/variables' as v;
-@use '../../../../apps/client/src/styles/functions' as fn;
-@use '../../../../apps/client/src/styles/mixins' as m;
-
 app-feature-chat {
   .feature-chat {
-    padding: v.$space-6 v.$space-4;
-    min-height: 100dvh;
     display: grid;
-    place-items: start center;
+    place-items: center;
+    padding: 1.25rem;
 
-    @include m.respond-up(v.$bp-md) {
-      padding: v.$space-8 v.$space-6;
+    &__card,
+    &__room {
+      width: min(100%, 64rem); // wider chat
     }
 
-    /* Nickname card */
     &__card {
-      width: 100%;
-      max-width: fn.rem(520px);
-      padding: v.$space-6;
+      padding: 1.25rem;
+    }
 
-      @include m.respond-up(v.$bp-md) {
-        padding: v.$space-7;
-      }
+    &__header {
+      text-align: center;
+      margin-bottom: 1rem;
     }
 
     &__title {
-      margin: 0 0 v.$space-2;
-      text-align: center;
+      margin: 0;
     }
 
     &__subtitle {
-      margin: 0 0 v.$space-6;
-      text-align: center;
-      color: rgba(255, 255, 255, 0.64);
+      margin: 0.5rem 0 0;
+      color: var(--text-muted);
     }
 
     &__form {
       display: grid;
-      gap: v.$space-3;
-    }
-
-    &__error {
-      font-size: fn.rem(12px);
-      line-height: fn.lh(12px, 16px);
-      color: v.$danger-color;
+      gap: 0.75rem;
     }
 
     &__btn {
       width: 100%;
-      justify-content: center;
     }
 
-    /* Chat room panel */
-    &__room {
-      width: 100%;
-      max-width: fn.rem(920px);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      min-height: fn.rem(520px);
+    &__error {
+      color: #ff6b6b;
+      font-size: 0.875rem;
+      line-height: 1.2;
 
-      @include m.respond-up(v.$bp-md) {
-        min-height: fn.rem(620px);
+      &--composer {
+        margin-top: 0.5rem;
       }
+    }
+
+    &__room {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: 0;
+      overflow: hidden;
+      min-height: 70dvh;
     }
 
     &__room-header {
-      padding: v.$space-4;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       display: grid;
-      gap: v.$space-1;
+      gap: 0.25rem;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
     }
 
     &__room-title {
-      font-weight: v.$font-weight-semibold;
-      color: var(--text);
+      font-weight: 600;
       text-transform: capitalize;
-      letter-spacing: fn.rem(0.5px);
+      color: var(--text);
     }
 
     &__room-subtitle {
-      font-size: fn.rem(12px);
-      line-height: fn.lh(12px, 16px);
-      color: rgba(255, 255, 255, 0.64);
+      font-size: 0.875rem;
+      color: var(--text-muted);
     }
 
-    /* Messages area */
     &__messages {
-      flex: 1;
-      padding: v.$space-4;
+      padding: 1.25rem;
       display: grid;
-      gap: v.$space-3;
+      gap: 0.75rem;
       overflow: auto;
-      scrollbar-gutter: stable;
-
-      /* Keeps the first bubble away from the top edge */
-      align-content: start;
+      background: rgba(0, 0, 0, 0.08);
     }
 
     &__empty {
-      padding: v.$space-6;
-      text-align: center;
-      color: rgba(255, 255, 255, 0.64);
+      display: grid;
+      place-items: center;
+      padding: 2rem 0;
+      color: var(--text-muted);
     }
 
-    /* Composer */
     &__composer {
-      padding: v.$space-3 v.$space-4 v.$space-4;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: v.$space-3;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
       align-items: center;
     }
 
-    &__composer-input {
-      min-width: 0; /* Prevents overflow in grid */
-    }
-
     &__composer-btn {
-      white-space: nowrap;
-      justify-content: center;
-
-      mat-icon {
-        font-size: fn.rem(18px);
-        width: fn.rem(18px);
-        height: fn.rem(18px);
-        line-height: 1;
-      }
+      width: 3rem;
+      height: 3rem;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border-radius: 9999px;
     }
   }
 
-  /* Message bubble */
   .chat-bubble {
     width: fit-content;
-    max-width: 85%;
-    padding: v.$space-3 v.$space-4;
-    border-radius: v.$radius-md;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.06);
-    display: grid;
-    gap: v.$space-2;
-
-    &--mine {
-      margin-left: auto;
-      background: rgba(237, 29, 36, 0.14);
-      border-color: rgba(237, 29, 36, 0.3);
-    }
-
-    &--bot {
-      margin-inline: auto;
-      background: rgba(11, 95, 255, 0.1);
-      border-color: rgba(11, 95, 255, 0.28);
-    }
+    max-width: 72%;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text);
+    box-shadow: var(--shadow-sm);
 
     &__sender {
-      font-size: fn.rem(12px);
-      line-height: fn.lh(12px, 16px);
-      color: rgba(255, 255, 255, 0.64);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+      color: var(--text-muted);
+      text-transform: capitalize;
     }
 
     &__content {
       white-space: pre-wrap;
       word-break: break-word;
+      line-height: 1.35;
     }
 
     &__meta {
-      font-size: fn.rem(11px);
-      line-height: fn.lh(11px, 14px);
-      color: rgba(255, 255, 255, 0.52);
+      margin-top: 0.35rem;
+      display: flex;
+      justify-content: flex-end;
+      color: var(--text-muted);
+      font-size: 0.75rem;
     }
+
+    &--mine {
+      margin-left: auto;
+      background: rgba(237, 29, 36, 0.12);
+      border-color: rgba(237, 29, 36, 0.25);
+    }
+
+    &--bot {
+      margin-inline: auto;
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+  }
+
+  // Fix input "black" look by forcing background + text on the actual input element
+  .app-input {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0.75rem;
+    background: rgba(17, 27, 39, 0.9); // visible dark surface (not black)
+    color: rgba(255, 255, 255, 0.92);
+    padding: 0.75rem 0.9rem;
+    font-size: 0.95rem;
+    line-height: 1.25rem;
+    transition: border-color 180ms ease, box-shadow 180ms ease,
+      background-color 180ms ease;
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.45);
+      opacity: 1;
+    }
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+      background: rgba(17, 27, 39, 0.96);
+    }
+
+    &:focus-visible {
+      outline: none;
+      border-color: rgba(11, 95, 255, 0.85);
+      box-shadow: 0 0 0 0.1875rem rgba(11, 95, 255, 0.22);
+      background: rgba(17, 27, 39, 1);
+    }
+
+    &:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+  }
+
+  // Material adds this class: make sure it doesn't override our colors
+  .app-input.mat-mdc-input-element {
+    color: rgba(255, 255, 255, 0.92);
+    caret-color: rgba(255, 255, 255, 0.92);
+    -webkit-text-fill-color: rgba(255, 255, 255, 0.92);
+    background: transparent;
+  }
+
+  .app-btn:disabled {
+    pointer-events: none;
+    opacity: 0.6;
   }
 }
