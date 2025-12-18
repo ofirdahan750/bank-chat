@@ -1,2 +1,2 @@
-export * from './lib/client-data-access/client-data-access';
 export * from './lib/local-storage/index'
+export * from './lib/socket-client/index'

@@ -1,0 +1,15 @@
+<article
+  class="chat-bubble"
+  [class.chat-bubble--mine]="isMine()"
+  [class.chat-bubble--bot]="isBot()"
+>
+  @if (showSender()) {
+    <div class="chat-bubble__sender">{{ messageSig()!.sender.username }}</div>
+  }
+
+  <div class="chat-bubble__content">{{ messageSig()!.content }}</div>
+
+  <div class="chat-bubble__meta">
+    <span class="chat-bubble__time">{{ formatChatTime(messageSig()!.timestamp) }}</span>
+  </div>
+</article>

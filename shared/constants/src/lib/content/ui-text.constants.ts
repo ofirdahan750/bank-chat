@@ -6,6 +6,7 @@ export const UIText = {
     BUTTON: 'Start Chatting',
     ERROR_REQUIRED: 'Nickname is required',
     ERROR_MIN_LENGTH: 'Nickname must be at least 2 characters',
+    ERROR_MAX_LENGTH: 'Nickname is too long',
   },
 
   CHAT: {
@@ -13,6 +14,7 @@ export const UIText = {
     SEND_BUTTON: 'Send',
     TYPING: 'is typing...',
     ERROR_REQUIRED: 'Message is required',
+    EMPTY_STATE: 'Start the conversation by sending a message',
   },
 
   BOT: {
@@ -20,9 +22,16 @@ export const UIText = {
     DUPLICATE_ANSWER_PREFIX:
       'I remember someone asking that! Here is the answer:',
   },
-};
+} as const;
 
 export const ChatUi = {
-  USER: { DEFAULT_ID: 'me', DEFAULT_COLOR: '#3b82f6', MAX_USERNAME_LENGTH: 24 },
-  BOT: { ID: 'bot', DEFAULT_COLOR: '#ed1d24' },
+  USER: {
+    DEFAULT_ID: 'me',
+    DEFAULT_COLOR: '#3b82f6',
+    MAX_USERNAME_LENGTH: 24,
+  },
+  BOT: {
+    ID: 'bot',
+    DEFAULT_COLOR: '#ed1d24',
+  },
 } as const;

@@ -1,0 +1,47 @@
+app-chat-bubble {
+    .chat-bubble {
+      width: fit-content;
+      max-width: 72%;
+      padding: 0.75rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      box-shadow: var(--shadow-sm);
+  
+      &__sender {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        margin-bottom: 0.35rem;
+        color: var(--text-muted);
+        text-transform: capitalize;
+      }
+  
+      &__content {
+        white-space: pre-wrap;
+        word-break: break-word;
+        line-height: 1.35;
+      }
+  
+      &__meta {
+        margin-top: 0.35rem;
+        display: flex;
+        justify-content: flex-end;
+        color: var(--text-muted);
+        font-size: 0.75rem;
+      }
+  
+      &--mine {
+        margin-left: auto;
+        background: rgba(237, 29, 36, 0.12);
+        border-color: rgba(237, 29, 36, 0.25);
+      }
+  
+      &--bot {
+        margin-inline: auto;
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 255, 255, 0.12);
+      }
+    }
+  }
+  
