@@ -1,148 +1,95 @@
-import type { ChatMessage, User } from '@poalim/shared-interfaces';
 import { randomUUID } from 'crypto';
+import { ChatMessage } from '@poalim/shared-interfaces';
+import { AppConfig } from '@poalim/constants';
 
-export type BotDecision = {
-  botMessage: ChatMessage;
+type RoomId = string;
+
+type BotDecision = {
   typingMs: number;
+  botMessage: ChatMessage;
 };
 
-type RoomMemory = {
-  pendingQuestionKey: string | null;
-  qa: Map<string, string>; // questionKey -> answer
+const normalizeQuestionKey = (text: string): string =>
+  text
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .replace(/[?!.,:;"'()[\]{}]/g, '')
+    .trim();
+
+const isQuestion = (text: string): boolean => {
+  const t = text.trim().toLowerCase();
+  if (!t) return false;
+  if (t.endsWith('?')) return true;
+
+  // lightweight heuristic for English questions without '?'
+  const starters = [
+    'who', 'what', 'where', 'when', 'why', 'how',
+    'is', 'are', 'do', 'does', 'did',
+    'can', 'could', 'should', 'would', 'will',
+  ];
+
+  return starters.some((s) => t.startsWith(`${s} `));
 };
 
 export class BotEngine {
-  private readonly memoryByRoom = new Map<string, RoomMemory>();
+  private readonly answerByQuestionKeyByRoom = new Map<RoomId, Map<string, ChatMessage>>();
+  private readonly pendingQuestionKeyByRoom = new Map<RoomId, string | null>();
 
-  onUserMessage(roomId: string, msg: ChatMessage): BotDecision | null {
-    if (msg?.sender?.isBot) return null;
-
-    const content = (msg?.content ?? '').trim();
-    if (!content) return null;
-
-    const mem = this.getRoomMemory(roomId);
-
-    if (this.isQuestion(content)) {
-      const key = this.normalizeQuestion(content);
-      mem.pendingQuestionKey = key;
-
-      const rememberedAnswer = mem.qa.get(key);
-      if (!rememberedAnswer) return null;
-
-      const botContent = `${this.pickRecallPrefix()}\n${rememberedAnswer}`;
-
-      return {
-        botMessage: this.buildBotMessage(botContent),
-        typingMs: this.pickTypingMs(),
-      };
-    }
-
-    // Treat non-question messages as potential answers to the last pending question.
-    if (mem.pendingQuestionKey && !mem.qa.has(mem.pendingQuestionKey)) {
-      mem.qa.set(mem.pendingQuestionKey, content);
-      mem.pendingQuestionKey = null;
-    }
-
-    return null;
-  }
-
-  private getRoomMemory(roomId: string): RoomMemory {
-    const existing = this.memoryByRoom.get(roomId);
+  private getRoomMemory(roomId: RoomId): Map<string, ChatMessage> {
+    const existing = this.answerByQuestionKeyByRoom.get(roomId);
     if (existing) return existing;
 
-    const created: RoomMemory = {
-      pendingQuestionKey: null,
-      qa: new Map<string, string>(),
-    };
-    this.memoryByRoom.set(roomId, created);
-    return created;
+    const next = new Map<string, ChatMessage>();
+    this.answerByQuestionKeyByRoom.set(roomId, next);
+    return next;
   }
 
-  private buildBotMessage(content: string): ChatMessage {
-    const botUser: User = {
-      id: 'bot',
-      username: 'Bot',
-      isBot: true,
-      color: '#7c3aed',
-    };
+  onUserMessage(roomId: RoomId, msg: ChatMessage): BotDecision | null {
+    // ignore bot messages completely
+    if (msg.sender?.isBot) return null;
 
-    return {
-      id: randomUUID(),
-      sender: botUser,
-      content,
-      timestamp: Date.now(),
-      type: 'system',
-    };
-  }
+    const content = (msg.content ?? '').trim();
+    if (!content) return null;
 
-  private pickTypingMs(): number {
-    // 450-900ms, feels human-ish without being annoying
-    return 450 + Math.floor(Math.random() * 451);
-  }
+    const memory = this.getRoomMemory(roomId);
 
-  private pickRecallPrefix(): string {
-    const options: readonly string[] = [
-      "I remember this one. Here's the answer that was given before:",
-      'Already answered. Replaying the greatest hit:',
-      "Deja-vu detected. Here's what was said last time:",
-      'This question has a history. Here you go:',
-    ];
-    const idx = Math.floor(Math.random() * options.length);
-    return options[idx] ?? options[0];
-  }
+    // if it's a question: answer only if we already have a saved human answer
+    if (isQuestion(content)) {
+      const key = normalizeQuestionKey(content);
+      this.pendingQuestionKeyByRoom.set(roomId, key);
 
-  private isQuestion(text: string): boolean {
-    const t = text.trim();
+      const saved = memory.get(key);
+      if (!saved) return null;
 
-    if (t.endsWith('?')) return true;
+      const botMessage: ChatMessage = {
+        id: randomUUID(),
+        sender: {
+          id: 'bot',
+          username: AppConfig.BOT_NAME,
+          isBot: true,
+          color: '#ed1d24',
+        },
+        type: 'system',
+        timestamp: Date.now(),
+        content: `${AppConfig.BOT_NAME}: I remember this. The last answer was: "${saved.content}"`,
+      };
 
-    // English question starters
-    const enStarters: readonly string[] = [
-      'what',
-      'why',
-      'how',
-      'when',
-      'where',
-      'who',
-      'which',
-      'is',
-      'are',
-      'do',
-      'does',
-      'did',
-      'can',
-      'could',
-      'should',
-      'would',
-      'will',
-      'may',
-    ];
+      return { typingMs: 700, botMessage };
+    }
 
-    // Hebrew question starters (detection only; bot still replies in English)
-    const heStarters: readonly string[] = [
-      'מה',
-      'למה',
-      'איך',
-      'מתי',
-      'איפה',
-      'מי',
-      'האם',
-      'אפשר',
-      'יכול',
-      'יכולה',
-      'כדאי',
-      'צריך',
-    ];
+    // if it's NOT a question: treat it as the answer to the last pending question (human-only)
+    const pendingKey = this.pendingQuestionKeyByRoom.get(roomId);
+    if (!pendingKey) return null;
 
-    const first = t.split(/\s+/)[0]?.toLowerCase() ?? '';
-    return enStarters.includes(first) || heStarters.includes(first);
-  }
+    // do not overwrite existing memory; first good answer wins
+    if (!memory.has(pendingKey)) {
+      memory.set(pendingKey, msg);
+    }
 
-  private normalizeQuestion(text: string): string {
-    return text
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, ' ')
-      .replace(/[?!.,;:]+$/g, '');
+    // clear pending question so we don't attach random future messages as answers
+    this.pendingQuestionKeyByRoom.set(roomId, null);
+
+    return null;
   }
 }

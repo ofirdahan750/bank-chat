@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { AppConfig, SocketEvents } from '@poalim/constants';
-import type {
+import {
   BotTypingPayload,
   ChatMessage,
   JoinRoomPayload,
@@ -15,82 +15,28 @@ type ConnectionState = 'disconnected' | 'connecting' | 'connected';
 @Injectable({ providedIn: 'root' })
 export class SocketClientService {
   private socket: Socket | null = null;
-  private listenersBound = false;
-
-  private currentUser: User | null = null;
-  private currentRoomId = 'main';
 
   readonly connectionState = signal<ConnectionState>('disconnected');
   readonly botTyping = signal<boolean>(false);
 
-  readonly lastIncomingMessage = signal<ChatMessage | null>(null);
+  // one-shot signals (store consumes then resets to null)
   readonly roomHistory = signal<RoomHistoryPayload | null>(null);
+  readonly lastIncomingMessage = signal<ChatMessage | null>(null);
 
   connect(me: User, roomId = 'main'): void {
-    this.currentUser = me;
-    this.currentRoomId = roomId;
+    if (this.socket) return;
 
-    // If already connected - just ensure we joined the room (no duplicate listeners)
-    if (this.socket?.connected) {
-      this.emitJoin();
-      return;
-    }
-
-    // If socket exists but not connected - reconnect
-    if (this.socket) {
-      if (this.connectionState() !== 'connecting') {
-        this.connectionState.set('connecting');
-      }
-      this.socket.connect();
-      return;
-    }
-
-    // First time
     this.connectionState.set('connecting');
 
     this.socket = io(AppConfig.API_URL, {
       transports: ['websocket'],
     });
 
-    this.bindListeners();
-  }
-
-  sendMessage(message: ChatMessage, roomId = 'main'): void {
-    if (!this.socket?.connected) return;
-
-    const payload: SendMessagePayload = { roomId, message };
-    this.socket.emit(SocketEvents.SEND_MESSAGE, payload);
-  }
-
-  clearLastIncomingMessage(): void {
-    this.lastIncomingMessage.set(null);
-  }
-
-  clearRoomHistory(): void {
-    this.roomHistory.set(null);
-  }
-
-  disconnect(): void {
-    this.socket?.disconnect();
-    this.socket = null;
-
-    this.listenersBound = false;
-    this.currentUser = null;
-
-    this.connectionState.set('disconnected');
-    this.botTyping.set(false);
-    this.lastIncomingMessage.set(null);
-    this.roomHistory.set(null);
-  }
-
-  private bindListeners(): void {
-    if (!this.socket || this.listenersBound) return;
-
-    this.listenersBound = true;
-
     this.socket.on('connect', () => {
       this.connectionState.set('connected');
-      this.emitJoin();
+
+      const joinPayload: JoinRoomPayload = { roomId, user: me };
+      this.socket?.emit(SocketEvents.JOIN_ROOM, joinPayload);
     });
 
     this.socket.on('disconnect', () => {
@@ -107,18 +53,25 @@ export class SocketClientService {
     });
 
     this.socket.on(SocketEvents.BOT_TYPING, (p: BotTypingPayload) => {
-      this.botTyping.set(p.isTyping);
+      this.botTyping.set(!!p?.isTyping);
     });
   }
 
-  private emitJoin(): void {
-    if (!this.socket?.connected || !this.currentUser) return;
+  sendMessage(message: ChatMessage, roomId = 'main'): void {
+    if (!this.socket?.connected) return;
 
-    const joinPayload: JoinRoomPayload = {
-      roomId: this.currentRoomId,
-      user: this.currentUser,
-    };
+    const payload: SendMessagePayload = { roomId, message };
+    this.socket.emit(SocketEvents.SEND_MESSAGE, payload);
+  }
 
-    this.socket.emit(SocketEvents.JOIN_ROOM, joinPayload);
+  disconnect(): void {
+    this.socket?.disconnect();
+    this.socket = null;
+
+    this.connectionState.set('disconnected');
+    this.botTyping.set(false);
+
+    this.roomHistory.set(null);
+    this.lastIncomingMessage.set(null);
   }
 }

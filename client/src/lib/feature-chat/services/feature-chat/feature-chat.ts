@@ -1,16 +1,16 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
-import { AppConfig, ChatUi, UIText } from '@poalim/constants';
-import {
-  LocalStorageService,
-  SocketClientService,
-} from '@poalim/client-data-access';
-import type {
-  ChatMessage,
-  RoomHistoryPayload,
-  User,
-} from '@poalim/shared-interfaces';
+import { AppConfig, ChatUi } from '@poalim/constants';
+import { LocalStorageService, SocketClientService } from '@poalim/client-data-access';
+import { ChatMessage, User } from '@poalim/shared-interfaces';
 
-const DEFAULT_ROOM_ID = 'main';
+const mergeUniqueById = (prev: ChatMessage[], incoming: ChatMessage[]): ChatMessage[] => {
+  const mergedMap = [...prev, ...incoming].reduce((acc, m) => {
+    if (m?.id) acc.set(m.id, m);
+    return acc;
+  }, new Map<string, ChatMessage>());
+
+  return Array.from(mergedMap.values()).sort((a, b) => a.timestamp - b.timestamp);
+};
 
 @Injectable({ providedIn: 'root' })
 export class ChatStore {
@@ -23,23 +23,17 @@ export class ChatStore {
   readonly username = signal<string>(this.storedUsername);
   readonly messages = signal<ChatMessage[]>([]);
 
-  readonly botTyping = computed<boolean>(() => this.socket.botTyping());
   readonly connectionState = computed(() => this.socket.connectionState());
+  readonly botTyping = computed(() => this.socket.botTyping());
 
-  readonly hasNickname = computed<boolean>(() => {
-    const name = this.username().trim();
-    return name.length >= AppConfig.MIN_USERNAME_LENGTH;
-  });
+  readonly hasNickname = computed(() => this.username().trim().length >= AppConfig.MIN_USERNAME_LENGTH);
 
-  readonly me = computed<User>(() => {
-    const name = this.username().trim();
-    return {
-      id: name || ChatUi.USER.DEFAULT_ID,
-      username: name,
-      isBot: false,
-      color: ChatUi.USER.DEFAULT_COLOR,
-    };
-  });
+  readonly me = computed<User>(() => ({
+    id: this.username().trim() || ChatUi.USER.DEFAULT_ID,
+    username: this.username().trim(),
+    isBot: false,
+    color: ChatUi.USER.DEFAULT_COLOR,
+  }));
 
   readonly bot = computed<User>(() => ({
     id: ChatUi.BOT.ID,
@@ -49,41 +43,36 @@ export class ChatStore {
   }));
 
   constructor() {
-    // Auto-connect when nickname exists
+    // connect automatically when nickname is valid (also after refresh)
     effect(() => {
       if (!this.hasNickname()) return;
-      this.socket.connect(this.me(), DEFAULT_ROOM_ID);
+
+      const state = this.socket.connectionState();
+      if (state === 'connected' || state === 'connecting') return;
+
+      this.socket.connect(this.me());
     });
 
-    // Apply room history in one shot (new tab gets all messages)
+    // full room history (important for new tabs)
     effect(() => {
-      const historyPayload: RoomHistoryPayload | null =
-        this.socket.roomHistory();
+      const historyPayload = this.socket.roomHistory();
       if (!historyPayload) return;
 
-      const incoming = (historyPayload.messages ?? []).filter(
-        (m: ChatMessage | null | undefined): m is ChatMessage =>
-          !!m && typeof m.id === 'string'
-      );
+      const next = mergeUniqueById(this.messages(), historyPayload.messages ?? []);
+      this.messages.set(next);
 
-      const merged = this.mergeById(this.messages(), incoming);
-      this.messages.set(merged);
-
-      this.socket.clearRoomHistory();
+      this.socket.roomHistory.set(null);
     });
 
-    // Apply live incoming messages (dedupe by id)
+    // single incoming message
     effect(() => {
-      const incoming: ChatMessage | null = this.socket.lastIncomingMessage();
+      const incoming = this.socket.lastIncomingMessage();
       if (!incoming) return;
 
-      this.messages.update((prev: ChatMessage[]) =>
-        prev.some((x: ChatMessage) => x.id === incoming.id)
-          ? prev
-          : [...prev, incoming]
-      );
+      const next = mergeUniqueById(this.messages(), [incoming]);
+      this.messages.set(next);
 
-      this.socket.clearLastIncomingMessage();
+      this.socket.lastIncomingMessage.set(null);
     });
   }
 
@@ -93,20 +82,7 @@ export class ChatStore {
 
     this.storage.setString(AppConfig.STORAGE_KEYS.USERNAME, clean);
     this.username.set(clean);
-
-    this.socket.connect(this.me(), DEFAULT_ROOM_ID);
-
-    // Optional local greeting (can be removed if you want a "pure" room)
-    if (this.messages().length === 0) {
-      const greeting: ChatMessage = {
-        id: crypto.randomUUID(),
-        sender: this.bot(),
-        content: UIText.BOT.DEFAULT_GREETING,
-        timestamp: Date.now(),
-        type: 'system',
-      };
-      this.messages.set([greeting]);
-    }
+    // connection happens via effect
   }
 
   send(content: string): void {
@@ -123,24 +99,8 @@ export class ChatStore {
       type: 'text',
     };
 
-    // Optimistic UI + dedupe will prevent double display when server echoes back
-    this.messages.update((prev: ChatMessage[]) => [...prev, msg]);
-
-    this.socket.sendMessage(msg, DEFAULT_ROOM_ID);
-  }
-
-  private mergeById(a: ChatMessage[], b: ChatMessage[]): ChatMessage[] {
-    const mergedMap = [...a, ...b].reduce(
-      (acc: Map<string, ChatMessage>, m: ChatMessage) => {
-        if (acc.has(m.id)) return acc;
-        acc.set(m.id, m);
-        return acc;
-      },
-      new Map<string, ChatMessage>()
-    );
-
-    return Array.from(mergedMap.values()).sort(
-      (x: ChatMessage, y: ChatMessage) => x.timestamp - y.timestamp
-    );
+    // optimistic UI, but dedupe will prevent double rendering when server echoes it back
+    this.messages.set(mergeUniqueById(this.messages(), [msg]));
+    this.socket.sendMessage(msg);
   }
 }
