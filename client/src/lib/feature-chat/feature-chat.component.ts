@@ -11,13 +11,14 @@ import {
 } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { AppConfig, ChatUi, UIText } from '@poalim/constants';
+import { ChatMessage } from '@poalim/shared-interfaces';
 import { ChatStore } from './services/feature-chat/feature-chat';
-import { ChatBubbleComponent } from './chat-bubble/chat-bubble';
+import { ChatBubbleComponent } from './chat-bubble/chat-bubble.component';
 
 @Component({
   selector: 'app-feature-chat',
   standalone: true,
-  imports: [ReactiveFormsModule, MatIconModule,ChatBubbleComponent],
+  imports: [ReactiveFormsModule, MatIconModule, ChatBubbleComponent],
   templateUrl: './feature-chat.component.html',
   styleUrl: './feature-chat.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,6 +51,15 @@ export class FeatureChat {
     }),
   });
 
+  // Build the "bot is typing" bubble outside the template (no inline object in HTML)
+  protected readonly botTypingMessage = (): ChatMessage => ({
+    id: 'bot-typing',
+    sender: this.store.bot(),
+    content: `${this.config.BOT_NAME} ${this.uiText.CHAT.TYPING}`,
+    timestamp: Date.now(),
+    type: 'system',
+  });
+
   protected submitNickname(): void {
     if (this.nicknameForm.invalid) {
       this.nicknameForm.markAllAsTouched();
@@ -72,12 +82,12 @@ export class FeatureChat {
   protected formatChatTime(timestamp: number): string {
     const date = new Date(timestamp);
     if (Number.isNaN(date.getTime())) return '';
-  
+
     return new Intl.DateTimeFormat(undefined, {
       hour: '2-digit',
       minute: '2-digit',
     }).format(date);
   }
 
-  protected trackById = (_: number, m: any) => m.id;
+  protected trackById = (_: number, m: ChatMessage) => m.id;
 }

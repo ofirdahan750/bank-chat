@@ -72,19 +72,17 @@
 
         @if (store.botTyping()) {
           <app-chat-bubble
-            [message]="{
-              id: 'bot-typing',
-              sender: store.bot(),
-              content: config.BOT_NAME + ' ' + uiText.CHAT.TYPING,
-              timestamp: Date.now(),
-              type: 'system'
-            }"
+            [message]="botTypingMessage()"
             [currentUser]="store.me()"
           />
         }
       </div>
 
-      <form class="feature-chat__composer" [formGroup]="composerForm" (ngSubmit)="send()">
+      <form
+        class="feature-chat__composer"
+        [formGroup]="composerForm"
+        (ngSubmit)="send()"
+      >
         <input
           matInput
           class="app-input feature-chat__composer-input"
@@ -106,7 +104,10 @@
 
       @if (composerForm.controls.content.touched) {
         @if (composerForm.controls.content.hasError('required')) {
-          <div class="feature-chat__error feature-chat__error--composer" role="alert">
+          <div
+            class="feature-chat__error feature-chat__error--composer"
+            role="alert"
+          >
             {{ uiText.CHAT.ERROR_REQUIRED }}
           </div>
         }

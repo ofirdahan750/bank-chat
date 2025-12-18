@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ChatBubble } from './chat-bubble';
+import { ChatBubble } from './chat-bubble.component';
 
 describe('ChatBubble', () => {
   let component: ChatBubble;

@@ -1,9 +1,10 @@
-// socket-events.constants.ts
-
 export const SocketEvents = {
-  // Socket lifecycle
+  // socket.io built-ins
   CONNECT: 'connect',
   DISCONNECT: 'disconnect',
+
+  // Sync
+  ROOM_HISTORY: 'room_history',
 
   // Room & Messages
   JOIN_ROOM: 'join_room',

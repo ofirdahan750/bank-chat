@@ -1,1 +1,1 @@
-export * from './lib/bot-engine';
+export * from './lib/bot-engine/bot-engine';
