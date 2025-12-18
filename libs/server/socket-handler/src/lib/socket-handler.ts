@@ -1,14 +1,14 @@
-import { Server, Socket } from 'socket.io';
 import { randomUUID } from 'crypto';
+import { Server, Socket } from 'socket.io';
 import { SocketEvents } from '@poalim/constants';
+import { BotEngine } from '@poalim/bot-engine';
 import {
   BotTypingPayload,
+  ChatMessage,
   JoinRoomPayload,
   RoomHistoryPayload,
   SendMessagePayload,
-  ChatMessage,
 } from '@poalim/shared-interfaces';
-import { BotEngine } from '@poalim/bot-engine';
 
 type RoomId = string;
 
@@ -35,11 +35,12 @@ export const registerSocketHandlers = (io: Server): void => {
         roomId,
         messages: getRoomHistory(roomId),
       };
+
       socket.emit(SocketEvents.ROOM_HISTORY, payload);
     };
 
     socket.on(SocketEvents.JOIN_ROOM, (payload: JoinRoomPayload) => {
-      const roomId = payload.roomId || DEFAULT_ROOM;
+      const roomId = payload?.roomId || DEFAULT_ROOM;
 
       socket.leave(currentRoom);
       socket.join(roomId);
@@ -49,15 +50,20 @@ export const registerSocketHandlers = (io: Server): void => {
     });
 
     socket.on(SocketEvents.SEND_MESSAGE, (payload: SendMessagePayload) => {
-      const roomId = payload.roomId || currentRoom || DEFAULT_ROOM;
+      const roomId = payload?.roomId || currentRoom || DEFAULT_ROOM;
 
-      const incoming = payload.message;
+      const incoming = payload?.message;
+      if (!incoming) return;
 
-      // server becomes the source of truth for id/timestamp
+      const content =
+        typeof incoming.content === 'string' ? incoming.content.trim() : '';
+      if (!content) return;
+
       const serverMsg: ChatMessage = {
         ...incoming,
-        id: incoming.id || randomUUID(),
-        timestamp: typeof incoming.timestamp === 'number' ? incoming.timestamp : Date.now(),
+        content,
+        id: incoming.id ?? randomUUID(),
+        timestamp: Date.now(),
       };
 
       pushToHistory(roomId, serverMsg);
@@ -73,11 +79,20 @@ export const registerSocketHandlers = (io: Server): void => {
         const typingOff: BotTypingPayload = { roomId, isTyping: false };
         io.to(roomId).emit(SocketEvents.BOT_TYPING, typingOff);
 
-        pushToHistory(roomId, decision.botMessage);
+        const botMsg: ChatMessage = {
+          ...decision.botMessage,
+          id: decision.botMessage.id ?? randomUUID(),
+          timestamp: Date.now(),
+        };
 
-        io.to(roomId).emit(SocketEvents.BOT_RESPONSE, decision.botMessage);
-        io.to(roomId).emit(SocketEvents.NEW_MESSAGE, decision.botMessage);
+        pushToHistory(roomId, botMsg);
+
+        io.to(roomId).emit(SocketEvents.BOT_RESPONSE, botMsg);
+        io.to(roomId).emit(SocketEvents.NEW_MESSAGE, botMsg);
       }, decision.typingMs);
+    });
+
+    socket.on('disconnect', () => {
     });
   });
 };
