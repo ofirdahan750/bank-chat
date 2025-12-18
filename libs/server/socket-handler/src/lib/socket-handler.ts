@@ -1,86 +1,154 @@
-import { Server, Socket } from 'socket.io';
 import { randomUUID } from 'crypto';
-import { SocketEvents } from '@poalim/constants';
+import { promises as fs } from 'fs';
+import * as path from 'path';
+import type { Server, Socket } from 'socket.io';
+import { AppConfig, ChatUi, SocketEvents } from '@poalim/constants';
 import {
   BotTypingPayload,
+  ChatMessage,
   JoinRoomPayload,
   RoomHistoryPayload,
   SendMessagePayload,
-  ChatMessage,
+  User,
 } from '@poalim/shared-interfaces';
-import { BotEngine } from '@poalim/bot-engine';
+import { BotEngine, BotMemorySnapshot } from '@poalim/bot-engine';
 
-type RoomId = string;
+type RoomState = { messages: ChatMessage[] };
 
-const DEFAULT_ROOM: RoomId = 'main';
-const MAX_HISTORY = 200;
+type DbShape = {
+  rooms: Record<string, RoomState>;
+  botMemory: BotMemorySnapshot;
+};
+
+const DB_FILE = path.join(process.cwd(), 'data', 'chat-db.json');
+const MAX_MESSAGES_PER_ROOM = 500;
+
+const rooms = new Map<string, RoomState>();
+
+const botUser: User = {
+  id: ChatUi.BOT.ID,
+  username: AppConfig.BOT_NAME,
+  isBot: true,
+  color: ChatUi.BOT.DEFAULT_COLOR,
+};
+
+let bot = new BotEngine(botUser);
+
+let persistTimer: NodeJS.Timeout | null = null;
+
+const schedulePersist = (): void => {
+  if (persistTimer) return;
+  persistTimer = setTimeout(() => {
+    persistTimer = null;
+    void persistDb();
+  }, 250);
+};
+
+const getRoom = (roomId: string): RoomState => {
+  const existing = rooms.get(roomId);
+  if (existing) return existing;
+  const next: RoomState = { messages: [] };
+  rooms.set(roomId, next);
+  return next;
+};
+
+const loadDb = async (): Promise<void> => {
+  try {
+    const raw = await fs.readFile(DB_FILE, 'utf-8');
+    const parsed = JSON.parse(raw) as DbShape;
+
+    Object.entries(parsed.rooms ?? {}).forEach(([roomId, state]) => {
+      const msgs = (state?.messages ?? []).filter((m: ChatMessage) => !!m?.id);
+      rooms.set(roomId, { messages: msgs.slice(-MAX_MESSAGES_PER_ROOM) });
+    });
+
+    bot = new BotEngine(botUser, parsed.botMemory);
+  } catch {
+    return;
+  }
+};
+
+const persistDb = async (): Promise<void> => {
+  const snapshot: DbShape = {
+    rooms: Object.fromEntries(
+      Array.from(rooms.entries()).map(([roomId, state]) => [
+        roomId,
+        { messages: (state.messages ?? []).slice(-MAX_MESSAGES_PER_ROOM) },
+      ])
+    ),
+    botMemory: bot.snapshot(),
+  };
+
+  await fs.mkdir(path.dirname(DB_FILE), { recursive: true });
+  await fs.writeFile(DB_FILE, JSON.stringify(snapshot, null, 2), 'utf-8');
+};
+
+void loadDb();
 
 export const registerSocketHandlers = (io: Server): void => {
-  const bot = new BotEngine();
-  const historyByRoom = new Map<RoomId, ChatMessage[]>();
-
-  const getRoomHistory = (roomId: RoomId): ChatMessage[] =>
-    historyByRoom.get(roomId) ?? [];
-
-  const pushToHistory = (roomId: RoomId, msg: ChatMessage): void => {
-    const next = [...getRoomHistory(roomId), msg].slice(-MAX_HISTORY);
-    historyByRoom.set(roomId, next);
-  };
-
-  const emitHistoryToSocket = (socket: Socket, roomId: RoomId): void => {
-    const payload: RoomHistoryPayload = {
-      roomId,
-      messages: getRoomHistory(roomId),
-    };
-    socket.emit(SocketEvents.ROOM_HISTORY, payload);
-  };
-
   io.on('connection', (socket: Socket) => {
-    let currentRoom: RoomId = DEFAULT_ROOM;
-
     socket.on(SocketEvents.JOIN_ROOM, (payload: JoinRoomPayload) => {
-      const roomId = payload?.roomId || DEFAULT_ROOM;
+      const roomId = (payload?.roomId ?? 'main').trim() || 'main';
+      const user = payload?.user;
 
-      // move user to the requested room
-      socket.leave(currentRoom);
-      socket.join(roomId);
-      currentRoom = roomId;
+      if (!user || !user.id) return;
 
-      // send full history only to this socket
-      emitHistoryToSocket(socket, roomId);
+      socket.data.user = user;
+      void socket.join(roomId);
+
+      const room = getRoom(roomId);
+      const historyPayload: RoomHistoryPayload = {
+        roomId,
+        messages: room.messages.slice(-MAX_MESSAGES_PER_ROOM),
+      };
+
+      socket.emit(SocketEvents.ROOM_HISTORY, historyPayload);
     });
 
     socket.on(SocketEvents.SEND_MESSAGE, (payload: SendMessagePayload) => {
-      const roomId = payload?.roomId || currentRoom || DEFAULT_ROOM;
+      const roomId = (payload?.roomId ?? 'main').trim() || 'main';
       const incoming = payload?.message;
+      if (!incoming) return;
 
-      // safety: ignore malformed events instead of crashing the server
-      if (!incoming || !incoming.sender || typeof incoming.content !== 'string') return;
+      const sender = incoming.sender ?? (socket.data.user as User | undefined);
+      if (!sender || !sender.id) return;
 
-      // server is source of truth for id/timestamp
       const serverMsg: ChatMessage = {
-        ...incoming,
         id: incoming.id || randomUUID(),
-        timestamp: Date.now(),
+        sender,
+        content: (incoming.content ?? '').toString(),
+        timestamp: Number.isFinite(incoming.timestamp) ? incoming.timestamp : Date.now(),
+        type: incoming.type ?? 'text',
       };
 
-      pushToHistory(roomId, serverMsg);
+      if (!serverMsg.content.trim()) return;
+
+      const room = getRoom(roomId);
+      room.messages = [...room.messages, serverMsg].slice(-MAX_MESSAGES_PER_ROOM);
+      schedulePersist();
+
       io.to(roomId).emit(SocketEvents.NEW_MESSAGE, serverMsg);
 
-      // bot logic runs ONLY on user messages
-      const decision = bot.onUserMessage(roomId, serverMsg);
-      if (!decision) return;
+      if (serverMsg.sender.isBot) return;
+
+      const action = bot.onUserMessage(roomId, serverMsg);
+      if (!action) return;
 
       const typingOn: BotTypingPayload = { roomId, isTyping: true };
+      const typingOff: BotTypingPayload = { roomId, isTyping: false };
+
       io.to(roomId).emit(SocketEvents.BOT_TYPING, typingOn);
 
       setTimeout(() => {
-        const typingOff: BotTypingPayload = { roomId, isTyping: false };
         io.to(roomId).emit(SocketEvents.BOT_TYPING, typingOff);
 
-        pushToHistory(roomId, decision.botMessage);
-        io.to(roomId).emit(SocketEvents.NEW_MESSAGE, decision.botMessage);
-      }, decision.typingMs);
+        const botMsg = action.message;
+        const nextRoom = getRoom(roomId);
+        nextRoom.messages = [...nextRoom.messages, botMsg].slice(-MAX_MESSAGES_PER_ROOM);
+        schedulePersist();
+
+        io.to(roomId).emit(SocketEvents.NEW_MESSAGE, botMsg);
+      }, Math.max(0, action.typingMs));
     });
   });
 };

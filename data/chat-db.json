@@ -1,766 +1,245 @@
 {
-  "historyByRoom": {
-    "main": [
-      {
-        "id": "751b846d-0174-47ee-849a-f3a54577e4ee",
-        "sender": {
-          "id": "sdgsdg",
-          "username": "sdgsdg",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "היי",
-        "timestamp": 1766062841798,
-        "type": "text"
-      },
-      {
-        "id": "0dc6b440-3c78-4664-a4ed-d58992601603",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "רשמתי. פעם הבאה שמישהו ישאל את זה, אני כבר אהיה מוכן.",
-        "timestamp": 1766062842702,
-        "type": "system"
-      },
-      {
-        "id": "99635ceb-f6e3-4928-9ae7-03f46d8e4cfe",
-        "sender": {
-          "id": "sdgsdg",
-          "username": "sdgsdg",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "ביי",
-        "timestamp": 1766062846027,
-        "type": "text"
-      },
-      {
-        "id": "201ea663-28a5-44a5-a67d-989201ccde22",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "אני בוט עם אופי, לא עם מוח אינסופי - אבל את זה אני אזכור.",
-        "timestamp": 1766062846930,
-        "type": "system"
-      },
-      {
-        "id": "9957922a-a73c-495d-a57a-a59442b5c0fd",
-        "sender": {
-          "id": "sdgsdg",
-          "username": "sdgsdg",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "היי",
-        "timestamp": 1766062851051,
-        "type": "text"
-      },
-      {
-        "id": "591fce80-b2bb-4a4e-bae2-2455f91a7b16",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "I remember someone asking that! Here is the answer:\nרשמתי. פעם הבאה שמישהו ישאל את זה, אני כבר אהיה מוכן.",
-        "timestamp": 1766062851704,
-        "type": "system"
-      },
-      {
-        "id": "ec8cba68-d77f-488a-bb57-d3479b0d41a4",
-        "sender": {
-          "id": "sdgsdg",
-          "username": "sdgsdg",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "היי",
-        "timestamp": 1766062856278,
-        "type": "text"
-      },
-      {
-        "id": "0ff5bee1-9173-4c82-a12d-f6078920a7e7",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "I remember someone asking that! Here is the answer:\nרשמתי. פעם הבאה שמישהו ישאל את זה, אני כבר אהיה מוכן.",
-        "timestamp": 1766062856931,
-        "type": "system"
-      },
-      {
-        "id": "1495faba-26f1-429a-af38-30d10ac5499a",
-        "sender": {
-          "id": "אופיר דהן",
-          "username": "אופיר דהן",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "היי",
-        "timestamp": 1766062888267,
-        "type": "text"
-      },
-      {
-        "id": "a5945202-455f-47ce-a375-10663bcc7fcd",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "I remember someone asking that! Here is the answer:\nרשמתי. פעם הבאה שמישהו ישאל את זה, אני כבר אהיה מוכן.",
-        "timestamp": 1766062888921,
-        "type": "system"
-      },
-      {
-        "id": "a89af963-1c4b-4d39-83a5-f60696d1fde4",
-        "sender": {
-          "id": "אופיר דהן",
-          "username": "אופיר דהן",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "היי?",
-        "timestamp": 1766062895240,
-        "type": "text"
-      },
-      {
-        "id": "17c3241f-52f5-47c2-9886-3d3fc7a70c58",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "שאלה חזקה. אני שם את זה ב\"פינת הידע\" שלי.",
-        "timestamp": 1766062896144,
-        "type": "system"
-      },
-      {
-        "id": "7ddb51b3-d9e3-41bf-a5dd-772aca35f37f",
-        "sender": {
-          "id": "אופיר דהן",
-          "username": "אופיר דהן",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "היי?",
-        "timestamp": 1766062902577,
-        "type": "text"
-      },
-      {
-        "id": "b3a7904f-ee4d-481f-9769-acea0521cc5a",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "I remember someone asking that! Here is the answer:\nשאלה חזקה. אני שם את זה ב\"פינת הידע\" שלי.",
-        "timestamp": 1766062903229,
-        "type": "system"
-      },
-      {
-        "id": "29409ad8-983a-43fc-bb39-28366892b403",
-        "sender": {
-          "id": "sdgsdg",
-          "username": "sdgsdg",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "היי?",
-        "timestamp": 1766063030829,
-        "type": "text"
-      },
-      {
-        "id": "294c0389-ec96-4208-8529-4dfe26d3244a",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "I remember someone asking that! Here is the answer:\nשאלה חזקה. אני שם את זה ב\"פינת הידע\" שלי.",
-        "timestamp": 1766063031483,
-        "type": "system"
-      },
-      {
-        "id": "9c472bc5-7ea3-4b50-a087-aeab97b71876",
-        "sender": {
-          "id": "sdgsdg",
-          "username": "sdgsdg",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "היי?",
-        "timestamp": 1766063033621,
-        "type": "text"
-      },
-      {
-        "id": "7f082f40-6f32-4ccb-b7f1-ce3eaca82ffd",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "I remember someone asking that! Here is the answer:\nשאלה חזקה. אני שם את זה ב\"פינת הידע\" שלי.",
-        "timestamp": 1766063034273,
-        "type": "system"
-      },
-      {
-        "id": "f4affc90-6536-4571-ba1c-b845af70dd22",
-        "sender": {
-          "id": "sdgsdg",
-          "username": "sdgsdg",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "דב",
-        "timestamp": 1766063044294,
-        "type": "text"
-      },
-      {
-        "id": "0461aa0f-d19c-4445-94eb-d89ebdd68407",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "יאללה. דב? זה אחד מוזר, אבל אני איתך.",
-        "timestamp": 1766063045198,
-        "type": "system"
-      },
-      {
-        "id": "524d9ca9-3766-4deb-bcf2-2f92ff76c191",
-        "sender": {
-          "id": "sdgsdg",
-          "username": "sdgsdg",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "דב",
-        "timestamp": 1766063050010,
-        "type": "text"
-      },
-      {
-        "id": "9aace460-0be7-47d6-9d1f-90bcaea4317d",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "I remember someone asking that! Here is the answer:\nיאללה. דב? זה אחד מוזר, אבל אני איתך.",
-        "timestamp": 1766063050664,
-        "type": "system"
-      },
-      {
-        "id": "96937bb7-7be3-4688-a43c-0832fc9ed9c1",
-        "sender": {
-          "id": "sdgsdg",
-          "username": "sdgsdg",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "דבדב",
-        "timestamp": 1766063053741,
-        "type": "text"
-      },
-      {
-        "id": "4dcaad16-e332-4c7a-b257-28b78b3361ea",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "יאללה. דבדב? זה אחד מוזר, אבל אני איתך.",
-        "timestamp": 1766063054645,
-        "type": "system"
-      },
-      {
-        "id": "351f3bd2-e5d4-4ff2-a973-646c89bcf3dd",
-        "sender": {
-          "id": "sdgsdg",
-          "username": "sdgsdg",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "דשבשדבשדב",
-        "timestamp": 1766063059508,
-        "type": "text"
-      },
-      {
-        "id": "6c793c27-e284-4bbe-992a-2faf380e3f60",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "אני בוט עם אופי, לא עם מוח אינסופי - אבל את זה אני אזכור.",
-        "timestamp": 1766063060411,
-        "type": "system"
-      },
-      {
-        "id": "011ee7c1-40ba-479b-ad8d-bc68238d9cae",
-        "sender": {
-          "id": "sdgsdg",
-          "username": "sdgsdg",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "דשבשדבשדב",
-        "timestamp": 1766063065175,
-        "type": "text"
-      },
-      {
-        "id": "36c5d96e-ee85-4717-bcac-771f31234926",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "I remember someone asking that! Here is the answer:\nאני בוט עם אופי, לא עם מוח אינסופי - אבל את זה אני אזכור.",
-        "timestamp": 1766063065829,
-        "type": "system"
-      },
-      {
-        "id": "e34b8e7f-b828-4535-b15c-e42489af4393",
-        "sender": {
-          "id": "אופיר דהן",
-          "username": "אופיר דהן",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "שדכ",
-        "timestamp": 1766064470263,
-        "type": "text"
-      },
-      {
-        "id": "7c13fa80-bde8-492e-b17d-5a0854df4536",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "אני בוט עם אופי, לא עם מוח אינסופי - אבל את זה אני אזכור.",
-        "timestamp": 1766064471165,
-        "type": "system"
-      },
-      {
-        "id": "99ace42b-2463-4c30-89ec-8d9e07d7752c",
-        "sender": {
-          "id": "אופיר דהן",
-          "username": "אופיר דהן",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "שדכ",
-        "timestamp": 1766064472635,
-        "type": "text"
-      },
-      {
-        "id": "0a42e70d-510c-48fb-b419-a562b83c9c74",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "I remember someone asking that! Here is the answer:\nאני בוט עם אופי, לא עם מוח אינסופי - אבל את זה אני אזכור.",
-        "timestamp": 1766064473288,
-        "type": "system"
-      },
-      {
-        "id": "d05b9b52-72a2-4592-978d-11c8f9263bf0",
-        "sender": {
-          "id": "אופיר דהן",
-          "username": "אופיר דהן",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "שדכ",
-        "timestamp": 1766064476433,
-        "type": "text"
-      },
-      {
-        "id": "28f7df47-e97e-43da-933c-4f785aeaa772",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "I remember someone asking that! Here is the answer:\nאני בוט עם אופי, לא עם מוח אינסופי - אבל את זה אני אזכור.",
-        "timestamp": 1766064477086,
-        "type": "system"
-      },
-      {
-        "id": "6a2650e6-1942-49a1-a93c-a216e0543063",
-        "sender": {
-          "id": "אופיר דהן",
-          "username": "אופיר דהן",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "דשבשדבשדבשד",
-        "timestamp": 1766064481880,
-        "type": "text"
-      },
-      {
-        "id": "30bbd350-8c4a-404c-b446-3d21b0934010",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "אני בוט עם אופי, לא עם מוח אינסופי - אבל את זה אני אזכור.",
-        "timestamp": 1766064482783,
-        "type": "system"
-      },
-      {
-        "id": "0b3bf164-8e5c-4e16-8476-a54a9322c43e",
-        "sender": {
-          "id": "אופיר דהן",
-          "username": "אופיר דהן",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "דשבשדבשדבשד",
-        "timestamp": 1766064487769,
-        "type": "text"
-      },
-      {
-        "id": "b472f351-4c93-48ed-ac24-e939dd446ddc",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "I remember someone asking that! Here is the answer:\nאני בוט עם אופי, לא עם מוח אינסופי - אבל את זה אני אזכור.",
-        "timestamp": 1766064488423,
-        "type": "system"
-      },
-      {
-        "id": "f52b7c16-eaec-4b70-80ad-9e40bca2fdb8",
-        "sender": {
-          "id": "אופיר דהן",
-          "username": "אופיר דהן",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "א",
-        "timestamp": 1766064565212,
-        "type": "text"
-      },
-      {
-        "id": "57a11fa4-fa24-42c5-ade4-54945cb71e87",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "יאללה. א? זה אחד מוזר, אבל אני איתך.",
-        "timestamp": 1766064566114,
-        "type": "system"
-      },
-      {
-        "id": "64b9fd03-56d5-437e-bb88-ad5be193e383",
-        "sender": {
-          "id": "אופיר דהן",
-          "username": "אופיר דהן",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "א",
-        "timestamp": 1766064569905,
-        "type": "text"
-      },
-      {
-        "id": "8e5eb799-67da-4a5b-b7b0-ef7130afcf8c",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "I remember someone asking that! Here is the answer:\nיאללה. א? זה אחד מוזר, אבל אני איתך.",
-        "timestamp": 1766064570557,
-        "type": "system"
-      },
-      {
-        "id": "ee9c69a1-6130-4f3e-95d1-e88d2ee2c474",
-        "sender": {
-          "id": "אופיר דהן",
-          "username": "אופיר דהן",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "שדבדשב",
-        "timestamp": 1766065355356,
-        "type": "text"
-      },
-      {
-        "id": "8a1920bb-2a77-4ea2-97d9-b644eb6f9ba7",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "רשמתי. פעם הבאה שמישהו ישאל את זה, אני כבר אהיה מוכן.",
-        "timestamp": 1766065356259,
-        "type": "system"
-      },
-      {
-        "id": "a992ed1e-b725-406a-a921-3a589fe9ffc2",
-        "sender": {
-          "id": "אופיר דהן",
-          "username": "אופיר דהן",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "שדב",
-        "timestamp": 1766065358052,
-        "type": "text"
-      },
-      {
-        "id": "e862b28d-5d57-444e-b7b7-09c55b394f50",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "שאלה חזקה. אני שם את זה ב\"פינת הידע\" שלי.",
-        "timestamp": 1766065358954,
-        "type": "system"
-      },
-      {
-        "id": "25df2cd7-ecf6-4de4-9a18-4059340dfbce",
-        "sender": {
-          "id": "אופיר דהן",
-          "username": "אופיר דהן",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "דד",
-        "timestamp": 1766065360586,
-        "type": "text"
-      },
-      {
-        "id": "8f6c6509-0b5f-4e48-a346-0df054cc626e",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "רשמתי. פעם הבאה שמישהו ישאל את זה, אני כבר אהיה מוכן.",
-        "timestamp": 1766065361488,
-        "type": "system"
-      },
-      {
-        "id": "94324d8d-5cb8-41f5-afb8-832206085dd0",
-        "sender": {
-          "id": "אופיר דהן",
-          "username": "אופיר דהן",
-          "isBot": false,
-          "color": "#3b82f6"
-        },
-        "content": "ש",
-        "timestamp": 1766065363075,
-        "type": "text"
-      },
-      {
-        "id": "68864661-d1b6-4b64-ad1b-f57f8741bf7e",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
-        },
-        "content": "שאלה חזקה. אני שם את זה ב\"פינת הידע\" שלי.",
-        "timestamp": 1766065363978,
-        "type": "system"
-      }
-    ]
-  },
-  "answersByRoom": {
+  "rooms": {
     "main": {
-      "היי": {
-        "id": "0dc6b440-3c78-4664-a4ed-d58992601603",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
+      "messages": [
+        {
+          "id": "ff612d2c-59b9-451c-b644-a7b94ac65c8c",
+          "sender": {
+            "id": "אחמד",
+            "username": "אחמד",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "hello?",
+          "timestamp": 1766073763625,
+          "type": "text"
         },
-        "content": "רשמתי. פעם הבאה שמישהו ישאל את זה, אני כבר אהיה מוכן.",
-        "timestamp": 1766062842702,
-        "type": "system"
-      },
-      "ביי": {
-        "id": "201ea663-28a5-44a5-a67d-989201ccde22",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
+        {
+          "id": "30893aa1-4e0c-428d-9649-ee744bca11e8",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Interesting. Who has the answer? I am taking notes.",
+          "timestamp": 1766073763629,
+          "type": "system"
         },
-        "content": "אני בוט עם אופי, לא עם מוח אינסופי - אבל את זה אני אזכור.",
-        "timestamp": 1766062846930,
-        "type": "system"
-      },
-      "היי?": {
-        "id": "17c3241f-52f5-47c2-9886-3d3fc7a70c58",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
+        {
+          "id": "47fd8821-d670-4367-9fe2-bee75427cd84",
+          "sender": {
+            "id": "אחמד",
+            "username": "אחמד",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "yes",
+          "timestamp": 1766073768547,
+          "type": "text"
         },
-        "content": "שאלה חזקה. אני שם את זה ב\"פינת הידע\" שלי.",
-        "timestamp": 1766062896144,
-        "type": "system"
-      },
-      "דב": {
-        "id": "0461aa0f-d19c-4445-94eb-d89ebdd68407",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
+        {
+          "id": "6e6c5e01-a4ef-4570-89a8-14a2d6e432aa",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Saved. Ask it again and I will flex my memory.",
+          "timestamp": 1766073768549,
+          "type": "system"
         },
-        "content": "יאללה. דב? זה אחד מוזר, אבל אני איתך.",
-        "timestamp": 1766063045198,
-        "type": "system"
-      },
-      "דבדב": {
-        "id": "4dcaad16-e332-4c7a-b257-28b78b3361ea",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
+        {
+          "id": "eeda5259-0f95-43ee-91ef-a1f658c01c64",
+          "sender": {
+            "id": "אחמד",
+            "username": "אחמד",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "hello?",
+          "timestamp": 1766073773332,
+          "type": "text"
         },
-        "content": "יאללה. דבדב? זה אחד מוזר, אבל אני איתך.",
-        "timestamp": 1766063054645,
-        "type": "system"
-      },
-      "דשבשדבשדב": {
-        "id": "6c793c27-e284-4bbe-992a-2faf380e3f60",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
+        {
+          "id": "3d26d2e1-d499-4d29-88d9-5e2b94bfc632",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Yep, seen it before. Answer: yes",
+          "timestamp": 1766073773336,
+          "type": "system"
         },
-        "content": "אני בוט עם אופי, לא עם מוח אינסופי - אבל את זה אני אזכור.",
-        "timestamp": 1766063060411,
-        "type": "system"
-      },
-      "שדכ": {
-        "id": "7c13fa80-bde8-492e-b17d-5a0854df4536",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
+        {
+          "id": "7626f01e-ee8a-49fc-8550-6f00125d66dc",
+          "sender": {
+            "id": "אחמד",
+            "username": "אחמד",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "hello?",
+          "timestamp": 1766073780098,
+          "type": "text"
         },
-        "content": "אני בוט עם אופי, לא עם מוח אינסופי - אבל את זה אני אזכור.",
-        "timestamp": 1766064471165,
-        "type": "system"
-      },
-      "דשבשדבשדבשד": {
-        "id": "30bbd350-8c4a-404c-b446-3d21b0934010",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
+        {
+          "id": "86f186ee-1eda-4081-956f-e45bab0c2dd5",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "My tiny brain cached this. Answer: yes",
+          "timestamp": 1766073780102,
+          "type": "system"
         },
-        "content": "אני בוט עם אופי, לא עם מוח אינסופי - אבל את זה אני אזכור.",
-        "timestamp": 1766064482783,
-        "type": "system"
-      },
-      "א": {
-        "id": "57a11fa4-fa24-42c5-ade4-54945cb71e87",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
+        {
+          "id": "fea1f2b5-2eee-4e0b-a788-8a35804d7468",
+          "sender": {
+            "id": "אחמד",
+            "username": "אחמד",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "safsaf",
+          "timestamp": 1766073786862,
+          "type": "text"
         },
-        "content": "יאללה. א? זה אחד מוזר, אבל אני איתך.",
-        "timestamp": 1766064566114,
-        "type": "system"
-      },
-      "שדבדשב": {
-        "id": "8a1920bb-2a77-4ea2-97d9-b644eb6f9ba7",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
+        {
+          "id": "3b322fd9-d41c-42aa-b86d-27ee9a947a51",
+          "sender": {
+            "id": "אופיר דהן",
+            "username": "אופיר דהן",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "how are you ?",
+          "timestamp": 1766073811514,
+          "type": "text"
         },
-        "content": "רשמתי. פעם הבאה שמישהו ישאל את זה, אני כבר אהיה מוכן.",
-        "timestamp": 1766065356259,
-        "type": "system"
-      },
-      "שדב": {
-        "id": "e862b28d-5d57-444e-b7b7-09c55b394f50",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
+        {
+          "id": "2f3ecbeb-c2f7-4bd7-992b-5248eebc3373",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "New question detected. Someone please teach me.",
+          "timestamp": 1766073811516,
+          "type": "system"
         },
-        "content": "שאלה חזקה. אני שם את זה ב\"פינת הידע\" שלי.",
-        "timestamp": 1766065358954,
-        "type": "system"
-      },
-      "דד": {
-        "id": "8f6c6509-0b5f-4e48-a346-0df054cc626e",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
+        {
+          "id": "1a72b7c2-4988-4b73-b52e-e0bf66a1b0e7",
+          "sender": {
+            "id": "אופיר דהן",
+            "username": "אופיר דהן",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "good",
+          "timestamp": 1766074117812,
+          "type": "text"
         },
-        "content": "רשמתי. פעם הבאה שמישהו ישאל את זה, אני כבר אהיה מוכן.",
-        "timestamp": 1766065361488,
-        "type": "system"
-      },
-      "ש": {
-        "id": "68864661-d1b6-4b64-ad1b-f57f8741bf7e",
-        "sender": {
-          "id": "bot",
-          "username": "Poalim Bot",
-          "isBot": true,
-          "color": "#ed1d24"
+        {
+          "id": "c4ed6f0a-7c0f-4281-abad-4f041e3de376",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Stored. Future me says thanks.",
+          "timestamp": 1766074117816,
+          "type": "system"
         },
-        "content": "שאלה חזקה. אני שם את זה ב\"פינת הידע\" שלי.",
-        "timestamp": 1766065363978,
-        "type": "system"
-      }
+        {
+          "id": "089aec8a-5690-4750-ab37-a0b91e7af4bf",
+          "sender": {
+            "id": "אופיר דהן",
+            "username": "אופיר דהן",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "how are you ?",
+          "timestamp": 1766074128044,
+          "type": "text"
+        },
+        {
+          "id": "5a7a3f85-331d-4eb2-af93-fca2256c077c",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "My tiny brain cached this. Answer: good",
+          "timestamp": 1766074128047,
+          "type": "system"
+        },
+        {
+          "id": "968f4e45-af46-45ce-b7a9-5a46897a4606",
+          "sender": {
+            "id": "שלום",
+            "username": "שלום",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "where is israel ?",
+          "timestamp": 1766074158992,
+          "type": "text"
+        },
+        {
+          "id": "753c2404-a9a8-4dbb-96d4-e8e6b2dcd1f2",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "New question detected. Someone please teach me.",
+          "timestamp": 1766074158994,
+          "type": "system"
+        },
+        {
+          "id": "e64f10e4-7fd7-42a9-ad06-e2b96f4295fc",
+          "sender": {
+            "id": "שלום",
+            "username": "שלום",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "asdasd?",
+          "timestamp": 1766074163639,
+          "type": "text"
+        },
+        {
+          "id": "470bcd6c-561f-4aba-8e9d-01f3a4d2f7fd",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Fresh question. I am listening.",
+          "timestamp": 1766074163641,
+          "type": "system"
+        }
+      ]
+    }
+  },
+  "botMemory": {
+    "qa": {
+      "hello": "yes",
+      "how are you": "good"
+    },
+    "pendingByRoom": {
+      "main": "asdasd"
     }
   }
 }

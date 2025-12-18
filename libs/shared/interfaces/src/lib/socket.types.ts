@@ -1,24 +1,22 @@
-import {  User } from "./user.interface";
 import { ChatMessage } from "./message.interface";
-
-export type RoomId = string;
+import { User } from "./user.interface";
 
 export interface JoinRoomPayload {
-  roomId: RoomId;
+  roomId: string;
   user: User;
 }
 
-export interface SendMessagePayload {
-  roomId: RoomId;
-  message: ChatMessage;
-}
-
 export interface RoomHistoryPayload {
-  roomId: RoomId;
+  roomId: string;
   messages: ChatMessage[];
 }
 
+export interface SendMessagePayload {
+  roomId: string;
+  message: ChatMessage;
+}
+
 export interface BotTypingPayload {
-  roomId: RoomId;
+  roomId: string;
   isTyping: boolean;
 }
