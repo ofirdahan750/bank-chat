@@ -11,7 +11,7 @@ import {
 } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { AppConfig, ChatUi, UIText } from '@poalim/constants';
-import { ChatMessage } from '@poalim/shared-interfaces';
+import type { ChatMessage } from '@poalim/shared-interfaces';
 import { ChatStore } from './services/feature-chat/feature-chat';
 import { ChatBubbleComponent } from './chat-bubble/chat-bubble.component';
 
@@ -51,7 +51,6 @@ export class FeatureChat {
     }),
   });
 
-  // Build the "bot is typing" bubble outside the template (no inline object in HTML)
   protected readonly botTypingMessage = (): ChatMessage => ({
     id: 'bot-typing',
     sender: this.store.bot(),

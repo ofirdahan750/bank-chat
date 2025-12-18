@@ -1,14 +1,15 @@
-import { randomUUID } from 'crypto';
 import { Server, Socket } from 'socket.io';
+import { randomUUID } from 'crypto';
 import { SocketEvents } from '@poalim/constants';
-import { BotEngine } from '@poalim/bot-engine';
-import {
+import type {
   BotTypingPayload,
-  ChatMessage,
   JoinRoomPayload,
   RoomHistoryPayload,
   SendMessagePayload,
+  ChatMessage,
+  User,
 } from '@poalim/shared-interfaces';
+import { BotEngine } from '@poalim/bot-engine';
 
 type RoomId = string;
 
@@ -18,12 +19,14 @@ const MAX_HISTORY = 200;
 export const registerSocketHandlers = (io: Server): void => {
   const bot = new BotEngine();
   const historyByRoom = new Map<RoomId, ChatMessage[]>();
+  const userBySocketId = new Map<string, User>();
 
   const getRoomHistory = (roomId: RoomId): ChatMessage[] =>
     historyByRoom.get(roomId) ?? [];
 
   const pushToHistory = (roomId: RoomId, msg: ChatMessage): void => {
-    const next = [...getRoomHistory(roomId), msg].slice(-MAX_HISTORY);
+    const prev = getRoomHistory(roomId);
+    const next = [...prev, msg].slice(-MAX_HISTORY);
     historyByRoom.set(roomId, next);
   };
 
@@ -35,12 +38,15 @@ export const registerSocketHandlers = (io: Server): void => {
         roomId,
         messages: getRoomHistory(roomId),
       };
-
       socket.emit(SocketEvents.ROOM_HISTORY, payload);
     };
 
     socket.on(SocketEvents.JOIN_ROOM, (payload: JoinRoomPayload) => {
-      const roomId = payload?.roomId || DEFAULT_ROOM;
+      const roomId = (payload?.roomId ?? DEFAULT_ROOM).trim() || DEFAULT_ROOM;
+
+      if (payload?.user) {
+        userBySocketId.set(socket.id, payload.user);
+      }
 
       socket.leave(currentRoom);
       socket.join(roomId);
@@ -50,19 +56,16 @@ export const registerSocketHandlers = (io: Server): void => {
     });
 
     socket.on(SocketEvents.SEND_MESSAGE, (payload: SendMessagePayload) => {
-      const roomId = payload?.roomId || currentRoom || DEFAULT_ROOM;
-
+      const roomId =
+        (payload?.roomId ?? currentRoom ?? DEFAULT_ROOM).trim() || DEFAULT_ROOM;
       const incoming = payload?.message;
-      if (!incoming) return;
 
-      const content =
-        typeof incoming.content === 'string' ? incoming.content.trim() : '';
-      if (!content) return;
+      // Hard guard - never crash the server on a bad payload
+      if (!incoming || typeof incoming.content !== 'string') return;
 
       const serverMsg: ChatMessage = {
         ...incoming,
-        content,
-        id: incoming.id ?? randomUUID(),
+        id: incoming.id || randomUUID(),
         timestamp: Date.now(),
       };
 
@@ -81,18 +84,17 @@ export const registerSocketHandlers = (io: Server): void => {
 
         const botMsg: ChatMessage = {
           ...decision.botMessage,
-          id: decision.botMessage.id ?? randomUUID(),
+          id: decision.botMessage.id || randomUUID(),
           timestamp: Date.now(),
         };
 
         pushToHistory(roomId, botMsg);
-
-        io.to(roomId).emit(SocketEvents.BOT_RESPONSE, botMsg);
         io.to(roomId).emit(SocketEvents.NEW_MESSAGE, botMsg);
       }, decision.typingMs);
     });
 
     socket.on('disconnect', () => {
+      userBySocketId.delete(socket.id);
     });
   });
 };

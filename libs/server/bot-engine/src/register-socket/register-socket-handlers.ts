@@ -15,6 +15,17 @@ type RoomId = string;
 const DEFAULT_ROOM: RoomId = 'main';
 const MAX_HISTORY = 200;
 
+const isValidMessage = (m: unknown): m is ChatMessage => {
+  if (!m || typeof m !== 'object') return false;
+  const msg = m as ChatMessage;
+  return (
+    typeof msg.content === 'string' &&
+    !!msg.sender &&
+    typeof msg.sender === 'object' &&
+    typeof (msg.sender as any).id === 'string'
+  );
+};
+
 export const registerSocketHandlers = (io: Server): void => {
   const bot = new BotEngine();
   const historyByRoom = new Map<RoomId, ChatMessage[]>();
@@ -27,40 +38,38 @@ export const registerSocketHandlers = (io: Server): void => {
     historyByRoom.set(roomId, next);
   };
 
+  const emitHistoryToSocket = (socket: Socket, roomId: RoomId): void => {
+    const payload: RoomHistoryPayload = {
+      roomId,
+      messages: getRoomHistory(roomId),
+    };
+    socket.emit(SocketEvents.ROOM_HISTORY, payload);
+  };
+
   io.on('connection', (socket: Socket) => {
     let currentRoom: RoomId = DEFAULT_ROOM;
 
-    const emitHistory = (roomId: RoomId): void => {
-      const payload: RoomHistoryPayload = {
-        roomId,
-        messages: getRoomHistory(roomId),
-      };
-      socket.emit(SocketEvents.ROOM_HISTORY, payload);
-    };
-
     socket.on(SocketEvents.JOIN_ROOM, (payload: JoinRoomPayload) => {
-      const roomId = payload.roomId || DEFAULT_ROOM;
+      const roomId = payload?.roomId || DEFAULT_ROOM;
 
       socket.leave(currentRoom);
       socket.join(roomId);
       currentRoom = roomId;
 
-      emitHistory(roomId);
+      emitHistoryToSocket(socket, roomId);
     });
 
     socket.on(SocketEvents.SEND_MESSAGE, (payload: SendMessagePayload) => {
-      const roomId = payload.roomId || currentRoom || DEFAULT_ROOM;
+      const roomId = payload?.roomId || currentRoom || DEFAULT_ROOM;
+      const incoming = payload?.message;
 
-      const incoming = payload.message;
+      if (!isValidMessage(incoming)) return;
 
-      // server becomes the source of truth for id/timestamp
       const serverMsg: ChatMessage = {
         ...incoming,
         id: incoming.id || randomUUID(),
         timestamp:
-          typeof incoming.timestamp === 'number'
-            ? incoming.timestamp
-            : Date.now(),
+          typeof incoming.timestamp === 'number' ? incoming.timestamp : Date.now(),
       };
 
       pushToHistory(roomId, serverMsg);
@@ -77,8 +86,6 @@ export const registerSocketHandlers = (io: Server): void => {
         io.to(roomId).emit(SocketEvents.BOT_TYPING, typingOff);
 
         pushToHistory(roomId, decision.botMessage);
-
-        io.to(roomId).emit(SocketEvents.BOT_RESPONSE, decision.botMessage);
         io.to(roomId).emit(SocketEvents.NEW_MESSAGE, decision.botMessage);
       }, decision.typingMs);
     });

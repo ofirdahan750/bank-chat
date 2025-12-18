@@ -1,36 +1,45 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { AppConfig, ChatUi, UIText } from '@poalim/constants';
-import { LocalStorageService, SocketClientService } from '@poalim/client-data-access';
-import { ChatMessage, User } from '@poalim/shared-interfaces';
+import {
+  LocalStorageService,
+  SocketClientService,
+} from '@poalim/client-data-access';
+import type {
+  ChatMessage,
+  RoomHistoryPayload,
+  User,
+} from '@poalim/shared-interfaces';
+
+const DEFAULT_ROOM_ID = 'main';
 
 @Injectable({ providedIn: 'root' })
 export class ChatStore {
   private readonly storage = inject(LocalStorageService);
   private readonly socket = inject(SocketClientService);
 
-  // Persisted nickname
   private readonly storedUsername =
     this.storage.getString(AppConfig.STORAGE_KEYS.USERNAME) ?? '';
 
-  // State (signals)
   readonly username = signal<string>(this.storedUsername);
   readonly messages = signal<ChatMessage[]>([]);
-  readonly botTyping = computed(() => this.socket.botTyping());
+
+  readonly botTyping = computed<boolean>(() => this.socket.botTyping());
   readonly connectionState = computed(() => this.socket.connectionState());
 
-  // Derived flags
-  readonly hasNickname = computed(() => {
+  readonly hasNickname = computed<boolean>(() => {
     const name = this.username().trim();
     return name.length >= AppConfig.MIN_USERNAME_LENGTH;
   });
 
-  // Identities
-  readonly me = computed<User>(() => ({
-    id: this.storedUsername || ChatUi.USER.DEFAULT_ID,
-    username: this.username().trim(),
-    isBot: false,
-    color: ChatUi.USER.DEFAULT_COLOR,
-  }));
+  readonly me = computed<User>(() => {
+    const name = this.username().trim();
+    return {
+      id: name || ChatUi.USER.DEFAULT_ID,
+      username: name,
+      isBot: false,
+      color: ChatUi.USER.DEFAULT_COLOR,
+    };
+  });
 
   readonly bot = computed<User>(() => ({
     id: ChatUi.BOT.ID,
@@ -40,20 +49,41 @@ export class ChatStore {
   }));
 
   constructor() {
-    // When we already have nickname (refresh), connect immediately
-    if (this.hasNickname()) {
-      this.socket.connect(this.me());
-    }
-
-    // Push incoming socket messages into our messages list
+    // Auto-connect when nickname exists
     effect(() => {
-      const incoming = this.socket.lastIncomingMessage();
+      if (!this.hasNickname()) return;
+      this.socket.connect(this.me(), DEFAULT_ROOM_ID);
+    });
+
+    // Apply room history in one shot (new tab gets all messages)
+    effect(() => {
+      const historyPayload: RoomHistoryPayload | null =
+        this.socket.roomHistory();
+      if (!historyPayload) return;
+
+      const incoming = (historyPayload.messages ?? []).filter(
+        (m: ChatMessage | null | undefined): m is ChatMessage =>
+          !!m && typeof m.id === 'string'
+      );
+
+      const merged = this.mergeById(this.messages(), incoming);
+      this.messages.set(merged);
+
+      this.socket.clearRoomHistory();
+    });
+
+    // Apply live incoming messages (dedupe by id)
+    effect(() => {
+      const incoming: ChatMessage | null = this.socket.lastIncomingMessage();
       if (!incoming) return;
 
-      this.messages.update((prev) => [...prev, incoming]);
+      this.messages.update((prev: ChatMessage[]) =>
+        prev.some((x: ChatMessage) => x.id === incoming.id)
+          ? prev
+          : [...prev, incoming]
+      );
 
-      // Reset so we don't re-append on next change detection
-      this.socket.lastIncomingMessage.set(null);
+      this.socket.clearLastIncomingMessage();
     });
   }
 
@@ -64,12 +94,18 @@ export class ChatStore {
     this.storage.setString(AppConfig.STORAGE_KEYS.USERNAME, clean);
     this.username.set(clean);
 
-    // Connect once we have a valid nickname
-    this.socket.connect(this.me());
+    this.socket.connect(this.me(), DEFAULT_ROOM_ID);
 
-    // First entry: local greeting until server-bot is wired
+    // Optional local greeting (can be removed if you want a "pure" room)
     if (this.messages().length === 0) {
-      this.enqueueBotGreeting();
+      const greeting: ChatMessage = {
+        id: crypto.randomUUID(),
+        sender: this.bot(),
+        content: UIText.BOT.DEFAULT_GREETING,
+        timestamp: Date.now(),
+        type: 'system',
+      };
+      this.messages.set([greeting]);
     }
   }
 
@@ -87,24 +123,24 @@ export class ChatStore {
       type: 'text',
     };
 
-    // Optimistic UI: show instantly
-    this.messages.update((prev) => [...prev, msg]);
+    // Optimistic UI + dedupe will prevent double display when server echoes back
+    this.messages.update((prev: ChatMessage[]) => [...prev, msg]);
 
-    // Sync to server
-    this.socket.sendMessage(msg);
+    this.socket.sendMessage(msg, DEFAULT_ROOM_ID);
   }
 
-  private enqueueBotGreeting(): void {
-    const msg: ChatMessage = {
-      id: crypto.randomUUID(),
-      sender: this.bot(),
-      content: UIText.BOT.DEFAULT_GREETING,
-      timestamp: Date.now(),
-      type: 'system',
-    };
+  private mergeById(a: ChatMessage[], b: ChatMessage[]): ChatMessage[] {
+    const mergedMap = [...a, ...b].reduce(
+      (acc: Map<string, ChatMessage>, m: ChatMessage) => {
+        if (acc.has(m.id)) return acc;
+        acc.set(m.id, m);
+        return acc;
+      },
+      new Map<string, ChatMessage>()
+    );
 
-    window.setTimeout(() => {
-      this.messages.update((prev) => [...prev, msg]);
-    }, AppConfig.BOT_DELAY_MS);
+    return Array.from(mergedMap.values()).sort(
+      (x: ChatMessage, y: ChatMessage) => x.timestamp - y.timestamp
+    );
   }
 }

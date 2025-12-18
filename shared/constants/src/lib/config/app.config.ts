@@ -1,4 +1,5 @@
 export const AppConfig = {
+  API_URL: 'http://localhost:3000',
   BOT_NAME: 'Poalim Bot',
   BOT_DELAY_MS: 1500,
 
