@@ -16,7 +16,7 @@ export class ChatSocketService {
     if (this.socket) return;
   
     this.socket = io(AppConfig.SOCKET_URL, {
-      transports: ['websocket'],
+      transports: ['websocket', 'polling'],
     });
   }
 
