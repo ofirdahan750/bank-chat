@@ -13,8 +13,8 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { AppConfig, ChatUi, UIText } from '@poalim/constants';
 import { ChatMessage } from '@poalim/shared-interfaces';
-import { ChatStore } from './services/feature-chat/feature-chat';
 import { ChatBubbleComponent, EditSubmitEvent } from './chat-bubble/chat-bubble.component';
+import { ChatStore } from './services/chat-store/chat-store.service';
 
 @Component({
   selector: 'app-feature-chat',
