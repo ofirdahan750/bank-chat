@@ -6,11 +6,7 @@
         <p class="feature-chat__subtitle">{{ uiText.LOGIN.SUBTITLE }}</p>
       </header>
 
-      <form
-        class="feature-chat__form"
-        [formGroup]="nicknameForm"
-        (ngSubmit)="submitNickname()"
-      >
+      <form class="feature-chat__form" [formGroup]="nicknameForm" (ngSubmit)="submitNickname()">
         <input
           matInput
           class="app-input feature-chat__nickname-input"
@@ -21,20 +17,12 @@
           [formControl]="nicknameForm.controls.username"
         />
 
-        @if (nicknameForm.controls.username.touched) {
-          @if (nicknameForm.controls.username.hasError('required')) {
-            <div class="feature-chat__error" role="alert">
-              {{ uiText.LOGIN.ERROR_REQUIRED }}
-            </div>
-          } @else if (nicknameForm.controls.username.hasError('minlength')) {
-            <div class="feature-chat__error" role="alert">
-              {{ uiText.LOGIN.ERROR_MIN_LENGTH }}
-            </div>
-          } @else if (nicknameForm.controls.username.hasError('maxlength')) {
-            <div class="feature-chat__error" role="alert">
-              {{ uiText.LOGIN.ERROR_MAX_LENGTH }}
-            </div>
-          }
+        @if (nicknameForm.controls.username.touched && nicknameForm.controls.username.hasError('required')) {
+          <div class="feature-chat__error" role="alert">{{ uiText.LOGIN.ERROR_REQUIRED }}</div>
+        } @else if (nicknameForm.controls.username.touched && nicknameForm.controls.username.hasError('minlength')) {
+          <div class="feature-chat__error" role="alert">{{ uiText.LOGIN.ERROR_MIN_LENGTH }}</div>
+        } @else if (nicknameForm.controls.username.touched && nicknameForm.controls.username.hasError('maxlength')) {
+          <div class="feature-chat__error" role="alert">{{ uiText.LOGIN.ERROR_MAX_LENGTH }}</div>
         }
 
         <button
@@ -54,35 +42,25 @@
         <div class="feature-chat__room-subtitle">{{ config.BOT_NAME }}</div>
       </header>
 
-      <div
-        class="feature-chat__messages"
-        role="log"
-        aria-live="polite"
-        aria-relevant="additions"
-      >
+      <div class="feature-chat__messages" role="log" aria-live="polite" aria-relevant="additions">
         @if (store.messages().length === 0) {
           <div class="feature-chat__empty">
             <div>{{ uiText.CHAT.EMPTY_STATE }}</div>
           </div>
         } @else {
           @for (m of store.messages(); track trackById($index, m)) {
-            <app-chat-bubble [message]="m" [currentUser]="store.me()" />
+            <app-chat-bubble
+              [message]="m"
+              [isMine]="m.sender.id === store.me().id && !m.sender.isBot"
+              [canEdit]="m.sender.id === store.me().id && !m.sender.isBot"
+              [timeLabel]="formatChatTime(m.timestamp)"
+              (editSubmit)="onEditSubmit($event)"
+            />
           }
-        }
-
-        @if (store.botTyping()) {
-          <app-chat-bubble
-            [message]="botTypingMessage()"
-            [currentUser]="store.me()"
-          />
         }
       </div>
 
-      <form
-        class="feature-chat__composer"
-        [formGroup]="composerForm"
-        (ngSubmit)="send()"
-      >
+      <form class="feature-chat__composer" [formGroup]="composerForm" (ngSubmit)="send()">
         <input
           matInput
           class="app-input feature-chat__composer-input"
@@ -95,22 +73,17 @@
         <button
           class="app-btn app-btn--primary feature-chat__composer-btn"
           type="submit"
-          [disabled]="composerForm.invalid"
-          [attr.aria-disabled]="composerForm.invalid"
+          [disabled]="composerForm.invalid || !store.hasNickname()"
+          [attr.aria-disabled]="composerForm.invalid || !store.hasNickname()"
         >
           <mat-icon aria-hidden="true">send</mat-icon>
         </button>
       </form>
 
-      @if (composerForm.controls.content.touched) {
-        @if (composerForm.controls.content.hasError('required')) {
-          <div
-            class="feature-chat__error feature-chat__error--composer"
-            role="alert"
-          >
-            {{ uiText.CHAT.ERROR_REQUIRED }}
-          </div>
-        }
+      @if (composerForm.controls.content.touched && composerForm.controls.content.hasError('required')) {
+        <div class="feature-chat__error feature-chat__error--composer" role="alert">
+          {{ uiText.CHAT.ERROR_REQUIRED }}
+        </div>
       }
     </div>
   }

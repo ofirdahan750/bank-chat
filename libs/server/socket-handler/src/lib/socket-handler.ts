@@ -1,12 +1,12 @@
 import { Server, Socket } from 'socket.io';
 import { randomUUID } from 'crypto';
-import { SocketEvents } from '@poalim/constants';
+import { AppConfig, ChatUi, SocketEvents } from '@poalim/constants';
 import {
   BotTypingPayload,
+  ChatMessage,
   JoinRoomPayload,
   RoomHistoryPayload,
   SendMessagePayload,
-  ChatMessage,
   User,
 } from '@poalim/shared-interfaces';
 import { BotEngine } from '@poalim/bot-engine';
@@ -16,61 +16,79 @@ type RoomId = string;
 const DEFAULT_ROOM: RoomId = 'main';
 const MAX_HISTORY = 200;
 
-const BOT_USER: User = {
-  id: 'poalim-bot',
-  username: 'Poalim Bot',
-  isBot: true,
-  color: '#7c3aed',
-};
-
 export const registerSocketHandlers = (io: Server): void => {
   const bot = new BotEngine();
+
+  const botUser: User = {
+    id: ChatUi.BOT.ID,
+    username: AppConfig.BOT_NAME,
+    isBot: true,
+    color: ChatUi.BOT.DEFAULT_COLOR,
+  };
+
   const historyByRoom = new Map<RoomId, ChatMessage[]>();
 
-  const getRoomHistory = (roomId: RoomId): ChatMessage[] => historyByRoom.get(roomId) ?? [];
+  const getRoomHistory = (roomId: RoomId): ChatMessage[] =>
+    historyByRoom.get(roomId) ?? [];
+
+  const setRoomHistory = (roomId: RoomId, messages: ChatMessage[]): void => {
+    historyByRoom.set(roomId, messages.slice(-MAX_HISTORY));
+  };
 
   const pushToHistory = (roomId: RoomId, msg: ChatMessage): void => {
-    const next = [...getRoomHistory(roomId), msg].slice(-MAX_HISTORY);
-    historyByRoom.set(roomId, next);
+    setRoomHistory(roomId, [...getRoomHistory(roomId), msg]);
+  };
+
+  const emitHistory = (socket: Socket, roomId: RoomId): void => {
+    const payload: RoomHistoryPayload = {
+      roomId,
+      messages: getRoomHistory(roomId),
+    };
+    socket.emit(SocketEvents.ROOM_HISTORY, payload);
   };
 
   io.on('connection', (socket: Socket) => {
     let currentRoom: RoomId = DEFAULT_ROOM;
-
-    const emitHistory = (roomId: RoomId): void => {
-      const payload: RoomHistoryPayload = {
-        roomId,
-        messages: getRoomHistory(roomId),
-      };
-      socket.emit(SocketEvents.ROOM_HISTORY, payload);
-    };
+    let currentUser: User | null = null;
 
     socket.on(SocketEvents.JOIN_ROOM, (payload: JoinRoomPayload) => {
-      const roomId = payload?.roomId || DEFAULT_ROOM;
+      const roomId = (payload?.roomId || DEFAULT_ROOM) as RoomId;
 
-      socket.leave(currentRoom);
+      currentUser = payload.user;
+
+      if (currentRoom && currentRoom !== roomId) {
+        socket.leave(currentRoom);
+      }
+
       socket.join(roomId);
       currentRoom = roomId;
 
-      emitHistory(roomId);
+      emitHistory(socket, roomId);
     });
 
     socket.on(SocketEvents.SEND_MESSAGE, (payload: SendMessagePayload) => {
-      const roomId = payload?.roomId || currentRoom || DEFAULT_ROOM;
-      const incoming = payload?.message;
+      const roomId = (payload?.roomId || currentRoom || DEFAULT_ROOM) as RoomId;
 
-      if (!incoming || !incoming.sender || typeof incoming.content !== 'string') return;
+      const incoming = payload?.message;
+      if (!incoming) return;
+      if (!incoming.sender) return;
+      if (typeof incoming.content !== 'string') return;
+
+      const sender: User =
+        currentUser && !currentUser.isBot ? currentUser : incoming.sender;
 
       const serverMsg: ChatMessage = {
         ...incoming,
+        sender,
         id: incoming.id || randomUUID(),
-        timestamp: typeof incoming.timestamp === 'number' ? incoming.timestamp : Date.now(),
+        timestamp:
+          typeof incoming.timestamp === 'number' ? incoming.timestamp : Date.now(),
       };
 
       pushToHistory(roomId, serverMsg);
       io.to(roomId).emit(SocketEvents.NEW_MESSAGE, serverMsg);
 
-      const decision = bot.onUserMessage(roomId, serverMsg, BOT_USER);
+      const decision = bot.onUserMessage(roomId, serverMsg, botUser);
       if (!decision) return;
 
       const typingOn: BotTypingPayload = { roomId, isTyping: true };
@@ -82,8 +100,12 @@ export const registerSocketHandlers = (io: Server): void => {
 
         const botMsg: ChatMessage = {
           ...decision.message,
+          sender: botUser,
           id: decision.message.id || randomUUID(),
-          timestamp: typeof decision.message.timestamp === 'number' ? decision.message.timestamp : Date.now(),
+          timestamp:
+            typeof decision.message.timestamp === 'number'
+              ? decision.message.timestamp
+              : Date.now(),
         };
 
         pushToHistory(roomId, botMsg);

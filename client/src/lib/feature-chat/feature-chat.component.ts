@@ -3,6 +3,7 @@ import {
   Component,
   ViewEncapsulation,
   inject,
+  OnInit,
 } from '@angular/core';
 import {
   NonNullableFormBuilder,
@@ -13,7 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { AppConfig, ChatUi, UIText } from '@poalim/constants';
 import { ChatMessage } from '@poalim/shared-interfaces';
 import { ChatStore } from './services/feature-chat/feature-chat';
-import { ChatBubbleComponent } from './chat-bubble/chat-bubble.component';
+import { ChatBubbleComponent, EditSubmitEvent } from './chat-bubble/chat-bubble.component';
 
 @Component({
   selector: 'app-feature-chat',
@@ -24,7 +25,7 @@ import { ChatBubbleComponent } from './chat-bubble/chat-bubble.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class FeatureChat {
+export class FeatureChat implements OnInit {
   private readonly fb = inject(NonNullableFormBuilder);
   protected readonly store = inject(ChatStore);
 
@@ -51,13 +52,9 @@ export class FeatureChat {
     }),
   });
 
-  protected readonly botTypingMessage = (): ChatMessage => ({
-    id: 'bot-typing',
-    sender: this.store.bot(),
-    content: `${this.config.BOT_NAME} ${this.uiText.CHAT.TYPING}`,
-    timestamp: Date.now(),
-    type: 'system',
-  });
+  ngOnInit(): void {
+    this.store.init();
+  }
 
   protected submitNickname(): void {
     if (this.nicknameForm.invalid) {
@@ -76,6 +73,10 @@ export class FeatureChat {
 
     this.store.send(this.composerForm.controls.content.value);
     this.composerForm.reset({ content: '' });
+  }
+
+  protected onEditSubmit(e: EditSubmitEvent): void {
+    this.store.editMessage(e.messageId, e.content);
   }
 
   protected formatChatTime(timestamp: number): string {

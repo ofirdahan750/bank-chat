@@ -1,56 +1,86 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  EventEmitter,
   Input,
+  Output,
   ViewEncapsulation,
-  computed,
+  inject,
   signal,
 } from '@angular/core';
-import { ChatMessage, User } from '@poalim/shared-interfaces';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { AppConfig } from '@poalim/constants';
+import { ChatMessage } from '@poalim/shared-interfaces';
+
+export type EditSubmitEvent = { messageId: string; content: string };
 
 @Component({
   selector: 'app-chat-bubble',
   standalone: true,
+  imports: [ReactiveFormsModule, MatIconModule],
   templateUrl: './chat-bubble.component.html',
   styleUrl: './chat-bubble.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
 export class ChatBubbleComponent {
-  private readonly _message = signal<ChatMessage | null>(null);
-  private readonly _currentUser = signal<User | null>(null);
+  private readonly fb = inject(NonNullableFormBuilder);
 
-  @Input({ required: true })
-  set message(value: ChatMessage) {
-    this._message.set(value);
-  }
-  protected readonly messageSig = computed(() => this._message());
+  @Input({ required: true }) message!: ChatMessage;
+  @Input({ required: true }) timeLabel!: string;
+  @Input() isMine = false;
+  @Input() canEdit = false;
 
-  @Input({ required: true })
-  set currentUser(value: User) {
-    this._currentUser.set(value);
-  }
-  protected readonly currentUserSig = computed(() => this._currentUser());
+  @Output() editSubmit = new EventEmitter<EditSubmitEvent>();
 
-  protected readonly isBot = computed(() => !!this.messageSig()?.sender.isBot);
+  readonly isEditing = signal(false);
+  readonly showHistory = signal(false);
 
-  protected readonly isMine = computed(() => {
-    const m = this.messageSig();
-    const me = this.currentUserSig();
-    if (!m || !me) return false;
-    return m.sender.id === me.id && !m.sender.isBot;
+  protected readonly AppConfig = AppConfig;
+
+  
+
+  readonly editForm = this.fb.group({
+    content: this.fb.control('', {
+      validators: [Validators.required, Validators.maxLength(AppConfig.MAX_MSG_LENGTH)],
+    }),
   });
 
-  protected readonly showSender = computed(() => {
-    const m = this.messageSig();
-    if (!m) return false;
-    return !this.isMine() && !this.isBot();
-  });
+  startEdit(): void {
+    this.editForm.controls.content.setValue(this.message.content);
+    this.isEditing.set(true);
+    this.showHistory.set(false);
+  }
 
-  protected formatChatTime(timestamp: number): string {
-    const date = new Date(timestamp);
+  cancelEdit(): void {
+    this.isEditing.set(false);
+    this.editForm.reset({ content: '' });
+  }
+
+  saveEdit(): void {
+    if (this.editForm.invalid) {
+      this.editForm.markAllAsTouched();
+      return;
+    }
+
+    const next = this.editForm.controls.content.value.trim();
+    if (!next || next === this.message.content.trim()) {
+      this.cancelEdit();
+      return;
+    }
+
+    this.editSubmit.emit({ messageId: this.message.id, content: next });
+    this.isEditing.set(false);
+  }
+
+  toggleHistory(): void {
+    this.showHistory.set(!this.showHistory());
+  }
+
+  formatHistoryTime(ts: number): string {
+    const date = new Date(ts);
     if (Number.isNaN(date.getTime())) return '';
-
     return new Intl.DateTimeFormat(undefined, {
       hour: '2-digit',
       minute: '2-digit',

@@ -1,4 +1,4 @@
-import { Injectable, computed, effect, inject, signal } from '@angular/core';
+import { Injectable, Injector, computed, effect, inject, runInInjectionContext, signal } from '@angular/core';
 import { AppConfig, ChatUi, UIText } from '@poalim/constants';
 import { LocalStorageService, SocketClientService } from '@poalim/client-data-access';
 import { ChatMessage, User } from '@poalim/shared-interfaces';
@@ -7,6 +7,9 @@ import { ChatMessage, User } from '@poalim/shared-interfaces';
 export class ChatStore {
   private readonly storage = inject(LocalStorageService);
   private readonly socket = inject(SocketClientService);
+  private readonly injector = inject(Injector);
+
+  private initialized = false;
 
   private readonly storedUsername =
     this.storage.getString(AppConfig.STORAGE_KEYS.USERNAME) ?? '';
@@ -23,7 +26,7 @@ export class ChatStore {
   });
 
   readonly me = computed<User>(() => ({
-    id: this.username().trim() || ChatUi.USER.DEFAULT_ID,
+    id: this.storedUsername || ChatUi.USER.DEFAULT_ID,
     username: this.username().trim(),
     isBot: false,
     color: ChatUi.USER.DEFAULT_COLOR,
@@ -36,25 +39,55 @@ export class ChatStore {
     color: ChatUi.BOT.DEFAULT_COLOR,
   }));
 
-  constructor() {
+  init(): void {
+    if (this.initialized) return;
+    this.initialized = true;
+
     if (this.hasNickname()) {
       this.socket.connect(this.me());
     }
 
-    effect(() => {
-      const history = this.socket.roomHistory();
-      if (!history) return;
+    runInInjectionContext(this.injector, () => {
+      effect(() => {
+        const payload = this.socket.roomHistory();
+        if (!payload) return;
 
-      this.messages.set(this.mergeUniqueById(this.messages(), history));
-      this.socket.roomHistory.set(null);
-    });
+        const next = (payload.messages ?? [])
+          .filter((m: ChatMessage) => !!m?.id)
+          .filter((m: ChatMessage, idx: number, arr: ChatMessage[]) =>
+            arr.findIndex((x: ChatMessage) => x.id === m.id) === idx
+          );
 
-    effect(() => {
-      const incoming = this.socket.lastIncomingMessage();
-      if (!incoming) return;
+        this.messages.set(next);
+        this.socket.roomHistory.set(null);
+      });
 
-      this.messages.set(this.mergeUniqueById(this.messages(), [incoming]));
-      this.socket.lastIncomingMessage.set(null);
+      effect(() => {
+        const msg = this.socket.newMessage();
+        if (!msg) return;
+
+        this.messages.update((prev: ChatMessage[]) => {
+          if (prev.some((x: ChatMessage) => x.id === msg.id)) return prev;
+          return [...prev, msg];
+        });
+
+        this.socket.newMessage.set(null);
+      });
+
+      effect(() => {
+        const updated = this.socket.messageUpdated();
+        if (!updated) return;
+
+        this.messages.update((prev: ChatMessage[]) => {
+          const idx = prev.findIndex((m: ChatMessage) => m.id === updated.id);
+          if (idx < 0) return prev;
+          const next = [...prev];
+          next[idx] = updated;
+          return next;
+        });
+
+        this.socket.messageUpdated.set(null);
+      });
     });
   }
 
@@ -86,8 +119,39 @@ export class ChatStore {
       type: 'text',
     };
 
-    this.messages.set(this.mergeUniqueById(this.messages(), [msg]));
+    this.messages.update((prev: ChatMessage[]) => [...prev, msg]);
     this.socket.sendMessage(msg);
+  }
+
+  editMessage(messageId: string, content: string): void {
+    const clean = content.trim();
+    if (!clean) return;
+
+    this.messages.update((prev: ChatMessage[]) => {
+      const idx = prev.findIndex((m: ChatMessage) => m.id === messageId);
+      if (idx < 0) return prev;
+
+      const target = prev[idx];
+      if (target.sender.isBot) return prev;
+      if (target.sender.id !== this.me().id) return prev;
+      if (target.content.trim() === clean) return prev;
+
+      const edits = [...(target.edits ?? [])];
+      edits.push({ previousContent: target.content, editedAt: Date.now() });
+
+      const updated: ChatMessage = {
+        ...target,
+        content: clean,
+        editedAt: Date.now(),
+        edits,
+      };
+
+      const next = [...prev];
+      next[idx] = updated;
+      return next;
+    });
+
+    this.socket.editMessage(messageId, clean);
   }
 
   private enqueueBotGreeting(): void {
@@ -100,20 +164,7 @@ export class ChatStore {
     };
 
     window.setTimeout(() => {
-      this.messages.set(this.mergeUniqueById(this.messages(), [msg]));
+      this.messages.update((prev: ChatMessage[]) => [...prev, msg]);
     }, AppConfig.BOT_DELAY_MS);
-  }
-
-  private mergeUniqueById(base: ChatMessage[], incoming: ChatMessage[]): ChatMessage[] {
-    const validIncoming = incoming.filter((m: ChatMessage) => !!m?.id);
-
-    const map = [...base, ...validIncoming].reduce((acc, m: ChatMessage) => {
-      acc.set(m.id, m);
-      return acc;
-    }, new Map<string, ChatMessage>());
-
-    return Array.from(map.values()).sort(
-      (a: ChatMessage, b: ChatMessage) => a.timestamp - b.timestamp
-    );
   }
 }

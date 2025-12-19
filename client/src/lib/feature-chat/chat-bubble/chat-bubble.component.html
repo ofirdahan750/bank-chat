@@ -1,15 +1,64 @@
 <article
   class="chat-bubble"
-  [class.chat-bubble--mine]="isMine()"
-  [class.chat-bubble--bot]="isBot()"
+  [class.chat-bubble--mine]="isMine"
+  [class.chat-bubble--bot]="message.sender.isBot"
 >
-  @if (showSender()) {
-    <div class="chat-bubble__sender">{{ messageSig()!.sender.username }}</div>
+  @if (message.sender.id && !isMine && !message.sender.isBot) {
+    <div class="chat-bubble__sender">{{ message.sender.username }}</div>
   }
 
-  <div class="chat-bubble__content">{{ messageSig()!.content }}</div>
+  @if (!isEditing()) {
+    <div class="chat-bubble__content">{{ message.content }}</div>
 
-  <div class="chat-bubble__meta">
-    <span class="chat-bubble__time">{{ formatChatTime(messageSig()!.timestamp) }}</span>
-  </div>
+    <div class="chat-bubble__meta">
+      <span class="chat-bubble__time">{{ timeLabel }}</span>
+
+      @if (message.edits?.length) {
+        <button type="button" class="chat-bubble__edited" (click)="toggleHistory()">
+          Edited
+        </button>
+      }
+
+      @if (canEdit) {
+        <button type="button" class="chat-bubble__icon" (click)="startEdit()" aria-label="Edit message">
+          <mat-icon aria-hidden="true">edit</mat-icon>
+        </button>
+      }
+    </div>
+
+    @if (showHistory() && (message.edits?.length ?? 0) > 0) {
+      <div class="chat-bubble__history" role="region" aria-label="Edit history">
+        @for (e of message.edits!; track $index) {
+          <div class="chat-bubble__history-item">
+            <div class="chat-bubble__history-time">{{ formatHistoryTime(e.editedAt) }}</div>
+            <div class="chat-bubble__history-content">{{ e.previousContent }}</div>
+          </div>
+        }
+      </div>
+    }
+  } @else {
+    <form class="chat-bubble__edit" [formGroup]="editForm" (ngSubmit)="saveEdit()">
+      <input
+        matInput
+        class="app-input chat-bubble__edit-input"
+        type="text"
+        [attr.maxlength]="AppConfig.MAX_MSG_LENGTH"
+        formControlName="content"
+      />
+
+      <div class="chat-bubble__edit-actions">
+        <button
+          type="submit"
+          class="app-btn app-btn--primary"
+          [disabled]="editForm.invalid || editForm.controls.content.value.trim() === message.content.trim()"
+        >
+          Save
+        </button>
+
+        <button type="button" class="app-btn app-btn--ghost" (click)="cancelEdit()">
+          Cancel
+        </button>
+      </div>
+    </form>
+  }
 </article>
