@@ -2,7 +2,7 @@ export type RoomId = string;
 
 export type MessageType = 'text' | 'system';
 
-export type ReactionKey = 'heart' | 'laugh' | 'like';
+export type ReactionKey = 'like' | 'heart' | 'laugh' | 'wow' | 'sad';
 
 export type MessageReactions = Partial<Record<ReactionKey, string[]>>;
 

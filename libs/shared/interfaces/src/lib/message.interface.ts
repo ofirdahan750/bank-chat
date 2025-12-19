@@ -1,7 +1,7 @@
 import { User } from './user.interface';
 
 export type ChatMessageType = 'text' | 'system';
-export type ReactionKey = 'heart' | 'laugh' | 'like';
+export type ReactionKey = 'like' | 'heart' | 'laugh' | 'wow' | 'sad';
 export type MessageReactions = Partial<Record<ReactionKey, string[]>>;
 
 export interface ChatMessageEdit {

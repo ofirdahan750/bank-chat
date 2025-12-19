@@ -1,7 +1,7 @@
 import { ChatMessage } from './message.interface';
 import { User } from './user.interface';
 
-export type ReactionKey = 'heart' | 'laugh' | 'like';
+export type ReactionKey = 'like' | 'heart' | 'laugh' | 'wow' | 'sad';
 
 export interface JoinRoomPayload {
   roomId: string;

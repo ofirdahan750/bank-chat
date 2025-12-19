@@ -359,7 +359,16 @@ export const registerSocketHandlers = (io: Server): void => {
       const reaction = payload?.reaction as ReactionKey;
 
       if (!messageId || typeof messageId !== 'string') return;
-      if (reaction !== 'heart' && reaction !== 'laugh' && reaction !== 'like') return;
+
+      if (
+        reaction !== 'like' &&
+        reaction !== 'heart' &&
+        reaction !== 'laugh' &&
+        reaction !== 'wow' &&
+        reaction !== 'sad'
+      ) {
+        return;
+      }
 
       const updated = toggleReactionInHistory(roomId, messageId, reaction, currentUser);
       if (!updated) return;

@@ -74,7 +74,12 @@
           },
           "content": "I’m a bot, not a mind reader. Toss in a \"?\" so I know it’s a question.",
           "timestamp": 1766157039876,
-          "type": "system"
+          "type": "system",
+          "reactions": {
+            "heart": [
+              "שדכשדכ"
+            ]
+          }
         },
         {
           "id": "87abf46a-0275-4fad-a34b-c86e6ce2999c",
@@ -96,9 +101,21 @@
             "isBot": false,
             "color": "#3b82f6"
           },
-          "content": "asf",
+          "content": "asf?",
           "timestamp": 1766157051646,
-          "type": "text"
+          "type": "text",
+          "reactions": {
+            "heart": [
+              "שדכשדכ"
+            ]
+          },
+          "editedAt": 1766158389271,
+          "edits": [
+            {
+              "previousContent": "asf",
+              "editedAt": 1766158389271
+            }
+          ]
         },
         {
           "id": "e3b96b39-88c8-4294-a30c-c30ae4a984a3",
@@ -120,9 +137,20 @@
             "isBot": false,
             "color": "#3b82f6"
           },
-          "content": "asfsaf",
+          "content": "asfsafשדכשדכ?",
           "timestamp": 1766157053899,
-          "type": "text"
+          "type": "text",
+          "editedAt": 1766158380495,
+          "edits": [
+            {
+              "previousContent": "asfsaf",
+              "editedAt": 1766158369337
+            },
+            {
+              "previousContent": "asfsafשדכשדכ",
+              "editedAt": 1766158380495
+            }
+          ]
         },
         {
           "id": "4a01994f-e5df-47cb-b119-dfc147a9f8f2",
@@ -279,6 +307,109 @@
               "ted bro"
             ]
           }
+        },
+        {
+          "id": "9133cc9f-20dd-4116-ae5e-40a12c78d473",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Fresh mystery. Drop the answer in your next message and I’ll learn it.",
+          "timestamp": 1766158381315,
+          "type": "system"
+        },
+        {
+          "id": "ed274649-c864-4624-84a2-62f09af558d0",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Memory check: passed. Answer: \"asf\"",
+          "timestamp": 1766158390150,
+          "type": "system"
+        },
+        {
+          "id": "dd866bc3-fd75-4528-a14a-a07699f73091",
+          "sender": {
+            "id": "שדכשדכ",
+            "username": "שדכשדכ",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "שדכשדכ?",
+          "timestamp": 1766158398242,
+          "type": "text",
+          "editedAt": 1766158401406,
+          "edits": [
+            {
+              "previousContent": "שדכשדכ",
+              "editedAt": 1766158401406
+            }
+          ]
+        },
+        {
+          "id": "d7aa2ce5-f61b-43f7-8f80-20fe0f7294c3",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "I don’t know this one yet. Send the answer next and I’ll store it forever (or until the server restarts).",
+          "timestamp": 1766158401960,
+          "type": "system"
+        },
+        {
+          "id": "7a03ef21-98b4-4e19-acde-0fbd6f555623",
+          "sender": {
+            "id": "שדכשדכ",
+            "username": "שדכשדכ",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "שדגשדג",
+          "timestamp": 1766158404361,
+          "type": "text"
+        },
+        {
+          "id": "0efb5f70-6326-4e19-ace1-524941f2f1af",
+          "sender": {
+            "id": "שדכשדכ",
+            "username": "שדכשדכ",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "שדג",
+          "timestamp": 1766158405137,
+          "type": "text"
+        },
+        {
+          "id": "78a99ffb-15da-4835-bac7-cdf25dd24f68",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Locked in. I will not forget. Probably. Q: \"שדכשדכ?\" A: \"שדגשדג\"",
+          "timestamp": 1766158405350,
+          "type": "system"
+        },
+        {
+          "id": "41ae3426-62d8-45f8-976b-c9d741a9a3c1",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "I’m a bot, not a mind reader. Toss in a \"?\" so I know it’s a question.",
+          "timestamp": 1766158405939,
+          "type": "system"
         }
       ],
       "botMemory": {
@@ -307,6 +438,14 @@
             "questionMessageId": "e74a1e5e-f002-4d06-bb4b-16deca1bb26f",
             "answerMessageId": "0c873a6e-6a68-4ec9-acfa-ce882ce26a03",
             "updatedAt": 1766157562548
+          },
+          {
+            "key": "שדכשדכ?",
+            "question": "שדכשדכ?",
+            "answer": "שדגשדג",
+            "questionMessageId": "dd866bc3-fd75-4528-a14a-a07699f73091",
+            "answerMessageId": "7a03ef21-98b4-4e19-acde-0fbd6f555623",
+            "updatedAt": 1766158404364
           }
         ]
       },
@@ -314,7 +453,12 @@
         "57bacdbc-ef15-4f14-b0fc-fb515b2645e9": "6f534089-61e5-4dcb-9111-f9e42f3da142",
         "e74a1e5e-f002-4d06-bb4b-16deca1bb26f": "5e76e636-99a3-46f1-a2ba-dc58ebfffdf4",
         "0c873a6e-6a68-4ec9-acfa-ce882ce26a03": "63ecb9d4-1ed9-45e2-8859-adf6aee7b11e",
-        "52175385-13bc-42bc-a0a4-024fa4361d0d": "e571fb0e-fc52-4a6b-b816-a69a6e7f6d1e"
+        "52175385-13bc-42bc-a0a4-024fa4361d0d": "e571fb0e-fc52-4a6b-b816-a69a6e7f6d1e",
+        "bc8bf1e4-9be5-46f3-b069-af25733a0e1a": "9133cc9f-20dd-4116-ae5e-40a12c78d473",
+        "af57a17d-653d-4aaf-a6da-15a44422dfcd": "ed274649-c864-4624-84a2-62f09af558d0",
+        "dd866bc3-fd75-4528-a14a-a07699f73091": "d7aa2ce5-f61b-43f7-8f80-20fe0f7294c3",
+        "7a03ef21-98b4-4e19-acde-0fbd6f555623": "78a99ffb-15da-4835-bac7-cdf25dd24f68",
+        "0efb5f70-6326-4e19-ace1-524941f2f1af": "41ae3426-62d8-45f8-976b-c9d741a9a3c1"
       }
     }
   }

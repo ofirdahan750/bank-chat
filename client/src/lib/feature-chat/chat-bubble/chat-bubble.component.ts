@@ -54,9 +54,11 @@ export class ChatBubbleComponent {
   protected readonly AppConfig = AppConfig;
 
   readonly reactionOptions: readonly ReactionOption[] = [
+    { key: 'like', emoji: '👍', label: 'Like' },
     { key: 'heart', emoji: '❤️', label: 'Heart' },
     { key: 'laugh', emoji: '😂', label: 'Laugh' },
-    { key: 'like', emoji: '👍', label: 'Like' },
+    { key: 'wow', emoji: '😮', label: 'Wow' },
+    { key: 'sad', emoji: '😢', label: 'Sad' },
   ] as const;
 
   readonly editForm = this.fb.group({
