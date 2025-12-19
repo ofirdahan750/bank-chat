@@ -8,6 +8,8 @@ import {
   JoinRoomPayload,
   RoomHistoryPayload,
   SendMessagePayload,
+  ToggleReactionPayload,
+  ReactionKey,
   User,
 } from '@poalim/shared-interfaces';
 
@@ -70,6 +72,12 @@ export class SocketClientService {
     if (!this.socket?.connected) return;
     const payload: EditMessagePayload = { roomId, messageId, content };
     this.socket.emit(SocketEvents.EDIT_MESSAGE, payload);
+  }
+
+  toggleReaction(messageId: string, reaction: ReactionKey, roomId: string = AppConfig.ROOM_ID): void {
+    if (!this.socket?.connected) return;
+    const payload: ToggleReactionPayload = { roomId, messageId, reaction };
+    this.socket.emit(SocketEvents.TOGGLE_REACTION, payload);
   }
 
   disconnect(): void {

@@ -51,10 +51,12 @@
           @for (m of store.messages(); track trackById($index, m)) {
             <app-chat-bubble
               [message]="m"
+              [meId]="store.me().id"
               [isMine]="m.sender.id === store.me().id && !m.sender.isBot"
               [canEdit]="m.sender.id === store.me().id && !m.sender.isBot"
               [timeLabel]="formatChatTime(m.timestamp)"
               (editSubmit)="onEditSubmit($event)"
+              (reactionToggle)="onReactionToggle($event)"
             />
           }
         }

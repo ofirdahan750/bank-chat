@@ -2,6 +2,10 @@ export type RoomId = string;
 
 export type MessageType = 'text' | 'system';
 
+export type ReactionKey = 'heart' | 'laugh' | 'like';
+
+export type MessageReactions = Partial<Record<ReactionKey, string[]>>;
+
 export interface User {
   id: string;
   username: string;
@@ -23,6 +27,8 @@ export interface ChatMessage {
 
   editedAt?: number;
   edits?: ChatMessageEdit[];
+
+  reactions?: MessageReactions;
 }
 
 export interface JoinRoomPayload {
@@ -44,6 +50,12 @@ export interface EditMessagePayload {
   roomId: RoomId;
   messageId: string;
   content: string;
+}
+
+export interface ToggleReactionPayload {
+  roomId: RoomId;
+  messageId: string;
+  reaction: ReactionKey;
 }
 
 export interface BotTypingPayload {

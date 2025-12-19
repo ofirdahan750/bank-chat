@@ -12,8 +12,12 @@ import {
 } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { AppConfig, ChatUi, UIText } from '@poalim/constants';
-import { ChatMessage } from '@poalim/shared-interfaces';
-import { ChatBubbleComponent, EditSubmitEvent } from './chat-bubble/chat-bubble.component';
+import { ChatMessage, ReactionKey } from '@poalim/shared-interfaces';
+import {
+  ChatBubbleComponent,
+  EditSubmitEvent,
+  ReactionToggleEvent,
+} from './chat-bubble/chat-bubble.component';
 import { ChatStore } from './services/chat-store/chat-store.service';
 
 @Component({
@@ -77,6 +81,10 @@ export class FeatureChat implements OnInit {
 
   protected onEditSubmit(e: EditSubmitEvent): void {
     this.store.editMessage(e.messageId, e.content);
+  }
+
+  protected onReactionToggle(e: ReactionToggleEvent): void {
+    this.store.toggleReaction(e.messageId, e.reaction as ReactionKey);
   }
 
   protected formatChatTime(timestamp: number): string {

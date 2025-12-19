@@ -1,7 +1,18 @@
-import { Injectable, Injector, computed, effect, inject, runInInjectionContext, signal } from '@angular/core';
+import {
+  Injectable,
+  Injector,
+  computed,
+  effect,
+  inject,
+  runInInjectionContext,
+  signal,
+} from '@angular/core';
 import { AppConfig, ChatUi, UIText } from '@poalim/constants';
-import { LocalStorageService, SocketClientService } from '@poalim/client-data-access';
-import { ChatMessage, User } from '@poalim/shared-interfaces';
+import {
+  LocalStorageService,
+  SocketClientService,
+} from '@poalim/client-data-access';
+import { ChatMessage, ReactionKey, User } from '@poalim/shared-interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class ChatStore {
@@ -25,12 +36,15 @@ export class ChatStore {
     return name.length >= AppConfig.MIN_USERNAME_LENGTH;
   });
 
-  readonly me = computed<User>(() => ({
-    id: this.storedUsername || ChatUi.USER.DEFAULT_ID,
-    username: this.username().trim(),
-    isBot: false,
-    color: ChatUi.USER.DEFAULT_COLOR,
-  }));
+  readonly me = computed<User>(() => {
+    const name = this.username().trim();
+    return {
+      id: name || ChatUi.USER.DEFAULT_ID,
+      username: name,
+      isBot: false,
+      color: ChatUi.USER.DEFAULT_COLOR,
+    };
+  });
 
   readonly bot = computed<User>(() => ({
     id: ChatUi.BOT.ID,
@@ -44,7 +58,7 @@ export class ChatStore {
     this.initialized = true;
 
     if (this.hasNickname()) {
-      this.socket.connect(this.me());
+      this.socket.connect(this.me(), AppConfig.ROOM_ID);
     }
 
     runInInjectionContext(this.injector, () => {
@@ -52,13 +66,19 @@ export class ChatStore {
         const payload = this.socket.roomHistory();
         if (!payload) return;
 
-        const next = (payload.messages ?? [])
-          .filter((m: ChatMessage) => !!m?.id)
-          .filter((m: ChatMessage, idx: number, arr: ChatMessage[]) =>
-            arr.findIndex((x: ChatMessage) => x.id === m.id) === idx
-          );
+        const unique: ChatMessage[] = [];
+        const seen = new Set<string>();
 
-        this.messages.set(next);
+        for (const m of payload.messages ?? []) {
+          if (!m?.id) continue;
+          if (seen.has(m.id)) continue;
+          seen.add(m.id);
+          unique.push(m);
+        }
+
+        unique.sort((a, b) => a.timestamp - b.timestamp);
+
+        this.messages.set(unique);
         this.socket.roomHistory.set(null);
       });
 
@@ -67,8 +87,9 @@ export class ChatStore {
         if (!msg) return;
 
         this.messages.update((prev: ChatMessage[]) => {
+          if (!msg?.id) return prev;
           if (prev.some((x: ChatMessage) => x.id === msg.id)) return prev;
-          return [...prev, msg];
+          return [...prev, msg].sort((a, b) => a.timestamp - b.timestamp);
         });
 
         this.socket.newMessage.set(null);
@@ -81,9 +102,10 @@ export class ChatStore {
         this.messages.update((prev: ChatMessage[]) => {
           const idx = prev.findIndex((m: ChatMessage) => m.id === updated.id);
           if (idx < 0) return prev;
+
           const next = [...prev];
           next[idx] = updated;
-          return next;
+          return next.sort((a, b) => a.timestamp - b.timestamp);
         });
 
         this.socket.messageUpdated.set(null);
@@ -98,7 +120,7 @@ export class ChatStore {
     this.storage.setString(AppConfig.STORAGE_KEYS.USERNAME, clean);
     this.username.set(clean);
 
-    this.socket.connect(this.me());
+    this.socket.connect(this.me(), AppConfig.ROOM_ID);
 
     if (this.messages().length === 0) {
       this.enqueueBotGreeting();
@@ -120,7 +142,7 @@ export class ChatStore {
     };
 
     this.messages.update((prev: ChatMessage[]) => [...prev, msg]);
-    this.socket.sendMessage(msg);
+    this.socket.sendMessage(msg, AppConfig.ROOM_ID);
   }
 
   editMessage(messageId: string, content: string): void {
@@ -136,13 +158,14 @@ export class ChatStore {
       if (target.sender.id !== this.me().id) return prev;
       if (target.content.trim() === clean) return prev;
 
+      const now = Date.now();
       const edits = [...(target.edits ?? [])];
-      edits.push({ previousContent: target.content, editedAt: Date.now() });
+      edits.push({ previousContent: target.content, editedAt: now });
 
       const updated: ChatMessage = {
         ...target,
         content: clean,
-        editedAt: Date.now(),
+        editedAt: now,
         edits,
       };
 
@@ -151,7 +174,45 @@ export class ChatStore {
       return next;
     });
 
-    this.socket.editMessage(messageId, clean);
+    this.socket.editMessage(messageId, clean, AppConfig.ROOM_ID);
+  }
+
+  toggleReaction(messageId: string, reaction: ReactionKey): void {
+    const meId = this.me().id;
+    if (!meId) return;
+
+    // Optimistic update (server will broadcast MESSAGE_UPDATED anyway)
+    this.messages.update((prev: ChatMessage[]) => {
+      const idx = prev.findIndex((m: ChatMessage) => m.id === messageId);
+      if (idx < 0) return prev;
+
+      const target = prev[idx];
+      const reactions = { ...(target.reactions ?? {}) };
+
+      const list = [...(reactions[reaction] ?? [])];
+      const i = list.indexOf(meId);
+
+      if (i >= 0) list.splice(i, 1);
+      else list.push(meId);
+
+      if (list.length === 0) {
+        // remove key
+        delete reactions[reaction];
+      } else {
+        reactions[reaction] = list;
+      }
+
+      const updated: ChatMessage = {
+        ...target,
+        reactions,
+      };
+
+      const next = [...prev];
+      next[idx] = updated;
+      return next;
+    });
+
+    this.socket.toggleReaction(messageId, reaction, AppConfig.ROOM_ID);
   }
 
   private enqueueBotGreeting(): void {

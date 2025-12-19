@@ -245,6 +245,40 @@
           "content": "Locked in. I will not forget. Probably. Q: \"שדככשד?\" A: \"שדגשדג\"",
           "timestamp": 1766157563496,
           "type": "system"
+        },
+        {
+          "id": "52175385-13bc-42bc-a0a4-024fa4361d0d",
+          "sender": {
+            "id": "ted bro",
+            "username": "ted bro",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "asfasf",
+          "timestamp": 1766158036355,
+          "type": "text"
+        },
+        {
+          "id": "e571fb0e-fc52-4a6b-b816-a69a6e7f6d1e",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "No \"?\" no magic. Add a question mark and I’ll file it properly.",
+          "timestamp": 1766158037347,
+          "type": "system",
+          "reactions": {
+            "like": [
+              "שדכשדכ",
+              "ted bro"
+            ],
+            "laugh": [
+              "שדכשדכ",
+              "ted bro"
+            ]
+          }
         }
       ],
       "botMemory": {
@@ -279,7 +313,8 @@
       "botReplies": {
         "57bacdbc-ef15-4f14-b0fc-fb515b2645e9": "6f534089-61e5-4dcb-9111-f9e42f3da142",
         "e74a1e5e-f002-4d06-bb4b-16deca1bb26f": "5e76e636-99a3-46f1-a2ba-dc58ebfffdf4",
-        "0c873a6e-6a68-4ec9-acfa-ce882ce26a03": "63ecb9d4-1ed9-45e2-8859-adf6aee7b11e"
+        "0c873a6e-6a68-4ec9-acfa-ce882ce26a03": "63ecb9d4-1ed9-45e2-8859-adf6aee7b11e",
+        "52175385-13bc-42bc-a0a4-024fa4361d0d": "e571fb0e-fc52-4a6b-b816-a69a6e7f6d1e"
       }
     }
   }

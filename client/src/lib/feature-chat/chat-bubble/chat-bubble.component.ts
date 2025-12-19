@@ -8,12 +8,23 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { AppConfig } from '@poalim/constants';
-import { ChatMessage } from '@poalim/shared-interfaces';
+import { ChatMessage, ReactionKey } from '@poalim/shared-interfaces';
 
 export type EditSubmitEvent = { messageId: string; content: string };
+export type ReactionToggleEvent = { messageId: string; reaction: ReactionKey };
+
+type ReactionOption = {
+  key: ReactionKey;
+  emoji: string;
+  label: string;
+};
 
 @Component({
   selector: 'app-chat-bubble',
@@ -29,21 +40,31 @@ export class ChatBubbleComponent {
 
   @Input({ required: true }) message!: ChatMessage;
   @Input({ required: true }) timeLabel!: string;
+  @Input({ required: true }) meId!: string;
+
   @Input() isMine = false;
   @Input() canEdit = false;
 
   @Output() editSubmit = new EventEmitter<EditSubmitEvent>();
+  @Output() reactionToggle = new EventEmitter<ReactionToggleEvent>();
 
   readonly isEditing = signal(false);
   readonly showHistory = signal(false);
 
   protected readonly AppConfig = AppConfig;
 
-  
+  readonly reactionOptions: readonly ReactionOption[] = [
+    { key: 'heart', emoji: '❤️', label: 'Heart' },
+    { key: 'laugh', emoji: '😂', label: 'Laugh' },
+    { key: 'like', emoji: '👍', label: 'Like' },
+  ] as const;
 
   readonly editForm = this.fb.group({
     content: this.fb.control('', {
-      validators: [Validators.required, Validators.maxLength(AppConfig.MAX_MSG_LENGTH)],
+      validators: [
+        Validators.required,
+        Validators.maxLength(AppConfig.MAX_MSG_LENGTH),
+      ],
     }),
   });
 
@@ -76,6 +97,19 @@ export class ChatBubbleComponent {
 
   toggleHistory(): void {
     this.showHistory.set(!this.showHistory());
+  }
+
+  toggleReaction(key: ReactionKey): void {
+    this.reactionToggle.emit({ messageId: this.message.id, reaction: key });
+  }
+
+  reactionCount(key: ReactionKey): number {
+    return (this.message.reactions?.[key] ?? []).length;
+  }
+
+  hasReacted(key: ReactionKey): boolean {
+    const ids = this.message.reactions?.[key] ?? [];
+    return !!this.meId && ids.includes(this.meId);
   }
 
   formatHistoryTime(ts: number): string {

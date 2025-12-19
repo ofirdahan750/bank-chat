@@ -26,6 +26,24 @@
       }
     </div>
 
+    <div class="chat-bubble__reactions" role="group" aria-label="Reactions">
+      @for (r of reactionOptions; track r.key) {
+        <button
+          type="button"
+          class="chat-bubble__reaction"
+          [class.chat-bubble__reaction--active]="hasReacted(r.key)"
+          (click)="toggleReaction(r.key)"
+          [attr.aria-label]="r.label"
+        >
+          <span class="chat-bubble__reaction-emoji" aria-hidden="true">{{ r.emoji }}</span>
+
+          @if (reactionCount(r.key) > 0) {
+            <span class="chat-bubble__reaction-count">{{ reactionCount(r.key) }}</span>
+          }
+        </button>
+      }
+    </div>
+
     @if (showHistory() && (message.edits?.length ?? 0) > 0) {
       <div class="chat-bubble__history" role="region" aria-label="Edit history">
         @for (e of message.edits!; track $index) {

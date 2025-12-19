@@ -10,6 +10,8 @@ import {
   JoinRoomPayload,
   RoomHistoryPayload,
   SendMessagePayload,
+  ToggleReactionPayload,
+  ReactionKey,
   User,
 } from '@poalim/shared-interfaces';
 import { BotEngine } from '@poalim/bot-engine';
@@ -19,7 +21,6 @@ type RoomId = string;
 const DEFAULT_ROOM: RoomId = AppConfig.ROOM_ID as RoomId;
 const MAX_HISTORY = 200;
 
-// ---- File persistence (simple JSON DB) ----
 type PersistedBotRoomMemory = ReturnType<BotEngine['dumpRoom']>;
 
 type PersistedRoom = {
@@ -58,7 +59,6 @@ const saveDb = (db: PersistedDb): void => {
   fs.renameSync(tmp, DATA_FILE);
 };
 
-// ---- Socket handlers ----
 export const registerSocketHandlers = (io: Server): void => {
   const bot = new BotEngine();
 
@@ -72,11 +72,10 @@ export const registerSocketHandlers = (io: Server): void => {
   const db = loadDb();
 
   const historyByRoom = new Map<RoomId, ChatMessage[]>();
-  const botRepliesByRoom = new Map<RoomId, Map<string, string>>(); // userId -> botId
+  const botRepliesByRoom = new Map<RoomId, Map<string, string>>();
 
   for (const [roomId, room] of Object.entries(db.rooms)) {
-    const msgs = (room?.messages ?? []).slice(-MAX_HISTORY);
-    historyByRoom.set(roomId, msgs);
+    historyByRoom.set(roomId, (room?.messages ?? []).slice(-MAX_HISTORY));
 
     const replies = new Map<string, string>();
     for (const [k, v] of Object.entries(room?.botReplies ?? {})) {
@@ -106,7 +105,6 @@ export const registerSocketHandlers = (io: Server): void => {
     const messages = getRoomHistory(roomId).slice(-MAX_HISTORY);
     const botMemory = bot.dumpRoom(roomId);
 
-    // cleanup mappings that reference messages that no longer exist
     const ids = new Set(messages.map((m) => m.id));
     const repliesMap = getBotReplies(roomId);
     const cleaned: Record<string, string> = {};
@@ -117,7 +115,6 @@ export const registerSocketHandlers = (io: Server): void => {
       cleaned[userMsgId] = botMsgId;
     }
 
-    // overwrite in-memory map with cleaned version
     repliesMap.clear();
     for (const [k, v] of Object.entries(cleaned)) repliesMap.set(k, v);
 
@@ -170,6 +167,46 @@ export const registerSocketHandlers = (io: Server): void => {
     return updated;
   };
 
+  const toggleReactionInHistory = (
+    roomId: RoomId,
+    messageId: string,
+    reaction: ReactionKey,
+    actor: User | null
+  ): ChatMessage | null => {
+    if (!actor || actor.isBot) return null;
+    if (!actor.id) return null;
+
+    const history = getRoomHistory(roomId);
+    const idx = history.findIndex((m) => m.id === messageId);
+    if (idx < 0) return null;
+
+    const target = history[idx];
+    if (!target) return null;
+
+    const reactions = { ...(target.reactions ?? {}) };
+    const list = [...(reactions[reaction] ?? [])];
+
+    const i = list.indexOf(actor.id);
+    if (i >= 0) list.splice(i, 1);
+    else list.push(actor.id);
+
+    if (list.length === 0) delete reactions[reaction];
+    else reactions[reaction] = list;
+
+    const updated: ChatMessage = {
+      ...target,
+      reactions,
+    };
+
+    const next = [...history];
+    next[idx] = updated;
+
+    setRoomHistory(roomId, next);
+    persistRoom(roomId);
+
+    return updated;
+  };
+
   const upsertBotReply = (
     roomId: RoomId,
     triggerUserMessageId: string,
@@ -188,9 +225,7 @@ export const registerSocketHandlers = (io: Server): void => {
           sender: botUser,
           type: 'system',
           content,
-          timestamp: Date.now(), // so UI time updates nicely
-          // no edits history for bot "regen" — feels like ChatGPT overwrite
-          edits: prev.edits,
+          timestamp: Date.now(),
           editedAt: undefined,
         };
 
@@ -268,7 +303,6 @@ export const registerSocketHandlers = (io: Server): void => {
       io.to(roomId).emit(SocketEvents.NEW_MESSAGE, serverMsg);
 
       const decision = bot.onUserMessage(roomId, serverMsg, botUser);
-      // persist pending/qa changes even if no bot message
       persistRoom(roomId);
 
       if (!decision) return;
@@ -317,6 +351,20 @@ export const registerSocketHandlers = (io: Server): void => {
         if (isNew) io.to(roomId).emit(SocketEvents.NEW_MESSAGE, msg);
         else io.to(roomId).emit(SocketEvents.MESSAGE_UPDATED, msg);
       }, decision.typingMs);
+    });
+
+    socket.on(SocketEvents.TOGGLE_REACTION, (payload: ToggleReactionPayload) => {
+      const roomId = ((payload?.roomId as RoomId) || currentRoom || DEFAULT_ROOM) as RoomId;
+      const messageId = payload?.messageId ?? '';
+      const reaction = payload?.reaction as ReactionKey;
+
+      if (!messageId || typeof messageId !== 'string') return;
+      if (reaction !== 'heart' && reaction !== 'laugh' && reaction !== 'like') return;
+
+      const updated = toggleReactionInHistory(roomId, messageId, reaction, currentUser);
+      if (!updated) return;
+
+      io.to(roomId).emit(SocketEvents.MESSAGE_UPDATED, updated);
     });
   });
 };

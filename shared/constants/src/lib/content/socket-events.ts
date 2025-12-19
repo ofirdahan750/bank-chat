@@ -8,6 +8,8 @@ export const SocketEvents = {
   EDIT_MESSAGE: 'edit_message',
   MESSAGE_UPDATED: 'message_updated',
 
+  TOGGLE_REACTION: 'toggle_reaction',
+
   BOT_TYPING: 'bot_typing',
 } as const;
 
