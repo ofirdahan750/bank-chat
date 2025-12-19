@@ -3,7 +3,9 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   Output,
+  SimpleChanges,
   ViewEncapsulation,
   inject,
   signal,
@@ -34,8 +36,12 @@ type ReactionOption = {
   styleUrl: './chat-bubble.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  host: {
+    // Works with Angular 20+ compiler animations API (no BrowserAnimationsModule)
+    'animate.enter': 'anim-enter-bubble',
+  },
 })
-export class ChatBubbleComponent {
+export class ChatBubbleComponent implements OnChanges {
   private readonly fb = inject(NonNullableFormBuilder);
 
   @Input({ required: true }) message!: ChatMessage;
@@ -50,6 +56,10 @@ export class ChatBubbleComponent {
 
   readonly isEditing = signal(false);
   readonly showHistory = signal(false);
+
+  readonly pulse = signal(false);
+  private pulseTimer: number | null = null;
+  private seenFirst = false;
 
   protected readonly AppConfig = AppConfig;
 
@@ -69,6 +79,34 @@ export class ChatBubbleComponent {
       ],
     }),
   });
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!changes['message']) return;
+
+    if (!this.seenFirst) {
+      this.seenFirst = true;
+      return;
+    }
+
+    // Subtle "feedback" pulse on updates (edit/reactions/bot overwrite)
+    this.triggerPulse();
+  }
+
+  private triggerPulse(): void {
+    if (this.pulseTimer !== null) {
+      window.clearTimeout(this.pulseTimer);
+      this.pulseTimer = null;
+    }
+
+    // restart CSS animation reliably
+    this.pulse.set(false);
+    queueMicrotask(() => this.pulse.set(true));
+
+    this.pulseTimer = window.setTimeout(() => {
+      this.pulse.set(false);
+      this.pulseTimer = null;
+    }, 420);
+  }
 
   startEdit(): void {
     this.editForm.controls.content.setValue(this.message.content);

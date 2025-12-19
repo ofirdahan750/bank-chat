@@ -1,6 +1,11 @@
 <section class="feature-chat">
   @if (!store.hasNickname()) {
-    <div class="feature-chat__card surface" role="region" aria-label="Nickname">
+    <div
+      class="feature-chat__card surface"
+      role="region"
+      aria-label="Nickname"
+      animate.enter="anim-enter-panel"
+    >
       <header class="feature-chat__header">
         <h2 class="feature-chat__title">{{ uiText.LOGIN.TITLE }}</h2>
         <p class="feature-chat__subtitle">{{ uiText.LOGIN.SUBTITLE }}</p>
@@ -36,20 +41,38 @@
       </form>
     </div>
   } @else {
-    <div class="feature-chat__room surface" role="region" aria-label="Chat room">
+    <div
+      class="feature-chat__room surface"
+      role="region"
+      aria-label="Chat room"
+      animate.enter="anim-enter-panel"
+    >
       <header class="feature-chat__room-header">
-        <div class="feature-chat__room-title">{{ store.username() }}</div>
-        <div class="feature-chat__room-subtitle">{{ config.BOT_NAME }}</div>
+        <div class="feature-chat__room-head">
+          <div class="feature-chat__room-title">{{ store.username() }}</div>
+          <div class="feature-chat__room-subtitle">{{ config.BOT_NAME }}</div>
+        </div>
+
+        <button
+          type="button"
+          class="feature-chat__logout"
+          (click)="logout()"
+          aria-label="Logout"
+          title="Logout"
+        >
+          <mat-icon aria-hidden="true">logout</mat-icon>
+        </button>
       </header>
 
       <div class="feature-chat__messages" role="log" aria-live="polite" aria-relevant="additions">
         @if (store.messages().length === 0) {
-          <div class="feature-chat__empty">
+          <div class="feature-chat__empty" animate.enter="anim-enter-soft">
             <div>{{ uiText.CHAT.EMPTY_STATE }}</div>
           </div>
         } @else {
           @for (m of store.messages(); track trackById($index, m)) {
             <app-chat-bubble
+              animate.enter="anim-enter-bubble"
               [message]="m"
               [meId]="store.me().id"
               [isMine]="m.sender.id === store.me().id && !m.sender.isBot"

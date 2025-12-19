@@ -2,15 +2,18 @@
   class="chat-bubble"
   [class.chat-bubble--mine]="isMine"
   [class.chat-bubble--bot]="message.sender.isBot"
+  [class.chat-bubble--pulse]="pulse()"
 >
   @if (message.sender.id && !isMine && !message.sender.isBot) {
-    <div class="chat-bubble__sender">{{ message.sender.username }}</div>
+    <div class="chat-bubble__sender" animate.enter="anim-enter-soft">
+      {{ message.sender.username }}
+    </div>
   }
 
   @if (!isEditing()) {
-    <div class="chat-bubble__content">{{ message.content }}</div>
+    <div class="chat-bubble__content" animate.enter="anim-enter-soft">{{ message.content }}</div>
 
-    <div class="chat-bubble__meta">
+    <div class="chat-bubble__meta" animate.enter="anim-enter-soft">
       <span class="chat-bubble__time">{{ timeLabel }}</span>
 
       @if (message.edits?.length) {
@@ -26,7 +29,7 @@
       }
     </div>
 
-    <div class="chat-bubble__reactions" role="group" aria-label="Reactions">
+    <div class="chat-bubble__reactions" role="group" aria-label="Reactions" animate.enter="anim-enter-soft">
       @for (r of reactionOptions; track r.key) {
         <button
           type="button"
@@ -45,7 +48,13 @@
     </div>
 
     @if (showHistory() && (message.edits?.length ?? 0) > 0) {
-      <div class="chat-bubble__history" role="region" aria-label="Edit history">
+      <div
+        class="chat-bubble__history"
+        role="region"
+        aria-label="Edit history"
+        animate.enter="anim-enter-soft"
+        animate.leave="anim-leave-soft"
+      >
         @for (e of message.edits!; track $index) {
           <div class="chat-bubble__history-item">
             <div class="chat-bubble__history-time">{{ formatHistoryTime(e.editedAt) }}</div>
@@ -55,7 +64,13 @@
       </div>
     }
   } @else {
-    <form class="chat-bubble__edit" [formGroup]="editForm" (ngSubmit)="saveEdit()">
+    <form
+      class="chat-bubble__edit"
+      [formGroup]="editForm"
+      (ngSubmit)="saveEdit()"
+      animate.enter="anim-enter-soft"
+      animate.leave="anim-leave-soft"
+    >
       <input
         matInput
         class="app-input chat-bubble__edit-input"

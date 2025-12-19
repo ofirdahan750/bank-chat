@@ -8,10 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { AppConfig, ChatUi, UIText } from '@poalim/constants';
-import {
-  LocalStorageService,
-  SocketClientService,
-} from '@poalim/client-data-access';
+import { LocalStorageService, SocketClientService } from '@poalim/client-data-access';
 import { ChatMessage, ReactionKey, User } from '@poalim/shared-interfaces';
 
 @Injectable({ providedIn: 'root' })
@@ -22,10 +19,9 @@ export class ChatStore {
 
   private initialized = false;
 
-  private readonly storedUsername =
-    this.storage.getString(AppConfig.STORAGE_KEYS.USERNAME) ?? '';
-
-  readonly username = signal<string>(this.storedUsername);
+  readonly username = signal<string>(
+    this.storage.getString(AppConfig.STORAGE_KEYS.USERNAME) ?? ''
+  );
   readonly messages = signal<ChatMessage[]>([]);
 
   readonly botTyping = computed(() => this.socket.botTyping());
@@ -86,9 +82,9 @@ export class ChatStore {
         const msg = this.socket.newMessage();
         if (!msg) return;
 
-        this.messages.update((prev: ChatMessage[]) => {
+        this.messages.update((prev) => {
           if (!msg?.id) return prev;
-          if (prev.some((x: ChatMessage) => x.id === msg.id)) return prev;
+          if (prev.some((x) => x.id === msg.id)) return prev;
           return [...prev, msg].sort((a, b) => a.timestamp - b.timestamp);
         });
 
@@ -99,8 +95,8 @@ export class ChatStore {
         const updated = this.socket.messageUpdated();
         if (!updated) return;
 
-        this.messages.update((prev: ChatMessage[]) => {
-          const idx = prev.findIndex((m: ChatMessage) => m.id === updated.id);
+        this.messages.update((prev) => {
+          const idx = prev.findIndex((m) => m.id === updated.id);
           if (idx < 0) return prev;
 
           const next = [...prev];
@@ -127,6 +123,13 @@ export class ChatStore {
     }
   }
 
+  logout(): void {
+    this.socket.disconnect();
+    this.storage.remove(AppConfig.STORAGE_KEYS.USERNAME);
+    this.username.set('');
+    this.messages.set([]);
+  }
+
   send(content: string): void {
     if (!this.hasNickname()) return;
 
@@ -141,7 +144,7 @@ export class ChatStore {
       type: 'text',
     };
 
-    this.messages.update((prev: ChatMessage[]) => [...prev, msg]);
+    this.messages.update((prev) => [...prev, msg]);
     this.socket.sendMessage(msg, AppConfig.ROOM_ID);
   }
 
@@ -149,8 +152,8 @@ export class ChatStore {
     const clean = content.trim();
     if (!clean) return;
 
-    this.messages.update((prev: ChatMessage[]) => {
-      const idx = prev.findIndex((m: ChatMessage) => m.id === messageId);
+    this.messages.update((prev) => {
+      const idx = prev.findIndex((m) => m.id === messageId);
       if (idx < 0) return prev;
 
       const target = prev[idx];
@@ -181,9 +184,9 @@ export class ChatStore {
     const meId = this.me().id;
     if (!meId) return;
 
-    // Optimistic update (server will broadcast MESSAGE_UPDATED anyway)
-    this.messages.update((prev: ChatMessage[]) => {
-      const idx = prev.findIndex((m: ChatMessage) => m.id === messageId);
+    // Optimistic update
+    this.messages.update((prev) => {
+      const idx = prev.findIndex((m) => m.id === messageId);
       if (idx < 0) return prev;
 
       const target = prev[idx];
@@ -195,17 +198,10 @@ export class ChatStore {
       if (i >= 0) list.splice(i, 1);
       else list.push(meId);
 
-      if (list.length === 0) {
-        // remove key
-        delete reactions[reaction];
-      } else {
-        reactions[reaction] = list;
-      }
+      if (list.length === 0) delete reactions[reaction];
+      else reactions[reaction] = list;
 
-      const updated: ChatMessage = {
-        ...target,
-        reactions,
-      };
+      const updated: ChatMessage = { ...target, reactions };
 
       const next = [...prev];
       next[idx] = updated;
@@ -225,7 +221,7 @@ export class ChatStore {
     };
 
     window.setTimeout(() => {
-      this.messages.update((prev: ChatMessage[]) => [...prev, msg]);
+      this.messages.update((prev) => [...prev, msg]);
     }, AppConfig.BOT_DELAY_MS);
   }
 }

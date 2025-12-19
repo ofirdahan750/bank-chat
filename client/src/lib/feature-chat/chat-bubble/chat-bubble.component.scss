@@ -11,6 +11,7 @@
   background: rgba(255, 255, 255, 0.04);
   color: var(--text);
   box-shadow: var(--shadow-sm);
+  transition: transform v.$transition-fast, background-color v.$transition-base;
 
   &--mine {
     margin-left: auto;
@@ -22,6 +23,10 @@
     margin-inline: auto;
     background: rgba(255, 255, 255, 0.06);
     border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  &--pulse {
+    animation: anim-pulse 420ms ease-out both;
   }
 
   &__sender {
@@ -61,6 +66,7 @@
     cursor: pointer;
     text-decoration: underline;
     text-underline-offset: 2px;
+    transition: color v.$transition-base;
 
     &:hover {
       color: var(--text);
@@ -98,9 +104,9 @@
   &__reactions {
     margin-top: 10px;
     display: flex;
-    gap: 8px;
-    align-items: center;
     flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
   }
 
   &__reaction {
@@ -108,16 +114,15 @@
     align-items: center;
     gap: 6px;
     padding: 6px 10px;
-    border-radius: 9999px;
+    border-radius: v.$radius-pill;
     border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.03);
     cursor: pointer;
-    transition: transform 120ms ease, background-color 180ms ease, border-color 180ms ease;
-    user-select: none;
+    transition: transform v.$transition-fast, background-color v.$transition-base, border-color v.$transition-base;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.07);
       transform: translateY(-1px);
+      background: rgba(255, 255, 255, 0.06);
     }
 
     &:active {
@@ -125,20 +130,19 @@
     }
 
     &--active {
-      border-color: rgba(11, 95, 255, 0.55);
-      background: rgba(11, 95, 255, 0.14);
+      border-color: rgba(11, 95, 255, 0.35);
+      background: rgba(11, 95, 255, 0.12);
     }
   }
 
   &__reaction-emoji {
-    font-size: 16px;
     line-height: 1;
   }
 
   &__reaction-count {
     font-size: 12px;
     color: var(--text);
-    opacity: 0.92;
+    opacity: 0.9;
   }
 
   &__history {
@@ -186,4 +190,51 @@
     justify-content: flex-end;
     gap: 10px;
   }
+}
+
+/* Animation utility classes used by animate.enter/leave */
+@keyframes anim-fade-soft-in {
+  from {
+    opacity: 0;
+    transform: translateY(fn.rem(4px));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes anim-fade-soft-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(fn.rem(4px));
+  }
+}
+
+@keyframes anim-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(11, 95, 255, 0);
+  }
+  35% {
+    box-shadow: 0 0 0 6px rgba(11, 95, 255, 0.18);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(11, 95, 255, 0);
+  }
+}
+
+.anim-enter-soft {
+  animation: anim-fade-soft-in 140ms ease-out both;
+}
+
+.anim-leave-soft {
+  animation: anim-fade-soft-out 120ms ease-in both;
+}
+
+.anim-enter-bubble {
+  animation: anim-fade-soft-in 160ms ease-out both;
 }

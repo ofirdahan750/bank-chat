@@ -87,6 +87,12 @@ export class FeatureChat implements OnInit {
     this.store.toggleReaction(e.messageId, e.reaction as ReactionKey);
   }
 
+  protected logout(): void {
+    this.store.logout();
+    this.nicknameForm.reset({ username: '' });
+    this.composerForm.reset({ content: '' });
+  }
+
   protected formatChatTime(timestamp: number): string {
     const date = new Date(timestamp);
     if (Number.isNaN(date.getTime())) return '';

@@ -410,6 +410,135 @@
           "content": "I’m a bot, not a mind reader. Toss in a \"?\" so I know it’s a question.",
           "timestamp": 1766158405939,
           "type": "system"
+        },
+        {
+          "id": "dc5bab3d-2bf4-42c8-94ea-df73f0cec5a0",
+          "sender": {
+            "id": "ted bro",
+            "username": "ted bro",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "ascasaccs?",
+          "timestamp": 1766161174370,
+          "type": "text",
+          "editedAt": 1766161190112,
+          "edits": [
+            {
+              "previousContent": "ascas",
+              "editedAt": 1766161179782
+            },
+            {
+              "previousContent": "ascasas?",
+              "editedAt": 1766161190112
+            }
+          ]
+        },
+        {
+          "id": "4adde023-8e05-417e-9ab6-063fd0c85f41",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Fresh mystery. Drop the answer in your next message and I’ll learn it.",
+          "timestamp": 1766161190572,
+          "type": "system",
+          "reactions": {
+            "sad": [
+              "ted bro"
+            ],
+            "wow": [
+              "ted bro"
+            ]
+          }
+        },
+        {
+          "id": "a8a9d4e8-e314-40a7-943b-7504d1bd4593",
+          "sender": {
+            "id": "ted bro",
+            "username": "ted bro",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "dd",
+          "timestamp": 1766161193978,
+          "type": "text"
+        },
+        {
+          "id": "0c532a66-8898-40e6-b5fd-e052d2b29386",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Locked in. I will not forget. Probably. Q: \"ascasaccs?\" A: \"dd\"",
+          "timestamp": 1766161194799,
+          "type": "system",
+          "reactions": {
+            "sad": [
+              "ted bro"
+            ],
+            "laugh": [
+              "ted bro"
+            ],
+            "like": [
+              "ted bro"
+            ],
+            "heart": [
+              "ted bro"
+            ]
+          }
+        },
+        {
+          "id": "c7f67200-5f7f-4d78-beb7-96baee782cca",
+          "sender": {
+            "id": "שדבשדב",
+            "username": "שדבשדב",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "שדכשדכ",
+          "timestamp": 1766162044828,
+          "type": "text"
+        },
+        {
+          "id": "427ecad4-22a0-4808-9360-1731817beabd",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "I’m a bot, not a mind reader. Toss in a \"?\" so I know it’s a question.",
+          "timestamp": 1766162045897,
+          "type": "system"
+        },
+        {
+          "id": "da0311e4-26c7-4c7e-a546-8aa87e7dc75e",
+          "sender": {
+            "id": "שדבשדב",
+            "username": "שדבשדב",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "שדד",
+          "timestamp": 1766162047608,
+          "type": "text"
+        },
+        {
+          "id": "ad6f24f8-7500-484f-90ec-f079ce03f363",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "No \"?\" no magic. Add a question mark and I’ll file it properly.",
+          "timestamp": 1766162048314,
+          "type": "system"
         }
       ],
       "botMemory": {
@@ -446,6 +575,14 @@
             "questionMessageId": "dd866bc3-fd75-4528-a14a-a07699f73091",
             "answerMessageId": "7a03ef21-98b4-4e19-acde-0fbd6f555623",
             "updatedAt": 1766158404364
+          },
+          {
+            "key": "ascasaccs?",
+            "question": "ascasaccs?",
+            "answer": "dd",
+            "questionMessageId": "dc5bab3d-2bf4-42c8-94ea-df73f0cec5a0",
+            "answerMessageId": "a8a9d4e8-e314-40a7-943b-7504d1bd4593",
+            "updatedAt": 1766161193982
           }
         ]
       },
@@ -458,7 +595,11 @@
         "af57a17d-653d-4aaf-a6da-15a44422dfcd": "ed274649-c864-4624-84a2-62f09af558d0",
         "dd866bc3-fd75-4528-a14a-a07699f73091": "d7aa2ce5-f61b-43f7-8f80-20fe0f7294c3",
         "7a03ef21-98b4-4e19-acde-0fbd6f555623": "78a99ffb-15da-4835-bac7-cdf25dd24f68",
-        "0efb5f70-6326-4e19-ace1-524941f2f1af": "41ae3426-62d8-45f8-976b-c9d741a9a3c1"
+        "0efb5f70-6326-4e19-ace1-524941f2f1af": "41ae3426-62d8-45f8-976b-c9d741a9a3c1",
+        "dc5bab3d-2bf4-42c8-94ea-df73f0cec5a0": "4adde023-8e05-417e-9ab6-063fd0c85f41",
+        "a8a9d4e8-e314-40a7-943b-7504d1bd4593": "0c532a66-8898-40e6-b5fd-e052d2b29386",
+        "c7f67200-5f7f-4d78-beb7-96baee782cca": "427ecad4-22a0-4808-9360-1731817beabd",
+        "da0311e4-26c7-4c7e-a546-8aa87e7dc75e": "ad6f24f8-7500-484f-90ec-f079ce03f363"
       }
     }
   }
