@@ -4,6 +4,7 @@ import { AppConfig, ChatUi, SocketEvents } from '@poalim/constants';
 import {
   BotTypingPayload,
   ChatMessage,
+  EditMessagePayload,
   JoinRoomPayload,
   RoomHistoryPayload,
   SendMessagePayload,
@@ -31,13 +32,56 @@ export const registerSocketHandlers = (io: Server): void => {
   const getRoomHistory = (roomId: RoomId): ChatMessage[] =>
     historyByRoom.get(roomId) ?? [];
 
+  const setRoomHistory = (roomId: RoomId, messages: ChatMessage[]): void => {
+    historyByRoom.set(roomId, messages.slice(-MAX_HISTORY));
+  };
+
   const pushToHistory = (roomId: RoomId, msg: ChatMessage): void => {
-    const next = [...getRoomHistory(roomId), msg].slice(-MAX_HISTORY);
-    historyByRoom.set(roomId, next);
+    setRoomHistory(roomId, [...getRoomHistory(roomId), msg]);
+  };
+
+  const updateMessageInHistory = (
+    roomId: RoomId,
+    messageId: string,
+    nextContent: string,
+    editor: User | null
+  ): ChatMessage | null => {
+    if (!editor || editor.isBot) return null;
+
+    const history = getRoomHistory(roomId);
+    const idx = history.findIndex((m: ChatMessage) => m.id === messageId);
+    if (idx < 0) return null;
+
+    const target = history[idx];
+    if (!target) return null;
+    if (target.sender?.isBot) return null;
+    if (target.sender?.id !== editor.id) return null;
+
+    const clean = nextContent.trim();
+    if (!clean) return null;
+    if ((target.content ?? '').trim() === clean) return null;
+
+    const now = Date.now();
+    const edits = [...(target.edits ?? [])];
+    edits.push({ previousContent: target.content, editedAt: now });
+
+    const updated: ChatMessage = {
+      ...target,
+      content: clean,
+      editedAt: now,
+      edits,
+    };
+
+    const next = [...history];
+    next[idx] = updated;
+    setRoomHistory(roomId, next);
+
+    return updated;
   };
 
   io.on('connection', (socket: Socket) => {
     let currentRoom: RoomId = DEFAULT_ROOM;
+    let currentUser: User | null = null;
 
     const emitHistory = (roomId: RoomId): void => {
       const payload: RoomHistoryPayload = {
@@ -48,9 +92,13 @@ export const registerSocketHandlers = (io: Server): void => {
     };
 
     socket.on(SocketEvents.JOIN_ROOM, (payload: JoinRoomPayload) => {
-      const roomId = payload?.roomId || DEFAULT_ROOM;
+      const roomId = (payload?.roomId || DEFAULT_ROOM) as RoomId;
+      currentUser = payload?.user ?? null;
 
-      socket.leave(currentRoom);
+      if (currentRoom && currentRoom !== roomId) {
+        socket.leave(currentRoom);
+      }
+
       socket.join(roomId);
       currentRoom = roomId;
 
@@ -58,13 +106,19 @@ export const registerSocketHandlers = (io: Server): void => {
     });
 
     socket.on(SocketEvents.SEND_MESSAGE, (payload: SendMessagePayload) => {
-      const roomId = payload?.roomId || currentRoom || DEFAULT_ROOM;
+      const roomId = (payload?.roomId || currentRoom || DEFAULT_ROOM) as RoomId;
 
       const incoming = payload?.message;
       if (!incoming) return;
+      if (!incoming.sender) return;
+      if (typeof incoming.content !== 'string') return;
+
+      const sender: User =
+        currentUser && !currentUser.isBot ? currentUser : incoming.sender;
 
       const serverMsg: ChatMessage = {
         ...incoming,
+        sender,
         id: incoming.id || randomUUID(),
         timestamp:
           typeof incoming.timestamp === 'number'
@@ -88,6 +142,20 @@ export const registerSocketHandlers = (io: Server): void => {
         pushToHistory(roomId, action.message);
         io.to(roomId).emit(SocketEvents.NEW_MESSAGE, action.message);
       }, action.typingMs);
+    });
+
+    socket.on(SocketEvents.EDIT_MESSAGE, (payload: EditMessagePayload) => {
+      const roomId = (payload?.roomId || currentRoom || DEFAULT_ROOM) as RoomId;
+      const messageId = payload?.messageId ?? '';
+      const content = payload?.content ?? '';
+
+      if (!messageId || typeof messageId !== 'string') return;
+      if (typeof content !== 'string') return;
+
+      const updated = updateMessageInHistory(roomId, messageId, content, currentUser);
+      if (!updated) return;
+
+      io.to(roomId).emit(SocketEvents.MESSAGE_UPDATED, updated);
     });
   });
 };
