@@ -67,7 +67,9 @@ export const registerSocketHandlers = (io: Server): void => {
         ...incoming,
         id: incoming.id || randomUUID(),
         timestamp:
-          typeof incoming.timestamp === 'number' ? incoming.timestamp : Date.now(),
+          typeof incoming.timestamp === 'number'
+            ? incoming.timestamp
+            : Date.now(),
       };
 
       pushToHistory(roomId, serverMsg);
