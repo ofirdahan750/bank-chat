@@ -1,0 +1,12 @@
+[build]
+  command = "npm ci && npx nx build client --configuration=production"
+  publish = "dist/apps/client"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NX_DAEMON = "false"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
