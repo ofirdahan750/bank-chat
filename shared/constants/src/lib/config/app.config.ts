@@ -1,10 +1,8 @@
 export const AppConfig = (() => {
   const LOCAL_BACKEND_URL = 'http://localhost:3000';
+  const PROD_BACKEND_URL = 'https://commercial-merola-ofirdahan-01b4f190.koyeb.app';
 
-  const PROD_BACKEND_URL = 'http://commercial-merola-ofirdahan-01b4f190.koyeb.app/';
-
-  const hostname =
-    typeof window !== 'undefined' ? window.location.hostname : '';
+  const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
 
   const isLocal =
     hostname === 'localhost' ||
@@ -22,11 +20,9 @@ export const AppConfig = (() => {
       USERNAME: 'poalim_chat_username',
     },
 
-    // Limits
     MAX_MSG_LENGTH: 500,
     MIN_USERNAME_LENGTH: 2,
 
-    // Socket
     SOCKET_URL: backendUrl,
     ROOM_ID: 'global',
   } as const;
