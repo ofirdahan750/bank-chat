@@ -24,7 +24,7 @@ export class SocketClientService {
   readonly newMessage = signal<ChatMessage | null>(null);
   readonly messageUpdated = signal<ChatMessage | null>(null);
 
-  connect(me: User, roomId = 'main'): void {
+  connect(me: User, roomId: string = AppConfig.ROOM_ID): void {
     if (this.socket?.connected) return;
 
     this.connectionState.set('connecting');
@@ -60,13 +60,13 @@ export class SocketClientService {
     });
   }
 
-  sendMessage(message: ChatMessage, roomId = 'main'): void {
+  sendMessage(message: ChatMessage, roomId: string = AppConfig.ROOM_ID): void {
     if (!this.socket?.connected) return;
     const payload: SendMessagePayload = { roomId, message };
     this.socket.emit(SocketEvents.SEND_MESSAGE, payload);
   }
 
-  editMessage(messageId: string, content: string, roomId = 'main'): void {
+  editMessage(messageId: string, content: string, roomId: string = AppConfig.ROOM_ID): void {
     if (!this.socket?.connected) return;
     const payload: EditMessagePayload = { roomId, messageId, content };
     this.socket.emit(SocketEvents.EDIT_MESSAGE, payload);

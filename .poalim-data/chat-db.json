@@ -1,0 +1,286 @@
+{
+  "rooms": {
+    "global": {
+      "messages": [
+        {
+          "id": "a5feaa46-7a9c-4f0d-8ba9-34eceb2d0a41",
+          "sender": {
+            "id": "שדכשדכ",
+            "username": "שדכשדכ",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "asf",
+          "timestamp": 1766157029959,
+          "type": "text",
+          "editedAt": 1766157034057,
+          "edits": [
+            {
+              "previousContent": "asf?",
+              "editedAt": 1766157034057
+            }
+          ]
+        },
+        {
+          "id": "0beb2dc6-3b3b-4a4f-8e89-d06a9771d5bc",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "I’ve got nothing for that yet. Next message: the answer. I’ll do the remembering.",
+          "timestamp": 1766157029966,
+          "type": "system"
+        },
+        {
+          "id": "933a86fb-e92e-4c64-8ab9-70e0e8492f0a",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Saved. Next time someone asks, I’ve got you. Q: \"asf?\" A: \"asf\"",
+          "timestamp": 1766157034061,
+          "type": "system"
+        },
+        {
+          "id": "c5d51601-06bf-4931-935f-e50d25fce220",
+          "sender": {
+            "id": "שדכשדכ",
+            "username": "שדכשדכ",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "asf?",
+          "timestamp": 1766157039872,
+          "type": "text",
+          "editedAt": 1766157042650,
+          "edits": [
+            {
+              "previousContent": "asf",
+              "editedAt": 1766157042650
+            }
+          ]
+        },
+        {
+          "id": "3128c466-58af-4d06-a788-e9272bce1594",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "I’m a bot, not a mind reader. Toss in a \"?\" so I know it’s a question.",
+          "timestamp": 1766157039876,
+          "type": "system"
+        },
+        {
+          "id": "87abf46a-0275-4fad-a34b-c86e6ce2999c",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Memory check: passed. Answer: \"asf\"",
+          "timestamp": 1766157042653,
+          "type": "system"
+        },
+        {
+          "id": "af57a17d-653d-4aaf-a6da-15a44422dfcd",
+          "sender": {
+            "id": "שדכשדכ",
+            "username": "שדכשדכ",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "asf",
+          "timestamp": 1766157051646,
+          "type": "text"
+        },
+        {
+          "id": "e3b96b39-88c8-4294-a30c-c30ae4a984a3",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Give me a \"?\" at the end and I’ll switch into answer-machine mode.",
+          "timestamp": 1766157051648,
+          "type": "system"
+        },
+        {
+          "id": "bc8bf1e4-9be5-46f3-b069-af25733a0e1a",
+          "sender": {
+            "id": "שדכשדכ",
+            "username": "שדכשדכ",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "asfsaf",
+          "timestamp": 1766157053899,
+          "type": "text"
+        },
+        {
+          "id": "4a01994f-e5df-47cb-b119-dfc147a9f8f2",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Give me a \"?\" at the end and I’ll switch into answer-machine mode.",
+          "timestamp": 1766157053901,
+          "type": "system"
+        },
+        {
+          "id": "a2df01d4-342f-4daa-9f1a-942ee465e3dd",
+          "sender": {
+            "id": "שדכשדכ",
+            "username": "שדכשדכ",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "asfafs?",
+          "timestamp": 1766157056496,
+          "type": "text"
+        },
+        {
+          "id": "34c69fe1-5717-49f8-9c4e-b39b261d42f5",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "I don’t know this one yet. Send the answer next and I’ll store it forever (or until the server restarts).",
+          "timestamp": 1766157056501,
+          "type": "system"
+        },
+        {
+          "id": "57bacdbc-ef15-4f14-b0fc-fb515b2645e9",
+          "sender": {
+            "id": "ted bro",
+            "username": "ted bro",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "שדכ?",
+          "timestamp": 1766157539562,
+          "type": "text",
+          "editedAt": 1766157545715,
+          "edits": [
+            {
+              "previousContent": "שדכ",
+              "editedAt": 1766157545715
+            }
+          ]
+        },
+        {
+          "id": "6f534089-61e5-4dcb-9111-f9e42f3da142",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Updated. My memory just got a patch. Q: \"asfafs?\" A: \"שדכ?\"",
+          "timestamp": 1766157546248,
+          "type": "system"
+        },
+        {
+          "id": "e74a1e5e-f002-4d06-bb4b-16deca1bb26f",
+          "sender": {
+            "id": "ted bro",
+            "username": "ted bro",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "שדככשד?",
+          "timestamp": 1766157555017,
+          "type": "text",
+          "editedAt": 1766157557953,
+          "edits": [
+            {
+              "previousContent": "שדככשד",
+              "editedAt": 1766157557953
+            }
+          ]
+        },
+        {
+          "id": "5e76e636-99a3-46f1-a2ba-dc58ebfffdf4",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Fresh mystery. Drop the answer in your next message and I’ll learn it.",
+          "timestamp": 1766157558791,
+          "type": "system"
+        },
+        {
+          "id": "0c873a6e-6a68-4ec9-acfa-ce882ce26a03",
+          "sender": {
+            "id": "ted bro",
+            "username": "ted bro",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "שדגשדג",
+          "timestamp": 1766157562546,
+          "type": "text"
+        },
+        {
+          "id": "63ecb9d4-1ed9-45e2-8859-adf6aee7b11e",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Locked in. I will not forget. Probably. Q: \"שדככשד?\" A: \"שדגשדג\"",
+          "timestamp": 1766157563496,
+          "type": "system"
+        }
+      ],
+      "botMemory": {
+        "pending": null,
+        "qa": [
+          {
+            "key": "asf?",
+            "question": "asf?",
+            "answer": "asf",
+            "questionMessageId": "a5feaa46-7a9c-4f0d-8ba9-34eceb2d0a41",
+            "answerMessageId": "a5feaa46-7a9c-4f0d-8ba9-34eceb2d0a41",
+            "updatedAt": 1766157034060
+          },
+          {
+            "key": "asfafs?",
+            "question": "asfafs?",
+            "answer": "שדכ?",
+            "questionMessageId": "a2df01d4-342f-4daa-9f1a-942ee465e3dd",
+            "answerMessageId": "57bacdbc-ef15-4f14-b0fc-fb515b2645e9",
+            "updatedAt": 1766157545716
+          },
+          {
+            "key": "שדככשד?",
+            "question": "שדככשד?",
+            "answer": "שדגשדג",
+            "questionMessageId": "e74a1e5e-f002-4d06-bb4b-16deca1bb26f",
+            "answerMessageId": "0c873a6e-6a68-4ec9-acfa-ce882ce26a03",
+            "updatedAt": 1766157562548
+          }
+        ]
+      },
+      "botReplies": {
+        "57bacdbc-ef15-4f14-b0fc-fb515b2645e9": "6f534089-61e5-4dcb-9111-f9e42f3da142",
+        "e74a1e5e-f002-4d06-bb4b-16deca1bb26f": "5e76e636-99a3-46f1-a2ba-dc58ebfffdf4",
+        "0c873a6e-6a68-4ec9-acfa-ce882ce26a03": "63ecb9d4-1ed9-45e2-8859-adf6aee7b11e"
+      }
+    }
+  }
+}
