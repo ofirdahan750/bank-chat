@@ -1,7 +1,6 @@
 export const AppConfig = (() => {
   const LOCAL_BACKEND_URL = 'http://localhost:3000';
 
-  // TODO: replace with your deployed backend URL (Koyeb/Render)
   const PROD_BACKEND_URL = 'http://commercial-merola-ofirdahan-01b4f190.koyeb.app/';
 
   const hostname =
