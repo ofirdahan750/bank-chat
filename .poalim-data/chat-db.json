@@ -580,6 +580,54 @@
           "content": "No \"?\" no magic. Add a question mark and I’ll file it properly.",
           "timestamp": 1766164502307,
           "type": "system"
+        },
+        {
+          "id": "b8f93e55-78d7-45f8-8358-9bb7efb6bbb6",
+          "sender": {
+            "id": "ted bro",
+            "username": "ted bro",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "sdvs",
+          "timestamp": 1766170757212,
+          "type": "text"
+        },
+        {
+          "id": "dc14f316-8536-4fcd-abf2-30171a248774",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "No \"?\" no magic. Add a question mark and I’ll file it properly.",
+          "timestamp": 1766170758079,
+          "type": "system"
+        },
+        {
+          "id": "7989ca05-4faa-4731-ad1a-c7ec64a5365c",
+          "sender": {
+            "id": "ted bro",
+            "username": "ted bro",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "sdv",
+          "timestamp": 1766170774494,
+          "type": "text"
+        },
+        {
+          "id": "a4a747eb-00ad-4a27-a315-fa0a86fd7bc6",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "I can only treat something as a question if it ends with a \"?\". Add one and I’ll behave.",
+          "timestamp": 1766170775504,
+          "type": "system"
         }
       ],
       "botMemory": {
@@ -641,7 +689,9 @@
         "a8a9d4e8-e314-40a7-943b-7504d1bd4593": "0c532a66-8898-40e6-b5fd-e052d2b29386",
         "c7f67200-5f7f-4d78-beb7-96baee782cca": "427ecad4-22a0-4808-9360-1731817beabd",
         "da0311e4-26c7-4c7e-a546-8aa87e7dc75e": "ad6f24f8-7500-484f-90ec-f079ce03f363",
-        "f2d6271a-2520-491e-ac33-27b06416b76e": "76af334b-3fac-41a3-800c-5f5fc6eedbc6"
+        "f2d6271a-2520-491e-ac33-27b06416b76e": "76af334b-3fac-41a3-800c-5f5fc6eedbc6",
+        "b8f93e55-78d7-45f8-8358-9bb7efb6bbb6": "dc14f316-8536-4fcd-abf2-30171a248774",
+        "7989ca05-4faa-4731-ad1a-c7ec64a5365c": "a4a747eb-00ad-4a27-a315-fa0a86fd7bc6"
       }
     }
   }

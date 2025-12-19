@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
-import { SocketEvents } from '@poalim/constants';
+import { AppConfig, SocketEvents } from '@poalim/constants';
 import {
   BotTypingPayload,
   JoinRoomPayload,
@@ -14,8 +14,8 @@ export class ChatSocketService {
 
   connect(): void {
     if (this.socket) return;
-
-    this.socket = io('http://localhost:3000', {
+  
+    this.socket = io(AppConfig.SOCKET_URL, {
       transports: ['websocket'],
     });
   }

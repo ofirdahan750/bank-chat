@@ -33,7 +33,7 @@ const io = new Server(httpServer, {
 
 registerSocketHandlers(io);
 
-const port = Number(process.env.PORT ?? 8000);
+const port = Number(process.env.PORT ?? 3000);
 const host = '0.0.0.0';
 
 httpServer.listen(port, host, () => {
