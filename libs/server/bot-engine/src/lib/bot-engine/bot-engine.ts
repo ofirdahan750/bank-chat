@@ -1,105 +1,80 @@
 import { randomUUID } from 'crypto';
 import { ChatMessage, User } from '@poalim/shared-interfaces';
 
-export interface BotAction {
+export type BotAction = {
   typingMs: number;
   message: ChatMessage;
-}
+};
 
-export interface BotMemorySnapshot {
-  qa: Record<string, string>;
-  pendingByRoom: Record<string, string | undefined>;
-}
+type RoomId = string;
+
+type RoomState = {
+  pendingQuestion: string | null;
+  pendingKey: string | null;
+};
 
 export class BotEngine {
   private readonly qa = new Map<string, string>();
-  private readonly pendingByRoom = new Map<string, string>();
-  private readonly answerStyle = [
-    'I remember this one.',
-    'Yep, seen it before.',
-    'This question again? Fine. Here you go.',
-    'My tiny brain cached this.',
-  ];
-  private readonly savedStyle = [
-    'Saved. Ask it again and I will flex my memory.',
-    'Locked in. I am basically a spreadsheet with confidence.',
-    'Stored. Future me says thanks.',
-    'Got it. I will remember that. Probably.',
-  ];
-  private readonly waitingStyle = [
-    'Interesting. Who has the answer? I am taking notes.',
-    'New question detected. Someone please teach me.',
-    'I do not know yet. Feed me an answer.',
-    'Fresh question. I am listening.',
-  ];
+  private readonly roomState = new Map<RoomId, RoomState>();
 
-  constructor(private readonly botUser: User, snapshot?: BotMemorySnapshot) {
-    Object.entries(snapshot?.qa ?? {}).forEach(([q, a]) => this.qa.set(q, a));
-    Object.entries(snapshot?.pendingByRoom ?? {}).forEach(([roomId, q]) => {
-      if (q) this.pendingByRoom.set(roomId, q);
-    });
-  }
+  onUserMessage(roomId: RoomId, userMessage: ChatMessage, botUser: User): BotAction | null {
+    if (userMessage.sender?.isBot) return null;
 
-  snapshot(): BotMemorySnapshot {
-    return {
-      qa: Object.fromEntries(this.qa.entries()),
-      pendingByRoom: Object.fromEntries(
-        Array.from(this.pendingByRoom.entries()).map(([k, v]) => [k, v])
-      ),
-    };
-  }
-
-  onUserMessage(roomId: string, msg: ChatMessage): BotAction | null {
-    if (!roomId) return null;
-    if (!msg || !msg.content) return null;
-    if (msg.sender?.isBot) return null;
-
-    const raw = msg.content.trim();
+    const raw = (userMessage.content ?? '').trim();
     if (!raw) return null;
 
-    const isQuestion = raw.endsWith('?');
-    if (isQuestion) return this.handleQuestion(roomId, raw);
+    const state = this.getRoomState(roomId);
 
-    return this.handleAnswer(roomId, raw);
-  }
+    if (state.pendingKey && state.pendingQuestion) {
+      if (!this.isQuestion(raw)) {
+        const answer = raw;
+        const question = state.pendingQuestion;
 
-  private handleQuestion(roomId: string, questionRaw: string): BotAction | null {
-    const qKey = this.normalizeQuestion(questionRaw);
-    if (!qKey) return null;
+        this.qa.set(state.pendingKey, answer);
 
-    const known = this.qa.get(qKey);
-    if (known) {
-      const safe = this.isSafeToEcho(known);
-      const prefix = this.pick(this.answerStyle);
-      const content = safe
-        ? `${prefix} Answer: ${known}`
-        : `${prefix} I have an answer saved, but it is not in English, so I will not repeat it here.`;
+        state.pendingKey = null;
+        state.pendingQuestion = null;
 
-      return this.reply(roomId, content, 550);
+        return this.buildBotAction(botUser, this.savedLine(question, answer));
+      }
+
+      state.pendingKey = null;
+      state.pendingQuestion = null;
     }
 
-    this.pendingByRoom.set(roomId, qKey);
-    return this.reply(roomId, this.pick(this.waitingStyle), 350);
+    if (!this.isQuestion(raw)) {
+      return this.buildBotAction(botUser, this.missingQuestionMarkLine());
+    }
+
+    const questionPretty = this.prettyQuestion(raw);
+    const key = this.normalizeQuestionKey(raw);
+    const knownAnswer = this.qa.get(key);
+
+    if (knownAnswer) {
+      return this.buildBotAction(botUser, this.rememberedLine(knownAnswer));
+    }
+
+    state.pendingQuestion = questionPretty;
+    state.pendingKey = key;
+
+    return this.buildBotAction(botUser, this.askForAnswerLine());
   }
 
-  private handleAnswer(roomId: string, answerRaw: string): BotAction | null {
-    const pending = this.pendingByRoom.get(roomId);
-    if (!pending) return null;
+  private getRoomState(roomId: RoomId): RoomState {
+    const existing = this.roomState.get(roomId);
+    if (existing) return existing;
 
-    const clean = answerRaw.trim();
-    if (!clean) return null;
-    if (clean.endsWith('?')) return null;
-
-    this.qa.set(pending, clean);
-    this.pendingByRoom.delete(roomId);
-
-    return this.reply(roomId, this.pick(this.savedStyle), 450);
+    const next: RoomState = { pendingQuestion: null, pendingKey: null };
+    this.roomState.set(roomId, next);
+    return next;
   }
 
-  private reply(roomId: string, content: string, typingMs: number): BotAction {
+  private buildBotAction(botUser: User, content: string): BotAction {
+    const typingMs = this.pickTypingMs();
+
     const message: ChatMessage = {
       id: randomUUID(),
-      sender: this.botUser,
+      sender: botUser,
       content,
       timestamp: Date.now(),
       type: 'system',
@@ -108,17 +83,71 @@ export class BotEngine {
     return { typingMs, message };
   }
 
-  private normalizeQuestion(q: string): string {
-    const base = q.trim().replace(/\s+/g, ' ').replace(/\?+$/g, '').trim();
-    return base.toLowerCase();
+  private isQuestion(text: string): boolean {
+    return text.trim().endsWith('?');
   }
 
-  private pick(list: string[]): string {
-    const idx = Math.floor(Math.random() * list.length);
-    return list[idx] ?? list[0] ?? '';
+  private prettyQuestion(text: string): string {
+    const t = text.trim();
+    return t.endsWith('?') ? t : `${t}?`;
   }
 
-  private isSafeToEcho(text: string): boolean {
-    return !/[\u0590-\u05FF]/.test(text);
+  private normalizeQuestionKey(text: string): string {
+    return text
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, ' ')
+      .replace(/\?+$/g, '?');
+  }
+
+  private pickTypingMs(): number {
+    const base = 450;
+    const jitter = Math.floor(Math.random() * 650);
+    return base + jitter;
+  }
+
+  private pickOne(lines: readonly string[]): string {
+    const idx = Math.floor(Math.random() * lines.length);
+    return lines[idx] ?? lines[0] ?? '';
+  }
+
+  private missingQuestionMarkLine(): string {
+    return this.pickOne([
+      'I can only treat something as a question if it ends with a "?". Add one and I’ll behave.',
+      'No "?" no magic. Add a question mark and I’ll file it properly.',
+      'I’m a bot, not a mind reader. Toss in a "?" so I know it’s a question.',
+      'Give me a "?" at the end and I’ll switch into answer-machine mode.',
+    ]);
+  }
+
+  private askForAnswerLine(): string {
+    return this.pickOne([
+      'New question unlocked. Reply with the answer in your next message and I’ll remember it.',
+      'I don’t know this one yet. Send the answer next and I’ll store it forever (or until the server restarts).',
+      'Fresh mystery. Drop the answer in your next message and I’ll learn it.',
+      'I’ve got nothing for that yet. Next message: the answer. I’ll do the remembering.',
+    ]);
+  }
+
+  private savedLine(question: string, answer: string): string {
+    const base = this.pickOne([
+      'Saved. Next time someone asks, I’ve got you.',
+      'Locked in. I will not forget. Probably.',
+      'Stored. I am now 0.001% smarter.',
+      'Saved. That knowledge is mine now. Thanks, human.',
+    ]);
+
+    return `${base} Q: "${question}" A: "${answer}"`;
+  }
+
+  private rememberedLine(answer: string): string {
+    const intro = this.pickOne([
+      'I remember this. The answer is:',
+      'Memory check: passed. Answer:',
+      'Seen this one before. Answer:',
+      'Yep. We already solved this. Answer:',
+    ]);
+
+    return `${intro} "${answer}"`;
   }
 }

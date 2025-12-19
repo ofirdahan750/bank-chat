@@ -1,12 +1,13 @@
-import type { Server, Socket } from 'socket.io';
 import { randomUUID } from 'crypto';
-import { SocketEvents } from '@poalim/constants';
-import type {
+import { Server, Socket } from 'socket.io';
+import { AppConfig, ChatUi, SocketEvents } from '@poalim/constants';
+import {
   BotTypingPayload,
   ChatMessage,
   JoinRoomPayload,
   RoomHistoryPayload,
   SendMessagePayload,
+  User,
 } from '@poalim/shared-interfaces';
 import { BotEngine } from '../lib/bot-engine/bot-engine';
 
@@ -16,12 +17,14 @@ const DEFAULT_ROOM: RoomId = 'main';
 const MAX_HISTORY = 200;
 
 export const registerSocketHandlers = (io: Server): void => {
-  const bot = new BotEngine({
-    id: 'bot',
-    username: 'Poalim Bot',
+  const bot = new BotEngine();
+
+  const botUser: User = {
+    id: ChatUi.BOT.ID,
+    username: AppConfig.BOT_NAME,
     isBot: true,
-    color: '#ed1d24',
-  });
+    color: ChatUi.BOT.DEFAULT_COLOR,
+  };
 
   const historyByRoom = new Map<RoomId, ChatMessage[]>();
 
@@ -56,8 +59,8 @@ export const registerSocketHandlers = (io: Server): void => {
 
     socket.on(SocketEvents.SEND_MESSAGE, (payload: SendMessagePayload) => {
       const roomId = payload?.roomId || currentRoom || DEFAULT_ROOM;
-      const incoming = payload?.message;
 
+      const incoming = payload?.message;
       if (!incoming) return;
 
       const serverMsg: ChatMessage = {
@@ -67,13 +70,11 @@ export const registerSocketHandlers = (io: Server): void => {
           typeof incoming.timestamp === 'number' ? incoming.timestamp : Date.now(),
       };
 
-      if (!serverMsg.content?.trim()) return;
-
       pushToHistory(roomId, serverMsg);
       io.to(roomId).emit(SocketEvents.NEW_MESSAGE, serverMsg);
 
-      const decision = bot.onUserMessage(roomId, serverMsg);
-      if (!decision) return;
+      const action = bot.onUserMessage(roomId, serverMsg, botUser);
+      if (!action) return;
 
       const typingOn: BotTypingPayload = { roomId, isTyping: true };
       io.to(roomId).emit(SocketEvents.BOT_TYPING, typingOn);
@@ -82,11 +83,9 @@ export const registerSocketHandlers = (io: Server): void => {
         const typingOff: BotTypingPayload = { roomId, isTyping: false };
         io.to(roomId).emit(SocketEvents.BOT_TYPING, typingOff);
 
-        const botMsg = decision.message;
-
-        pushToHistory(roomId, botMsg);
-        io.to(roomId).emit(SocketEvents.NEW_MESSAGE, botMsg);
-      }, decision.typingMs);
+        pushToHistory(roomId, action.message);
+        io.to(roomId).emit(SocketEvents.NEW_MESSAGE, action.message);
+      }, action.typingMs);
     });
   });
 };

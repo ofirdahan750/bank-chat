@@ -1,9 +1,6 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { AppConfig, ChatUi, UIText } from '@poalim/constants';
-import {
-  LocalStorageService,
-  SocketClientService,
-} from '@poalim/client-data-access';
+import { LocalStorageService, SocketClientService } from '@poalim/client-data-access';
 import { ChatMessage, User } from '@poalim/shared-interfaces';
 
 @Injectable({ providedIn: 'root' })
@@ -11,8 +8,7 @@ export class ChatStore {
   private readonly storage = inject(LocalStorageService);
   private readonly socket = inject(SocketClientService);
 
-  private readonly storedUsername =
-    this.storage.getString(AppConfig.STORAGE_KEYS.USERNAME) ?? '';
+  private readonly storedUsername = this.storage.getString(AppConfig.STORAGE_KEYS.USERNAME) ?? '';
 
   readonly username = signal<string>(this.storedUsername);
   readonly messages = signal<ChatMessage[]>([]);
@@ -26,7 +22,7 @@ export class ChatStore {
   });
 
   readonly me = computed<User>(() => ({
-    id: this.storedUsername || ChatUi.USER.DEFAULT_ID,
+    id: this.username().trim() || ChatUi.USER.DEFAULT_ID,
     username: this.username().trim(),
     isBot: false,
     color: ChatUi.USER.DEFAULT_COLOR,
@@ -45,28 +41,33 @@ export class ChatStore {
     }
 
     effect(() => {
+      const history = this.socket.roomHistory();
+      if (!history) return;
+
+      const next = this.mergeUniqueById(this.messages(), history);
+      this.messages.set(next);
+
+      this.socket.roomHistory.set(null);
+    });
+
+    effect(() => {
       const incoming = this.socket.lastIncomingMessage();
       if (!incoming) return;
 
-      // Dedupe by id (prevents double render when we do optimistic UI or server echoes)
-      this.messages.update((prev) => {
-        const exists = prev.some((m) => m.id === incoming.id);
-        return exists ? prev : [...prev, incoming];
-      });
+      const next = this.mergeUniqueById(this.messages(), [incoming]);
+      this.messages.set(next);
 
-      // Clear signal so it won't re-append
       this.socket.lastIncomingMessage.set(null);
     });
   }
 
-  submitNickname(rawNickname: string): void {
-    const nickname = rawNickname.trim();
-    if (nickname.length < AppConfig.MIN_USERNAME_LENGTH) return;
+  submitNickname(nickname: string): void {
+    const clean = nickname.trim();
+    if (clean.length < AppConfig.MIN_USERNAME_LENGTH) return;
 
-    this.storage.setString(AppConfig.STORAGE_KEYS.USERNAME, nickname);
-    this.username.set(nickname);
+    this.storage.setString(AppConfig.STORAGE_KEYS.USERNAME, clean);
+    this.username.set(clean);
 
-    // Connect after nickname exists
     this.socket.connect(this.me());
 
     if (this.messages().length === 0) {
@@ -74,24 +75,21 @@ export class ChatStore {
     }
   }
 
-  send(rawContent: string): void {
+  send(content: string): void {
     if (!this.hasNickname()) return;
 
-    const content = rawContent.trim();
-    if (!content) return;
+    const clean = content.trim();
+    if (!clean) return;
 
     const msg: ChatMessage = {
       id: crypto.randomUUID(),
       sender: this.me(),
-      content,
+      content: clean,
       timestamp: Date.now(),
       type: 'text',
     };
 
-    // Optimistic UI (fast), but protected by dedupe on incoming
-    this.messages.update((prev) => [...prev, msg]);
-
-    // Server sync
+    this.messages.set(this.mergeUniqueById(this.messages(), [msg]));
     this.socket.sendMessage(msg);
   }
 
@@ -105,7 +103,18 @@ export class ChatStore {
     };
 
     window.setTimeout(() => {
-      this.messages.update((prev) => [...prev, msg]);
+      this.messages.set(this.mergeUniqueById(this.messages(), [msg]));
     }, AppConfig.BOT_DELAY_MS);
+  }
+
+  private mergeUniqueById(base: ChatMessage[], incoming: ChatMessage[]): ChatMessage[] {
+    const validIncoming = incoming.filter((m: ChatMessage) => !!m?.id);
+
+    const map = [...base, ...validIncoming].reduce((acc, m) => {
+      acc.set(m.id, m);
+      return acc;
+    }, new Map<string, ChatMessage>());
+
+    return Array.from(map.values()).sort((a, b) => a.timestamp - b.timestamp);
   }
 }

@@ -1,34 +1,33 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
-import { AppConfig, ChatUi } from '@poalim/constants';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
+import { AppConfig, ChatUi, UIText } from '@poalim/constants';
 import { LocalStorageService, SocketClientService } from '@poalim/client-data-access';
-import { ChatMessage, RoomHistoryPayload, User } from '@poalim/shared-interfaces';
+import { ChatMessage, User } from '@poalim/shared-interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class ChatStore {
   private readonly storage = inject(LocalStorageService);
   private readonly socket = inject(SocketClientService);
 
-  private readonly roomId = 'main';
+  private readonly storedUsername =
+    this.storage.getString(AppConfig.STORAGE_KEYS.USERNAME) ?? '';
 
-  readonly username = signal<string>(
-    this.storage.getString(AppConfig.STORAGE_KEYS.USERNAME) ?? ''
-  );
-
+  readonly username = signal<string>(this.storedUsername);
   readonly messages = signal<ChatMessage[]>([]);
+
   readonly botTyping = computed(() => this.socket.botTyping());
   readonly connectionState = computed(() => this.socket.connectionState());
 
-  readonly hasNickname = computed(() => this.username().trim().length >= AppConfig.MIN_USERNAME_LENGTH);
-
-  readonly me = computed<User>(() => {
+  readonly hasNickname = computed(() => {
     const name = this.username().trim();
-    return {
-      id: name || ChatUi.USER.DEFAULT_ID,
-      username: name,
-      isBot: false,
-      color: ChatUi.USER.DEFAULT_COLOR,
-    };
+    return name.length >= AppConfig.MIN_USERNAME_LENGTH;
   });
+
+  readonly me = computed<User>(() => ({
+    id: this.username().trim() || ChatUi.USER.DEFAULT_ID,
+    username: this.username().trim(),
+    isBot: false,
+    color: ChatUi.USER.DEFAULT_COLOR,
+  }));
 
   readonly bot = computed<User>(() => ({
     id: ChatUi.BOT.ID,
@@ -38,22 +37,25 @@ export class ChatStore {
   }));
 
   constructor() {
-    this.socket.onRoomHistory((payload: RoomHistoryPayload) => {
-      if (payload.roomId !== this.roomId) return;
-      const next = (payload.messages ?? []).filter((m: ChatMessage) => !!m?.id);
-      this.messages.set(next);
-    });
-
-    this.socket.onNewMessage((msg: ChatMessage) => {
-      if (!msg?.id) return;
-      this.messages.update((prev: ChatMessage[]) =>
-        prev.some((x: ChatMessage) => x.id === msg.id) ? prev : [...prev, msg]
-      );
-    });
-
     if (this.hasNickname()) {
-      this.socket.connect(this.me(), this.roomId);
+      this.socket.connect(this.me());
     }
+
+    effect(() => {
+      const history = this.socket.roomHistory();
+      if (!history) return;
+
+      this.messages.set(this.mergeUniqueById(this.messages(), history));
+      this.socket.roomHistory.set(null);
+    });
+
+    effect(() => {
+      const incoming = this.socket.lastIncomingMessage();
+      if (!incoming) return;
+
+      this.messages.set(this.mergeUniqueById(this.messages(), [incoming]));
+      this.socket.lastIncomingMessage.set(null);
+    });
   }
 
   submitNickname(nickname: string): void {
@@ -63,7 +65,11 @@ export class ChatStore {
     this.storage.setString(AppConfig.STORAGE_KEYS.USERNAME, clean);
     this.username.set(clean);
 
-    this.socket.connect(this.me(), this.roomId);
+    this.socket.connect(this.me());
+
+    if (this.messages().length === 0) {
+      this.enqueueBotGreeting();
+    }
   }
 
   send(content: string): void {
@@ -80,15 +86,34 @@ export class ChatStore {
       type: 'text',
     };
 
-    this.messages.update((prev: ChatMessage[]) =>
-      prev.some((x: ChatMessage) => x.id === msg.id) ? prev : [...prev, msg]
-    );
-
-    this.socket.sendMessage(msg, this.roomId);
+    this.messages.set(this.mergeUniqueById(this.messages(), [msg]));
+    this.socket.sendMessage(msg);
   }
 
-  disconnect(): void {
-    this.socket.disconnect();
-    this.messages.set([]);
+  private enqueueBotGreeting(): void {
+    const msg: ChatMessage = {
+      id: crypto.randomUUID(),
+      sender: this.bot(),
+      content: UIText.BOT.DEFAULT_GREETING,
+      timestamp: Date.now(),
+      type: 'system',
+    };
+
+    window.setTimeout(() => {
+      this.messages.set(this.mergeUniqueById(this.messages(), [msg]));
+    }, AppConfig.BOT_DELAY_MS);
+  }
+
+  private mergeUniqueById(base: ChatMessage[], incoming: ChatMessage[]): ChatMessage[] {
+    const validIncoming = incoming.filter((m: ChatMessage) => !!m?.id);
+
+    const map = [...base, ...validIncoming].reduce((acc, m: ChatMessage) => {
+      acc.set(m.id, m);
+      return acc;
+    }, new Map<string, ChatMessage>());
+
+    return Array.from(map.values()).sort(
+      (a: ChatMessage, b: ChatMessage) => a.timestamp - b.timestamp
+    );
   }
 }

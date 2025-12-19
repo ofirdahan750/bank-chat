@@ -1,5 +1,14 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation, inject } from '@angular/core';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ViewEncapsulation,
+  inject,
+} from '@angular/core';
+import {
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { AppConfig, ChatUi, UIText } from '@poalim/constants';
 import { ChatMessage } from '@poalim/shared-interfaces';
@@ -35,7 +44,10 @@ export class FeatureChat {
 
   protected readonly composerForm = this.fb.group({
     content: this.fb.control('', {
-      validators: [Validators.required, Validators.maxLength(AppConfig.MAX_MSG_LENGTH)],
+      validators: [
+        Validators.required,
+        Validators.maxLength(AppConfig.MAX_MSG_LENGTH),
+      ],
     }),
   });
 
@@ -60,7 +72,7 @@ export class FeatureChat {
     if (this.composerForm.invalid) {
       this.composerForm.markAllAsTouched();
       return;
-    } 
+    }
 
     this.store.send(this.composerForm.controls.content.value);
     this.composerForm.reset({ content: '' });
@@ -70,7 +82,10 @@ export class FeatureChat {
     const date = new Date(timestamp);
     if (Number.isNaN(date.getTime())) return '';
 
-    return new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' }).format(date);
+    return new Intl.DateTimeFormat(undefined, {
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(date);
   }
 
   protected trackById = (_: number, m: ChatMessage) => m.id;
