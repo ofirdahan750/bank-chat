@@ -131,6 +131,102 @@
               "שדבשדב"
             ]
           }
+        },
+        {
+          "id": "ae929330-0828-4d4a-be4e-904d5611bff4",
+          "sender": {
+            "id": "שדבשדב",
+            "username": "שדבשדב",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "ofir dahan 2",
+          "timestamp": 1766239203206,
+          "type": "text"
+        },
+        {
+          "id": "6e8f7630-2318-458d-8636-ff16b1753559",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "I’m a bot, not a mind reader. Toss in a \"?\" so I know it’s a question.",
+          "timestamp": 1766239204242,
+          "type": "system"
+        },
+        {
+          "id": "332a1026-2db9-4c31-afb6-1df828245010",
+          "sender": {
+            "id": "ofir dahan 2",
+            "username": "ofir dahan 2",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "wow",
+          "timestamp": 1766239217199,
+          "type": "text"
+        },
+        {
+          "id": "949b941b-f25e-4220-ae8e-2f3f4a827be2",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "No \"?\" no magic. Add a question mark and I’ll file it properly.",
+          "timestamp": 1766239218159,
+          "type": "system"
+        },
+        {
+          "id": "c90fe079-1cf9-4387-92b7-33348af89f06",
+          "sender": {
+            "id": "ofir dahan 2",
+            "username": "ofir dahan 2",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "wow?",
+          "timestamp": 1766239221652,
+          "type": "text"
+        },
+        {
+          "id": "ba291999-9d50-40ca-a79c-f8be39c4d505",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "I’ve got nothing for that yet. Next message: the answer. I’ll do the remembering.",
+          "timestamp": 1766239222722,
+          "type": "system"
+        },
+        {
+          "id": "7e36fdb5-402d-4229-b4aa-00eb5b515577",
+          "sender": {
+            "id": "ofir dahan 2",
+            "username": "ofir dahan 2",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "cool",
+          "timestamp": 1766239225148,
+          "type": "text"
+        },
+        {
+          "id": "9cf39def-b75d-4cee-93ff-1b42a42e6e90",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Locked in. I will not forget. Probably. Q: \"wow?\" A: \"cool\"",
+          "timestamp": 1766239225732,
+          "type": "system"
         }
       ],
       "botMemory": {
@@ -143,6 +239,14 @@
             "questionMessageId": "66dded61-ba77-460b-bc40-c074ad09b568",
             "answerMessageId": "2f0192a5-8570-409c-b141-dd5be7405bc8",
             "updatedAt": 1766237039525
+          },
+          {
+            "key": "wow?",
+            "question": "wow?",
+            "answer": "cool",
+            "questionMessageId": "c90fe079-1cf9-4387-92b7-33348af89f06",
+            "answerMessageId": "7e36fdb5-402d-4229-b4aa-00eb5b515577",
+            "updatedAt": 1766239225152
           }
         ]
       },
@@ -150,7 +254,11 @@
         "66dded61-ba77-460b-bc40-c074ad09b568": "899b028d-cbde-4447-82df-f54caca4e50d",
         "2f0192a5-8570-409c-b141-dd5be7405bc8": "563d113f-52b0-4a55-a273-f7103b699bda",
         "703b4284-738a-4740-b043-f092046dae77": "41d4886e-99a9-42f3-9a0f-b02036a7401d",
-        "1f62ae78-f0ca-4715-8afd-569ef807df3a": "6aab607f-2be4-40b4-b52c-636e754b486e"
+        "1f62ae78-f0ca-4715-8afd-569ef807df3a": "6aab607f-2be4-40b4-b52c-636e754b486e",
+        "ae929330-0828-4d4a-be4e-904d5611bff4": "6e8f7630-2318-458d-8636-ff16b1753559",
+        "332a1026-2db9-4c31-afb6-1df828245010": "949b941b-f25e-4220-ae8e-2f3f4a827be2",
+        "c90fe079-1cf9-4387-92b7-33348af89f06": "ba291999-9d50-40ca-a79c-f8be39c4d505",
+        "7e36fdb5-402d-4229-b4aa-00eb5b515577": "9cf39def-b75d-4cee-93ff-1b42a42e6e90"
       }
     }
   }
