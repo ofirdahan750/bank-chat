@@ -25,7 +25,9 @@ describe('AppComponent', () => {
 
   it('should render the title in the header', () => {
     const el: HTMLElement = fixture.nativeElement as HTMLElement;
-    const h1: HTMLHeadingElement | null = el.querySelector('h1.app-shell__title');
+    const h1: HTMLHeadingElement | null = el.querySelector(
+      'h1.app-shell__title'
+    );
 
     expect(h1).not.toBeNull();
     expect(h1?.textContent?.trim()).toBe(UI_TEXT.LOGIN.TITLE);
