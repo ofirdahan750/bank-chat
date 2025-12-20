@@ -1,4 +1,4 @@
-import { BotEngineTexts } from "@poalim/shared-interfaces";
+import { BotEngineTexts } from '@poalim/shared-interfaces';
 
 export const BOT_ENGINE_TEXT: BotEngineTexts = {
   MISSING_QUESTION_MARK: [

@@ -1,52 +1,66 @@
+// libs/server/socket-handler/src/lib/socket-handler.ts
+
 import { Server, Socket } from 'socket.io';
 import { randomUUID } from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
-import { AppConfig, ChatUi, SocketEvents } from '@poalim/constants';
 import {
+  AppConfig,
+  ChatUi,
+  REACTION_KEYS,
+  SERVER_PERSISTENCE_CONFIG,
+  SocketEvents,
+} from '@poalim/constants';
+import {
+  BotEngineRoomId,
   BotTypingPayload,
   ChatMessage,
   EditMessagePayload,
   JoinRoomPayload,
+  PersistedDb,
+  ReactionKey,
   RoomHistoryPayload,
   SendMessagePayload,
   ToggleReactionPayload,
-  ReactionKey,
   User,
 } from '@poalim/shared-interfaces';
 import { BotEngine } from '@poalim/bot-engine';
 
-type RoomId = string;
+const DEFAULT_ROOM_ID: BotEngineRoomId = AppConfig.ROOM_ID as BotEngineRoomId;
 
-const DEFAULT_ROOM: RoomId = AppConfig.ROOM_ID as RoomId;
-const MAX_HISTORY = 200;
+const DATA_DIR_PATH: string = path.join(
+  process.cwd(),
+  SERVER_PERSISTENCE_CONFIG.DATA_DIR_NAME
+);
 
-type PersistedBotRoomMemory = ReturnType<BotEngine['dumpRoom']>;
-
-type PersistedRoom = {
-  messages: ChatMessage[];
-  botMemory: PersistedBotRoomMemory;
-  botReplies: Record<string, string>; // userMessageId -> botMessageId
-};
-
-type PersistedDb = {
-  rooms: Record<string, PersistedRoom>;
-};
-
-const DATA_DIR = path.join(process.cwd(), '.poalim-data');
-const DATA_FILE = path.join(DATA_DIR, 'chat-db.json');
+const DATA_FILE_PATH: string = path.join(
+  DATA_DIR_PATH,
+  SERVER_PERSISTENCE_CONFIG.DB_FILE_NAME
+);
 
 const ensureDir = (): void => {
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+  if (!fs.existsSync(DATA_DIR_PATH)) {
+    fs.mkdirSync(DATA_DIR_PATH, { recursive: true });
+  }
 };
 
 const loadDb = (): PersistedDb => {
   try {
-    if (!fs.existsSync(DATA_FILE)) return { rooms: {} };
-    const raw = fs.readFileSync(DATA_FILE, 'utf8');
-    const parsed = JSON.parse(raw) as PersistedDb;
-    if (!parsed || typeof parsed !== 'object' || !parsed.rooms) return { rooms: {} };
-    return parsed;
+    if (!fs.existsSync(DATA_FILE_PATH)) return { rooms: {} };
+
+    const raw: string = fs.readFileSync(
+      DATA_FILE_PATH,
+      SERVER_PERSISTENCE_CONFIG.FILE_ENCODING
+    );
+
+    const parsed: unknown = JSON.parse(raw);
+
+    if (!parsed || typeof parsed !== 'object') return { rooms: {} };
+    const obj = parsed as { rooms?: unknown };
+
+    if (!obj.rooms || typeof obj.rooms !== 'object') return { rooms: {} };
+
+    return parsed as PersistedDb;
   } catch {
     return { rooms: {} };
   }
@@ -54,9 +68,34 @@ const loadDb = (): PersistedDb => {
 
 const saveDb = (db: PersistedDb): void => {
   ensureDir();
-  const tmp = `${DATA_FILE}.tmp`;
-  fs.writeFileSync(tmp, JSON.stringify(db, null, 2), 'utf8');
-  fs.renameSync(tmp, DATA_FILE);
+
+  // Atomic write: write temp file, then rename.
+  const tmpPath: string = `${DATA_FILE_PATH}${SERVER_PERSISTENCE_CONFIG.TMP_SUFFIX}`;
+
+  fs.writeFileSync(
+    tmpPath,
+    JSON.stringify(db, null, 2),
+    SERVER_PERSISTENCE_CONFIG.FILE_ENCODING
+  );
+
+  fs.renameSync(tmpPath, DATA_FILE_PATH);
+};
+
+const isReactionKey = (value: unknown): value is ReactionKey => {
+  if (typeof value !== 'string') return false;
+
+  // Keep server validation in sync with the shared union.
+  return (REACTION_KEYS as readonly string[]).includes(value);
+};
+
+const normalizeRoomId = (
+  candidate: unknown,
+  fallback: BotEngineRoomId
+): BotEngineRoomId => {
+  if (typeof candidate !== 'string') return fallback;
+
+  const trimmed = candidate.trim();
+  return (trimmed ? trimmed : fallback) as BotEngineRoomId;
 };
 
 export const registerSocketHandlers = (io: Server): void => {
@@ -69,13 +108,19 @@ export const registerSocketHandlers = (io: Server): void => {
     color: ChatUi.BOT.DEFAULT_COLOR,
   };
 
-  const db = loadDb();
+  const db: PersistedDb = loadDb();
 
-  const historyByRoom = new Map<RoomId, ChatMessage[]>();
-  const botRepliesByRoom = new Map<RoomId, Map<string, string>>();
+  // In-memory caches (source of truth is persisted DB).
+  const historyByRoom = new Map<BotEngineRoomId, ChatMessage[]>();
+  const botRepliesByRoom = new Map<BotEngineRoomId, Map<string, string>>();
 
-  for (const [roomId, room] of Object.entries(db.rooms)) {
-    historyByRoom.set(roomId, (room?.messages ?? []).slice(-MAX_HISTORY));
+  for (const [roomIdRaw, room] of Object.entries(db.rooms)) {
+    const roomId = roomIdRaw as BotEngineRoomId;
+
+    historyByRoom.set(
+      roomId,
+      (room?.messages ?? []).slice(-SERVER_PERSISTENCE_CONFIG.MAX_HISTORY)
+    );
 
     const replies = new Map<string, string>();
     for (const [k, v] of Object.entries(room?.botReplies ?? {})) {
@@ -86,25 +131,36 @@ export const registerSocketHandlers = (io: Server): void => {
     bot.hydrateRoom(roomId, room?.botMemory ?? null);
   }
 
-  const getRoomHistory = (roomId: RoomId): ChatMessage[] =>
+  const getRoomHistory = (roomId: BotEngineRoomId): ChatMessage[] =>
     historyByRoom.get(roomId) ?? [];
 
-  const setRoomHistory = (roomId: RoomId, messages: ChatMessage[]): void => {
-    historyByRoom.set(roomId, messages.slice(-MAX_HISTORY));
+  const setRoomHistory = (
+    roomId: BotEngineRoomId,
+    messages: ChatMessage[]
+  ): void => {
+    historyByRoom.set(
+      roomId,
+      messages.slice(-SERVER_PERSISTENCE_CONFIG.MAX_HISTORY)
+    );
   };
 
-  const getBotReplies = (roomId: RoomId): Map<string, string> => {
+  const getBotReplies = (roomId: BotEngineRoomId): Map<string, string> => {
     const existing = botRepliesByRoom.get(roomId);
     if (existing) return existing;
+
     const next = new Map<string, string>();
     botRepliesByRoom.set(roomId, next);
     return next;
   };
 
-  const persistRoom = (roomId: RoomId): void => {
-    const messages = getRoomHistory(roomId).slice(-MAX_HISTORY);
+  const persistRoom = (roomId: BotEngineRoomId): void => {
+    const messages = getRoomHistory(roomId).slice(
+      -SERVER_PERSISTENCE_CONFIG.MAX_HISTORY
+    );
+
     const botMemory = bot.dumpRoom(roomId);
 
+    // Keep only reply links that still exist in history.
     const ids = new Set(messages.map((m) => m.id));
     const repliesMap = getBotReplies(roomId);
     const cleaned: Record<string, string> = {};
@@ -122,13 +178,13 @@ export const registerSocketHandlers = (io: Server): void => {
     saveDb(db);
   };
 
-  const pushToHistory = (roomId: RoomId, msg: ChatMessage): void => {
+  const pushToHistory = (roomId: BotEngineRoomId, msg: ChatMessage): void => {
     setRoomHistory(roomId, [...getRoomHistory(roomId), msg]);
     persistRoom(roomId);
   };
 
   const updateMessageInHistory = (
-    roomId: RoomId,
+    roomId: BotEngineRoomId,
     messageId: string,
     nextContent: string,
     editor: User | null
@@ -161,6 +217,7 @@ export const registerSocketHandlers = (io: Server): void => {
 
     const next = [...history];
     next[idx] = updated;
+
     setRoomHistory(roomId, next);
     persistRoom(roomId);
 
@@ -168,7 +225,7 @@ export const registerSocketHandlers = (io: Server): void => {
   };
 
   const toggleReactionInHistory = (
-    roomId: RoomId,
+    roomId: BotEngineRoomId,
     messageId: string,
     reaction: ReactionKey,
     actor: User | null
@@ -208,7 +265,7 @@ export const registerSocketHandlers = (io: Server): void => {
   };
 
   const upsertBotReply = (
-    roomId: RoomId,
+    roomId: BotEngineRoomId,
     triggerUserMessageId: string,
     content: string
   ): { msg: ChatMessage; isNew: boolean } => {
@@ -216,10 +273,12 @@ export const registerSocketHandlers = (io: Server): void => {
     const existingBotId = replies.get(triggerUserMessageId);
     const history = getRoomHistory(roomId);
 
+    // If bot already replied to this user message, update that bot message.
     if (existingBotId) {
       const idx = history.findIndex((m) => m.id === existingBotId);
       if (idx >= 0) {
         const prev = history[idx];
+
         const updated: ChatMessage = {
           ...prev,
           sender: botUser,
@@ -239,6 +298,7 @@ export const registerSocketHandlers = (io: Server): void => {
       }
     }
 
+    // Otherwise create a new bot message.
     const botMsg: ChatMessage = {
       id: randomUUID(),
       sender: botUser,
@@ -253,20 +313,24 @@ export const registerSocketHandlers = (io: Server): void => {
     return { msg: botMsg, isNew: true };
   };
 
-  const emitHistory = (socket: Socket, roomId: RoomId): void => {
+  const emitHistory = (socket: Socket, roomId: BotEngineRoomId): void => {
     const payload: RoomHistoryPayload = {
       roomId,
       messages: getRoomHistory(roomId),
     };
+
     socket.emit(SocketEvents.ROOM_HISTORY, payload);
   };
 
   io.on('connection', (socket: Socket) => {
-    let currentRoom: RoomId = DEFAULT_ROOM;
+    let currentRoom: BotEngineRoomId = DEFAULT_ROOM_ID;
     let currentUser: User | null = null;
 
     socket.on(SocketEvents.JOIN_ROOM, (payload: JoinRoomPayload) => {
-      const roomId = ((payload?.roomId as RoomId) || DEFAULT_ROOM) as RoomId;
+      const roomId: BotEngineRoomId = normalizeRoomId(
+        payload?.roomId,
+        DEFAULT_ROOM_ID
+      );
 
       currentUser = payload?.user ?? null;
 
@@ -281,13 +345,17 @@ export const registerSocketHandlers = (io: Server): void => {
     });
 
     socket.on(SocketEvents.SEND_MESSAGE, (payload: SendMessagePayload) => {
-      const roomId = ((payload?.roomId as RoomId) || currentRoom || DEFAULT_ROOM) as RoomId;
+      const roomId: BotEngineRoomId = normalizeRoomId(
+        payload?.roomId,
+        currentRoom
+      );
 
       const incoming = payload?.message;
       if (!incoming) return;
       if (!incoming.sender) return;
       if (typeof incoming.content !== 'string') return;
 
+      // Trust the server session user if present (prevents client spoofing).
       const sender: User =
         currentUser && !currentUser.isBot ? currentUser : incoming.sender;
 
@@ -296,7 +364,9 @@ export const registerSocketHandlers = (io: Server): void => {
         sender,
         id: incoming.id || randomUUID(),
         timestamp:
-          typeof incoming.timestamp === 'number' ? incoming.timestamp : Date.now(),
+          typeof incoming.timestamp === 'number'
+            ? incoming.timestamp
+            : Date.now(),
       };
 
       pushToHistory(roomId, serverMsg);
@@ -314,7 +384,11 @@ export const registerSocketHandlers = (io: Server): void => {
         const typingOff: BotTypingPayload = { roomId, isTyping: false };
         io.to(roomId).emit(SocketEvents.BOT_TYPING, typingOff);
 
-        const { msg, isNew } = upsertBotReply(roomId, serverMsg.id, decision.message.content);
+        const { msg, isNew } = upsertBotReply(
+          roomId,
+          serverMsg.id,
+          decision.message.content
+        );
 
         if (isNew) io.to(roomId).emit(SocketEvents.NEW_MESSAGE, msg);
         else io.to(roomId).emit(SocketEvents.MESSAGE_UPDATED, msg);
@@ -322,14 +396,23 @@ export const registerSocketHandlers = (io: Server): void => {
     });
 
     socket.on(SocketEvents.EDIT_MESSAGE, (payload: EditMessagePayload) => {
-      const roomId = ((payload?.roomId as RoomId) || currentRoom || DEFAULT_ROOM) as RoomId;
+      const roomId: BotEngineRoomId = normalizeRoomId(
+        payload?.roomId,
+        currentRoom
+      );
+
       const messageId = payload?.messageId ?? '';
       const content = payload?.content ?? '';
 
       if (!messageId || typeof messageId !== 'string') return;
       if (typeof content !== 'string') return;
 
-      const updated = updateMessageInHistory(roomId, messageId, content, currentUser);
+      const updated = updateMessageInHistory(
+        roomId,
+        messageId,
+        content,
+        currentUser
+      );
       if (!updated) return;
 
       io.to(roomId).emit(SocketEvents.MESSAGE_UPDATED, updated);
@@ -346,34 +429,41 @@ export const registerSocketHandlers = (io: Server): void => {
         const typingOff: BotTypingPayload = { roomId, isTyping: false };
         io.to(roomId).emit(SocketEvents.BOT_TYPING, typingOff);
 
-        const { msg, isNew } = upsertBotReply(roomId, updated.id, decision.message.content);
+        const { msg, isNew } = upsertBotReply(
+          roomId,
+          updated.id,
+          decision.message.content
+        );
 
         if (isNew) io.to(roomId).emit(SocketEvents.NEW_MESSAGE, msg);
         else io.to(roomId).emit(SocketEvents.MESSAGE_UPDATED, msg);
       }, decision.typingMs);
     });
 
-    socket.on(SocketEvents.TOGGLE_REACTION, (payload: ToggleReactionPayload) => {
-      const roomId = ((payload?.roomId as RoomId) || currentRoom || DEFAULT_ROOM) as RoomId;
-      const messageId = payload?.messageId ?? '';
-      const reaction = payload?.reaction as ReactionKey;
+    socket.on(
+      SocketEvents.TOGGLE_REACTION,
+      (payload: ToggleReactionPayload) => {
+        const roomId: BotEngineRoomId = normalizeRoomId(
+          payload?.roomId,
+          currentRoom
+        );
 
-      if (!messageId || typeof messageId !== 'string') return;
+        const messageId = payload?.messageId ?? '';
+        const reactionRaw = payload?.reaction;
 
-      if (
-        reaction !== 'like' &&
-        reaction !== 'heart' &&
-        reaction !== 'laugh' &&
-        reaction !== 'wow' &&
-        reaction !== 'sad'
-      ) {
-        return;
+        if (!messageId || typeof messageId !== 'string') return;
+        if (!isReactionKey(reactionRaw)) return;
+
+        const updated = toggleReactionInHistory(
+          roomId,
+          messageId,
+          reactionRaw,
+          currentUser
+        );
+        if (!updated) return;
+
+        io.to(roomId).emit(SocketEvents.MESSAGE_UPDATED, updated);
       }
-
-      const updated = toggleReactionInHistory(roomId, messageId, reaction, currentUser);
-      if (!updated) return;
-
-      io.to(roomId).emit(SocketEvents.MESSAGE_UPDATED, updated);
-    });
+    );
   });
 };
