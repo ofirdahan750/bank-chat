@@ -748,6 +748,30 @@
           "content": "I’m a bot, not a mind reader. Toss in a \"?\" so I know it’s a question.",
           "timestamp": 1766228693223,
           "type": "system"
+        },
+        {
+          "id": "ac2b7448-20dd-42ea-87b8-653d086f7344",
+          "sender": {
+            "id": "שדבשדב",
+            "username": "שדבשדב",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "asfsaf",
+          "timestamp": 1766229049961,
+          "type": "text"
+        },
+        {
+          "id": "a54b037e-ad6f-4d00-9704-73b04a84c786",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "I can only treat something as a question if it ends with a \"?\". Add one and I’ll behave.",
+          "timestamp": 1766229050691,
+          "type": "system"
         }
       ],
       "botMemory": {
@@ -824,7 +848,8 @@
         "b252e0b3-0131-4e5f-a08c-a250529878fa": "0ec25df9-3c5e-45e6-b11c-81c59a56e2ad",
         "aad52d00-7234-4f86-b468-def3a5b60c82": "2ffe92ec-5f9f-4da9-9f9d-d181c3c23a85",
         "61b03ab5-1837-4334-a236-8a6b4177ad9a": "0d467a3a-d32e-49a5-8a96-31e0fd9b02e2",
-        "0b177904-6dc1-418b-b3d1-5f89435e0439": "5a9b79ae-b6fd-43ca-aaa8-6785b07c042d"
+        "0b177904-6dc1-418b-b3d1-5f89435e0439": "5a9b79ae-b6fd-43ca-aaa8-6785b07c042d",
+        "ac2b7448-20dd-42ea-87b8-653d086f7344": "a54b037e-ad6f-4d00-9704-73b04a84c786"
       }
     }
   }

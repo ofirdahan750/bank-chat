@@ -2,38 +2,25 @@
 @use '../styles/mixins' as mix;
 
 app-root {
-  // Root host element should behave like a normal block container.
   display: block;
 
   .app-shell {
-    // Full viewport height so the app always feels "grounded".
     min-height: 100dvh;
-
-    // Use CSS variables from styles.scss (theme-friendly).
-    color: var(--text);
+    color: vars.$text-color;
 
     &__container {
-      // Standard page container (max-width + horizontal padding).
-      @include mix.container;
-
-      // Mobile-first vertical spacing.
+      // Put plain declarations BEFORE nested rules to avoid Sass mixed-decls deprecation.
       padding-top: vars.$space-5;
       padding-bottom: vars.$space-5;
 
-      // Slightly larger spacing on wider screens.
-      @include mix.respond-up(vars.$bp-md) {
-        padding-top: vars.$space-6;
-        padding-bottom: vars.$space-6;
-      }
+      @include mix.container;
     }
 
     &__header {
-      // Small separation between title and the main content.
       padding-bottom: vars.$space-3;
     }
 
     &__title {
-      // Reset default h1 margin and keep it visually centered.
       margin: 0;
       text-align: center;
     }

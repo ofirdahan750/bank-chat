@@ -1,5 +1,5 @@
 // Central place for FeatureChat DOM ids.
-// These are used for label/aria-describedby wiring (A11y) and should stay stable across refactors.
+// Used for label/aria-describedby wiring (A11y) and stable selectors in refactors.
 export const FEATURE_CHAT_DOM_IDS = {
   NICKNAME_INPUT: 'nickname-input',
   NICKNAME_ERROR: 'nickname-error',

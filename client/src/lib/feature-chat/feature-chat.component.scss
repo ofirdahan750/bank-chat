@@ -4,17 +4,30 @@
 
 app-feature-chat {
   .feature-chat {
+    // Center the "card" / chat room on the page.
     display: grid;
     place-items: center;
-    padding: v.$space-6;
 
+    // Mobile-first spacing; we increase padding on larger screens.
+    padding: v.$space-4;
+
+    @include mix.respond-up(v.$bp-md) {
+      padding: v.$space-6;
+    }
+
+    // Keep a readable max width while still filling small screens.
     &__card,
     &__room {
       width: min(100%, fn.rem(900px));
     }
 
+    // Login card layout.
     &__card {
-      padding: v.$space-6;
+      padding: v.$space-5;
+
+      @include mix.respond-up(v.$bp-md) {
+        padding: v.$space-6;
+      }
     }
 
     &__header {
@@ -44,6 +57,7 @@ app-feature-chat {
       width: 100%;
     }
 
+    // Validation message styling (kept subtle, but visible on dark bg).
     &__error {
       color: #ff6b6b;
       font-size: fn.rem(13px);
@@ -55,6 +69,7 @@ app-feature-chat {
       }
     }
 
+    // Chat room layout: header + scrollable messages + composer.
     &__room {
       display: grid;
       grid-template-rows: auto 1fr auto;
@@ -68,9 +83,17 @@ app-feature-chat {
       align-items: center;
       justify-content: space-between;
       gap: v.$space-3;
-      padding: v.$space-4 v.$space-6;
+
+      // Put "plain declarations" before responsive nested rules to avoid Sass mixed-decls warning.
       border-bottom: 1px solid var(--border);
       background: rgba(255, 255, 255, 0.03);
+
+      // Mobile-first padding; room header breathes more on larger screens.
+      padding: v.$space-3 v.$space-4;
+
+      @include mix.respond-up(v.$bp-md) {
+        padding: v.$space-4 v.$space-6;
+      }
     }
 
     &__room-head {
@@ -122,13 +145,22 @@ app-feature-chat {
       }
     }
 
+    // Scroll area for messages.
     &__messages {
-      padding: v.$space-6;
       display: flex;
       flex-direction: column;
       gap: v.$space-3;
       overflow: auto;
+
+      // Put "plain declarations" before responsive nested rules to avoid Sass mixed-decls warning.
       background: rgba(0, 0, 0, 0.08);
+
+      // Mobile-first padding.
+      padding: v.$space-4;
+
+      @include mix.respond-up(v.$bp-md) {
+        padding: v.$space-6;
+      }
     }
 
     &__empty {
@@ -140,14 +172,22 @@ app-feature-chat {
       line-height: fn.lh(14px, 20px);
     }
 
+    // Composer row (input + send).
     &__composer {
       display: grid;
       grid-template-columns: 1fr auto;
       gap: v.$space-3;
-      padding: v.$space-4 v.$space-6;
+      align-items: center;
+
+      // Put "plain declarations" before responsive nested rules to avoid Sass mixed-decls warning.
       border-top: 1px solid var(--border);
       background: rgba(255, 255, 255, 0.03);
-      align-items: center;
+
+      padding: v.$space-3 v.$space-4;
+
+      @include mix.respond-up(v.$bp-md) {
+        padding: v.$space-4 v.$space-6;
+      }
     }
 
     &__composer-btn {
@@ -160,6 +200,7 @@ app-feature-chat {
     }
   }
 
+  // Local overrides for Material input rendering in this feature (dark theme polish).
   .app-input {
     width: 100%;
     border: 1px solid rgba(255, 255, 255, 0.12);
@@ -190,6 +231,7 @@ app-feature-chat {
     }
   }
 
+  // MDC input tweaks: keep text color consistent in dark mode.
   .app-input.mat-mdc-input-element {
     color: rgba(255, 255, 255, 0.92);
     caret-color: rgba(255, 255, 255, 0.92);
@@ -197,6 +239,7 @@ app-feature-chat {
     background: transparent;
   }
 
+  // Button base comes from mixin; only the variant style is overridden here.
   .app-btn {
     @include mix.button-base;
 
@@ -217,6 +260,10 @@ app-feature-chat {
   }
 }
 
+/* ---------------------------
+   Angular 20+ CSS animations
+   (animate.enter / animate.leave)
+   --------------------------- */
 
 @keyframes anim-fade-up-in {
   from {

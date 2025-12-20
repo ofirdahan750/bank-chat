@@ -22,6 +22,16 @@ export const UI_TEXT = {
     DUPLICATE_ANSWER_PREFIX:
       'I remember someone asking that! Here is the answer:',
   },
+
+  // Keep A11y strings centralized too (screen readers + aria labels).
+  A11Y: {
+    NICKNAME_REGION: 'Nickname setup',
+    CHAT_REGION: 'Chat room',
+    CHAT_LOG: 'Messages',
+    NICKNAME_INPUT_LABEL: 'Nickname',
+    MESSAGE_INPUT_LABEL: 'Message',
+    LOGOUT_BUTTON: 'Logout',
+  },
 } as const;
 
 export const ChatUi = {
