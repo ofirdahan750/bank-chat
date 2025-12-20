@@ -6,6 +6,7 @@ import {
   inject,
 } from '@angular/core';
 import {
+  FormControl,
   FormGroup,
   NonNullableFormBuilder,
   ReactiveFormsModule,
@@ -18,6 +19,11 @@ import {
   FEATURE_CHAT_DOM_IDS,
   UI_TEXT,
 } from '@poalim/constants';
+import {
+  ChatMessage,
+  FeatureChatComposerFormValue,
+  FeatureChatNicknameFormValue,
+} from '@poalim/shared-interfaces';
 import {
   ChatBubbleComponent,
   EditSubmitEvent,
@@ -35,22 +41,25 @@ import { ChatStore } from './services/chat-store/chat-store.service';
   encapsulation: ViewEncapsulation.None,
 })
 export class FeatureChat implements OnInit {
+  // NonNullableFormBuilder ensures form controls are never null (strict typed forms friendly).
   private readonly fb: NonNullableFormBuilder = inject(NonNullableFormBuilder);
-  protected readonly store: ChatStore = inject(ChatStore);
 
-  // Text/labels are centralized to avoid "random strings" spread across the app.
+  // Store owns state + socket I/O. Component stays focused on UI wiring.
+  protected readonly chatStore: ChatStore = inject(ChatStore);
+
+  // Centralized text to avoid random strings spread across templates.
   protected readonly UI_TEXT = UI_TEXT;
 
-  // App-wide configuration (URLs, limits, bot name, etc.).
+  // App-wide configuration (limits, bot name, env URLs, etc.).
   protected readonly config = AppConfig;
 
-  // UI-related constants (max lengths, default ids/colors, etc.).
+  // UI constants (max lengths, ids/colors, etc.).
   protected readonly chatUi = ChatUi;
 
-  // Stable DOM ids used for label/aria-describedby wiring.
+  // Stable DOM ids for A11y wiring (label/aria-describedby).
   protected readonly domIds = FEATURE_CHAT_DOM_IDS;
 
-  // Reuse a single formatter instance (avoid creating Intl objects repeatedly).
+  // Reuse one formatter instance (avoid allocating Intl objects repeatedly).
   private readonly timeFormatter: Intl.DateTimeFormat = new Intl.DateTimeFormat(
     undefined,
     {
@@ -59,9 +68,11 @@ export class FeatureChat implements OnInit {
     }
   );
 
-  // Nickname form: minimal validation, then delegate to the store.
-  protected readonly nicknameForm = this.fb.group({
-    username: this.fb.control(this.store.username(), {
+  // Nickname form (typed via shared form-value contract).
+  protected readonly nicknameForm: FormGroup<{
+    username: FormControl<FeatureChatNicknameFormValue['username']>;
+  }> = this.fb.group({
+    username: this.fb.control(this.chatStore.username(), {
       validators: [
         Validators.required,
         Validators.minLength(AppConfig.MIN_USERNAME_LENGTH),
@@ -70,8 +81,10 @@ export class FeatureChat implements OnInit {
     }),
   });
 
-  // Composer form: message input only. The store owns the message list/state.
-  protected readonly composerForm = this.fb.group({
+  // Composer form (typed via shared form-value contract).
+  protected readonly composerForm: FormGroup<{
+    content: FormControl<FeatureChatComposerFormValue['content']>;
+  }> = this.fb.group({
     content: this.fb.control('', {
       validators: [
         Validators.required,
@@ -81,53 +94,64 @@ export class FeatureChat implements OnInit {
   });
 
   ngOnInit(): void {
-    // Store initializes socket listeners/effects once for this feature.
-    this.store.init();
+    // Initializes socket listeners/effects for this feature.
+    this.chatStore.init();
   }
 
   protected submitNickname(): void {
-    // Mark touched to surface validation feedback (keyboard users included).
+    // Normalize input (prevents whitespace-only names).
     const username: string = this.nicknameForm.controls.username.value.trim();
-    if (this.nicknameForm.invalid || username) {
+    this.nicknameForm.controls.username.setValue(username);
+
+    // Mark touched so validation is visible for mouse + keyboard users.
+    if (this.nicknameForm.invalid || !username) {
       this.nicknameForm.markAllAsTouched();
       return;
     }
 
-    this.store.submitNickname(username);
+    this.chatStore.submitNickname(username);
   }
 
   protected send(): void {
+    // Normalize input (prevents whitespace-only messages).
     const content: string = this.composerForm.controls.content.value.trim();
+    this.composerForm.controls.content.setValue(content);
+
     if (this.composerForm.invalid || !content) {
       this.composerForm.markAllAsTouched();
       return;
     }
-    this.store.send(content);
+
+    this.chatStore.send(content);
 
     // Reset keeps the input clean and prevents sticky validation UI.
     this.composerForm.reset({ content: '' });
   }
 
   protected onEditSubmit(e: EditSubmitEvent): void {
-    // Component stays UI-focused; store handles the actual state update + socket I/O.
-    this.store.editMessage(e.messageId, e.content);
+    // UI intent in the component, state + socket updates in the store.
+    this.chatStore.editMessage(e.messageId, e.content);
   }
 
   protected onReactionToggle(e: ReactionToggleEvent): void {
-    // Same pattern: user intent in the component, state logic in the store.
-    this.store.toggleReaction(e.messageId, e.reaction);
+    // Same pattern: keep the component thin.
+    this.chatStore.toggleReaction(e.messageId, e.reaction);
   }
 
   protected logout(): void {
-    // Full reset: clears local state and disconnects socket (implemented in the store).
-    this.store.logout();
+    // Full reset: clears local state and disconnects socket (store implementation).
+    this.chatStore.logout();
     this.nicknameForm.reset({ username: '' });
     this.composerForm.reset({ content: '' });
   }
 
   protected formatChatTime(timestamp: number): string {
+    // Defensive: avoid throwing if a timestamp is corrupted.
     const date: Date = new Date(timestamp);
     if (Number.isNaN(date.getTime())) return '';
     return this.timeFormatter.format(date);
   }
+
+  // TrackBy keeps DOM stable and reduces re-render cost on updates.
+  protected readonly trackById = (_: number, m: ChatMessage): string => m.id;
 }

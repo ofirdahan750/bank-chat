@@ -1,5 +1,5 @@
 <section class="feature-chat">
-  @if (!store.hasNickname()) {
+  @if (!chatStore.hasNickname()) {
   <div
     class="feature-chat__card surface"
     role="region"
@@ -79,7 +79,7 @@
       </button>
     </form>
   </div>
-  } @else { @let me = store.me();
+  } @else { @let me = chatStore.me();
 
   <div
     class="feature-chat__room surface"
@@ -89,7 +89,7 @@
   >
     <header class="feature-chat__room-header">
       <div class="feature-chat__room-head">
-        <div class="feature-chat__room-title">{{ store.username() }}</div>
+        <div class="feature-chat__room-title">{{ chatStore.username() }}</div>
         <div class="feature-chat__room-subtitle">{{ config.BOT_NAME }}</div>
       </div>
 
@@ -111,18 +111,18 @@
       aria-relevant="additions"
       [attr.aria-label]="UI_TEXT.A11Y.CHAT_LOG"
     >
-      @if (store.messages().length === 0) {
+      @if (chatStore.messages().length === 0) {
       <div class="feature-chat__empty" animate.enter="anim-enter-soft">
         <div>{{ UI_TEXT.CHAT.EMPTY_STATE }}</div>
       </div>
-      } @else { @for (m of store.messages(); track m.id) {
+      } @else { @for (message of chatStore.messages(); track message.id) {
       <app-chat-bubble
         animate.enter="anim-enter-bubble"
-        [message]="m"
+        [message]="message"
         [meId]="me.id"
-        [isMine]="m.sender.id === me.id && !m.sender.isBot"
-        [canEdit]="m.sender.id === me.id && !m.sender.isBot"
-        [timeLabel]="formatChatTime(m.timestamp)"
+        [isMine]="message.sender.id === me.id && !message.sender.isBot"
+        [canEdit]="message.sender.id === me.id && !message.sender.isBot"
+        [timeLabel]="formatChatTime(message.timestamp)"
         (editSubmit)="onEditSubmit($event)"
         (reactionToggle)="onReactionToggle($event)"
       />
@@ -162,7 +162,7 @@
       <button
         class="app-btn app-btn--primary feature-chat__composer-btn"
         type="submit"
-        [disabled]="composerForm.invalid || !store.hasNickname()"
+        [disabled]="composerForm.invalid || !chatStore.hasNickname()"
         [attr.aria-label]="UI_TEXT.CHAT.SEND_BUTTON"
         [title]="UI_TEXT.CHAT.SEND_BUTTON"
       >
