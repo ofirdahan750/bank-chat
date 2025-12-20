@@ -1,5 +1,5 @@
 import { PersistedBotRoomMemory } from '../bot-engine/bot-engine.types';
-import { ChatMessage } from '../message.interface';
+import { ChatMessage } from '../messages/message.interface';
 
 export type PersistedRoom = {
   messages: ChatMessage[];

@@ -1,36 +1,35 @@
-import { ChatMessage } from './message.interface';
-import { User } from './user.interface';
-
-export type ReactionKey = 'like' | 'heart' | 'laugh' | 'wow' | 'sad';
+import { ChatMessage, ReactionKey } from '../messages/message.interface';
+import { User } from '../user/user.interface';
+import { RoomId } from './room-id.type';
 
 export interface JoinRoomPayload {
-  roomId: string;
+  roomId: RoomId;
   user: User;
 }
 
 export interface RoomHistoryPayload {
-  roomId: string;
+  roomId: RoomId;
   messages: ChatMessage[];
 }
 
 export interface SendMessagePayload {
-  roomId: string;
+  roomId: RoomId;
   message: ChatMessage;
 }
 
 export interface BotTypingPayload {
-  roomId: string;
+  roomId: RoomId;
   isTyping: boolean;
 }
 
 export interface EditMessagePayload {
-  roomId: string;
+  roomId: RoomId;
   messageId: string;
   content: string;
 }
 
 export interface ToggleReactionPayload {
-  roomId: string;
+  roomId: RoomId;
   messageId: string;
   reaction: ReactionKey;
 }

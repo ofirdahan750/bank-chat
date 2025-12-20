@@ -1,4 +1,4 @@
-import { ReactionKey } from '../message.interface';
+import { ReactionKey } from '../messages/message.interface';
 
 export type EditSubmitEvent = { messageId: string; content: string };
 export type ReactionToggleEvent = { messageId: string; reaction: ReactionKey };

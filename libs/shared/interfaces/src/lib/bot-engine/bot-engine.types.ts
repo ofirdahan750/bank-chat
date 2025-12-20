@@ -1,5 +1,5 @@
-import { ChatMessage } from '../message.interface';
-import { User } from '../user.interface';
+import { ChatMessage } from '../messages/message.interface';
+import { User } from '../user/user.interface';
 
 export type BotAction = {
   typingMs: number;

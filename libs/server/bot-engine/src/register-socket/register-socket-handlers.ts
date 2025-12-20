@@ -3,15 +3,7 @@ import { Server, Socket } from 'socket.io';
 import * as fs from 'fs';
 import * as path from 'path';
 import { AppConfig, ChatUi, SocketEvents } from '@poalim/constants';
-import {
-  BotTypingPayload,
-  ChatMessage,
-  EditMessagePayload,
-  JoinRoomPayload,
-  RoomHistoryPayload,
-  SendMessagePayload,
-  User,
-} from '@poalim/shared-interfaces';
+import { BotTypingPayload, ChatMessage, EditMessagePayload, JoinRoomPayload, RoomHistoryPayload, SendMessagePayload, User } from '@poalim/shared-interfaces';
 import { BotEngine } from '../lib/bot-engine/bot-engine';
 
 type RoomId = string;
@@ -43,7 +35,8 @@ const loadDb = (): PersistedDb => {
     if (!fs.existsSync(DATA_FILE)) return { rooms: {} };
     const raw = fs.readFileSync(DATA_FILE, 'utf8');
     const parsed = JSON.parse(raw) as PersistedDb;
-    if (!parsed || typeof parsed !== 'object' || !parsed.rooms) return { rooms: {} };
+    if (!parsed || typeof parsed !== 'object' || !parsed.rooms)
+      return { rooms: {} };
     return parsed;
   } catch {
     return { rooms: {} };
@@ -270,7 +263,11 @@ export const registerSocketHandlers = (io: Server): void => {
         const typingOff: BotTypingPayload = { roomId, isTyping: false };
         io.to(roomId).emit(SocketEvents.BOT_TYPING, typingOff);
 
-        const { msg, isNew } = upsertBotReply(roomId, serverMsg.id, action.message.content);
+        const { msg, isNew } = upsertBotReply(
+          roomId,
+          serverMsg.id,
+          action.message.content
+        );
         if (isNew) io.to(roomId).emit(SocketEvents.NEW_MESSAGE, msg);
         else io.to(roomId).emit(SocketEvents.MESSAGE_UPDATED, msg);
       }, action.typingMs);
@@ -284,7 +281,12 @@ export const registerSocketHandlers = (io: Server): void => {
       if (!messageId || typeof messageId !== 'string') return;
       if (typeof content !== 'string') return;
 
-      const updated = updateMessageInHistory(roomId, messageId, content, currentUser);
+      const updated = updateMessageInHistory(
+        roomId,
+        messageId,
+        content,
+        currentUser
+      );
       if (!updated) return;
 
       io.to(roomId).emit(SocketEvents.MESSAGE_UPDATED, updated);
@@ -301,7 +303,11 @@ export const registerSocketHandlers = (io: Server): void => {
         const typingOff: BotTypingPayload = { roomId, isTyping: false };
         io.to(roomId).emit(SocketEvents.BOT_TYPING, typingOff);
 
-        const { msg, isNew } = upsertBotReply(roomId, updated.id, decision.message.content);
+        const { msg, isNew } = upsertBotReply(
+          roomId,
+          updated.id,
+          decision.message.content
+        );
         if (isNew) io.to(roomId).emit(SocketEvents.NEW_MESSAGE, msg);
         else io.to(roomId).emit(SocketEvents.MESSAGE_UPDATED, msg);
       }, decision.typingMs);

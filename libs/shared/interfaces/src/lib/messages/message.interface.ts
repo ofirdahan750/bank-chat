@@ -1,4 +1,4 @@
-import { User } from './user.interface';
+import { User } from '../user/user.interface';
 
 export type ChatMessageType = 'text' | 'system';
 export type ReactionKey = 'like' | 'heart' | 'laugh' | 'wow' | 'sad';
