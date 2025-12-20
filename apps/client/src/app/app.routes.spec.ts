@@ -1,38 +1,19 @@
-import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
-import { UI_TEXT } from '@poalim/constants';
-import { AppComponent } from './app.component';
+import { appRoutes } from './app.routes';
 
-describe('AppComponent', () => {
-  it('should create', async () => {
-    // AppComponent uses RouterOutlet, so we provide an empty router config.
-    await TestBed.configureTestingModule({
-      imports: [AppComponent],
-      providers: [provideRouter([])],
-    }).compileComponents();
+describe('appRoutes', () => {
+  it('should have a default route for "" with loadComponent', () => {
+    const first = appRoutes[0];
 
-    const fixture = TestBed.createComponent(AppComponent);
-    const component = fixture.componentInstance;
-
-    expect(component).toBeTruthy();
+    expect(first).toBeTruthy();
+    expect(first.path).toBe('');
+    expect(typeof first.loadComponent).toBe('function');
   });
 
-  it('should render the title from UIText', async () => {
-    // We validate the UI pulls the title from the centralized constants
-    await TestBed.configureTestingModule({
-      imports: [AppComponent],
-      providers: [provideRouter([])],
-    }).compileComponents();
+  it('should have a wildcard redirect to ""', () => {
+    const last = appRoutes[appRoutes.length - 1];
 
-    const fixture = TestBed.createComponent(AppComponent);
-
-    // Trigger initial template render
-    fixture.detectChanges();
-
-    const el: HTMLElement = fixture.nativeElement as HTMLElement;
-    const titleEl = el.querySelector('.app-shell__title');
-
-    expect(titleEl).toBeTruthy();
-    expect((titleEl?.textContent ?? '').trim()).toBe(UI_TEXT.LOGIN.TITLE);
+    expect(last).toBeTruthy();
+    expect(last.path).toBe('**');
+    expect(last.redirectTo).toBe('');
   });
 });
