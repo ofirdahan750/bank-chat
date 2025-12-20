@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, WritableSignal, signal } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { AppConfig, SocketEvents } from '@poalim/constants';
 import {
@@ -11,79 +11,122 @@ import {
   ToggleReactionPayload,
   ReactionKey,
   User,
+  ConnectionState,
+  SocketEvent,
+  emptySocketEvent,
+  socketEvent,
 } from '@poalim/shared-interfaces';
-
-type ConnectionState = 'disconnected' | 'connecting' | 'connected';
 
 @Injectable({ providedIn: 'root' })
 export class SocketClientService {
-  private socket: Socket | null = null;
+  // Use a strict sentinel instead of null/undefined.
+  private socket: Socket | 0 = 0;
 
-  readonly connectionState = signal<ConnectionState>('disconnected');
-  readonly botTyping = signal<boolean>(false);
+  // Socket status (consumed by the UI for "connected/connecting" indicators).
+  readonly connectionState: WritableSignal<ConnectionState> =
+    signal<ConnectionState>('disconnected');
 
-  readonly roomHistory = signal<RoomHistoryPayload | null>(null);
-  readonly newMessage = signal<ChatMessage | null>(null);
-  readonly messageUpdated = signal<ChatMessage | null>(null);
+  // Bot typing indicator state.
+  readonly botTyping: WritableSignal<boolean> = signal<boolean>(false);
+
+  // One-shot server events (wrapped — no null/undefined).
+  readonly roomHistory: WritableSignal<SocketEvent<RoomHistoryPayload>> =
+    signal<SocketEvent<RoomHistoryPayload>>(
+      emptySocketEvent<RoomHistoryPayload>()
+    );
+
+  readonly newMessage: WritableSignal<SocketEvent<ChatMessage>> = signal<
+    SocketEvent<ChatMessage>
+  >(emptySocketEvent<ChatMessage>());
+
+  readonly messageUpdated: WritableSignal<SocketEvent<ChatMessage>> = signal<
+    SocketEvent<ChatMessage>
+  >(emptySocketEvent<ChatMessage>());
 
   connect(me: User, roomId: string = AppConfig.ROOM_ID): void {
-    if (this.socket?.connected) return;
+    if (this.socket !== 0 && this.socket.connected) return;
 
     this.connectionState.set('connecting');
 
-    this.socket = io(AppConfig.API_URL, { transports: ['websocket'] });
+    // Force websocket transport (simple + predictable for this challenge).
+    const nextSocket: Socket = io(AppConfig.API_URL, {
+      transports: ['websocket'],
+    });
+    this.socket = nextSocket;
 
-    this.socket.on('connect', () => {
+    nextSocket.on('connect', () => {
       this.connectionState.set('connected');
 
+      // Join room once connected so the server can emit history.
       const joinPayload: JoinRoomPayload = { roomId, user: me };
-      this.socket?.emit(SocketEvents.JOIN_ROOM, joinPayload);
+      nextSocket.emit(SocketEvents.JOIN_ROOM, joinPayload);
     });
 
-    this.socket.on('disconnect', () => {
+    nextSocket.on('disconnect', () => {
       this.connectionState.set('disconnected');
       this.botTyping.set(false);
     });
 
-    this.socket.on(SocketEvents.ROOM_HISTORY, (payload: RoomHistoryPayload) => {
-      this.roomHistory.set(payload);
+    nextSocket.on(SocketEvents.ROOM_HISTORY, (payload: RoomHistoryPayload) => {
+      this.roomHistory.set(socketEvent<RoomHistoryPayload>(payload));
     });
 
-    this.socket.on(SocketEvents.NEW_MESSAGE, (msg: ChatMessage) => {
-      this.newMessage.set(msg);
+    nextSocket.on(SocketEvents.NEW_MESSAGE, (msg: ChatMessage) => {
+      this.newMessage.set(socketEvent<ChatMessage>(msg));
     });
 
-    this.socket.on(SocketEvents.MESSAGE_UPDATED, (msg: ChatMessage) => {
-      this.messageUpdated.set(msg);
+    nextSocket.on(SocketEvents.MESSAGE_UPDATED, (msg: ChatMessage) => {
+      this.messageUpdated.set(socketEvent<ChatMessage>(msg));
     });
 
-    this.socket.on(SocketEvents.BOT_TYPING, (p: BotTypingPayload) => {
-      this.botTyping.set(p.isTyping);
+    nextSocket.on(SocketEvents.BOT_TYPING, (payload: BotTypingPayload) => {
+      this.botTyping.set(payload.isTyping);
     });
   }
 
   sendMessage(message: ChatMessage, roomId: string = AppConfig.ROOM_ID): void {
-    if (!this.socket?.connected) return;
+    if (this.socket === 0 || !this.socket.connected) return;
+
     const payload: SendMessagePayload = { roomId, message };
     this.socket.emit(SocketEvents.SEND_MESSAGE, payload);
   }
 
-  editMessage(messageId: string, content: string, roomId: string = AppConfig.ROOM_ID): void {
-    if (!this.socket?.connected) return;
+  editMessage(
+    messageId: string,
+    content: string,
+    roomId: string = AppConfig.ROOM_ID
+  ): void {
+    if (this.socket === 0 || !this.socket.connected) return;
+
     const payload: EditMessagePayload = { roomId, messageId, content };
     this.socket.emit(SocketEvents.EDIT_MESSAGE, payload);
   }
 
-  toggleReaction(messageId: string, reaction: ReactionKey, roomId: string = AppConfig.ROOM_ID): void {
-    if (!this.socket?.connected) return;
+  toggleReaction(
+    messageId: string,
+    reaction: ReactionKey,
+    roomId: string = AppConfig.ROOM_ID
+  ): void {
+    if (this.socket === 0 || !this.socket.connected) return;
+
     const payload: ToggleReactionPayload = { roomId, messageId, reaction };
     this.socket.emit(SocketEvents.TOGGLE_REACTION, payload);
   }
 
   disconnect(): void {
-    this.socket?.disconnect();
-    this.socket = null;
+    if (this.socket !== 0) {
+      this.socket.disconnect();
+    }
+
+    this.socket = 0;
+
+    // Reset client-side state for a clean UI.
     this.connectionState.set('disconnected');
     this.botTyping.set(false);
+
+    // Clear any pending one-shot events.
+    this.roomHistory.set(emptySocketEvent<RoomHistoryPayload>());
+    this.newMessage.set(emptySocketEvent<ChatMessage>());
+    this.messageUpdated.set(emptySocketEvent<ChatMessage>());
   }
 }
