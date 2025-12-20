@@ -1,52 +1,28 @@
+// libs/server/bot-engine/src/lib/bot-engine/bot-engine.ts
+
 import { randomUUID } from 'crypto';
-import { ChatMessage, User } from '@poalim/shared-interfaces';
+import { BOT_ENGINE_TEXT } from '@poalim/constants';
+import { BotAction, BotEngineQaEntry, BotEngineRoomId, BotEngineRoomMemory, ChatMessage, PersistedBotRoomMemory, User } from '@poalim/shared-interfaces';
 
-export type BotAction = {
-  typingMs: number;
-  message: ChatMessage;
-};
 
-type RoomId = string;
-
-type Pending = {
-  key: string;
-  question: string;
-  questionMessageId: string;
-} | null;
-
-type QaEntry = {
-  key: string;
-  question: string;
-  answer: string;
-  questionMessageId: string;
-  answerMessageId: string;
-  updatedAt: number;
-};
-
-export type PersistedBotRoomMemory = {
-  pending: Pending;
-  qa: QaEntry[];
-};
-
-type RoomMemory = {
-  pending: Pending;
-  qaByKey: Map<string, QaEntry>;
-  keyByQuestionMessageId: Map<string, string>;
-  keyByAnswerMessageId: Map<string, string>;
-};
- 
 export class BotEngine {
-  private readonly rooms = new Map<RoomId, RoomMemory>();
+  // Per-room in-memory state (rebuilt from persisted JSON on server start).
+  private readonly rooms = new Map<BotEngineRoomId, BotEngineRoomMemory>();
 
-  hydrateRoom(roomId: RoomId, data?: PersistedBotRoomMemory | null): void {
+  hydrateRoom(
+    roomId: BotEngineRoomId,
+    data?: PersistedBotRoomMemory | null
+  ): void {
     const mem = this.ensureRoom(roomId);
 
+    // Restore persisted state (or reset if missing).
     mem.pending = data?.pending ?? null;
     mem.qaByKey.clear();
     mem.keyByQuestionMessageId.clear();
     mem.keyByAnswerMessageId.clear();
 
     for (const raw of data?.qa ?? []) {
+      // Defensive validation (persisted JSON can be dirty).
       if (
         !raw ||
         typeof raw.key !== 'string' ||
@@ -59,22 +35,28 @@ export class BotEngine {
         continue;
       }
 
-      const entry: QaEntry = { ...raw };
+      const entry: BotEngineQaEntry = { ...raw };
       mem.qaByKey.set(entry.key, entry);
       mem.keyByQuestionMessageId.set(entry.questionMessageId, entry.key);
       mem.keyByAnswerMessageId.set(entry.answerMessageId, entry.key);
     }
   }
 
-  dumpRoom(roomId: RoomId): PersistedBotRoomMemory {
+  dumpRoom(roomId: BotEngineRoomId): PersistedBotRoomMemory {
     const mem = this.ensureRoom(roomId);
+
+    // Persist only what can be serialized.
     return {
       pending: mem.pending,
       qa: Array.from(mem.qaByKey.values()),
     };
   }
 
-  onUserMessage(roomId: RoomId, userMessage: ChatMessage, botUser: User): BotAction | null {
+  onUserMessage(
+    roomId: BotEngineRoomId,
+    userMessage: ChatMessage,
+    botUser: User
+  ): BotAction | null {
     if (userMessage.sender?.isBot) return null;
 
     const raw = (userMessage.content ?? '').trim();
@@ -82,17 +64,16 @@ export class BotEngine {
 
     const mem = this.ensureRoom(roomId);
 
-    // Pending question waiting for an answer
+    // 1) If we are waiting for an answer – treat the next non-question as the answer.
     if (mem.pending) {
       if (!this.isQuestion(raw)) {
         const now = Date.now();
-        const answer = raw;
         const pending = mem.pending;
 
-        const entry: QaEntry = {
+        const entry: BotEngineQaEntry = {
           key: pending.key,
           question: pending.question,
-          answer,
+          answer: raw,
           questionMessageId: pending.questionMessageId,
           answerMessageId: userMessage.id,
           updatedAt: now,
@@ -104,13 +85,17 @@ export class BotEngine {
 
         mem.pending = null;
 
-        return this.buildBotAction(botUser, this.savedLine(entry.question, entry.answer));
+        return this.buildBotAction(
+          botUser,
+          this.savedLine(entry.question, entry.answer)
+        );
       }
 
-      // If user asks a new question instead of answering, reset pending.
+      // If user asked another question instead of answering – drop pending state.
       mem.pending = null;
     }
 
+    // 2) Normal flow: require a question mark to treat it as a question.
     if (!this.isQuestion(raw)) {
       return this.buildBotAction(botUser, this.missingQuestionMarkLine());
     }
@@ -123,11 +108,20 @@ export class BotEngine {
       return this.buildBotAction(botUser, this.rememberedLine(known.answer));
     }
 
-    mem.pending = { key, question: questionPretty, questionMessageId: userMessage.id };
+    // 3) New question: ask for the answer next.
+    mem.pending = {
+      key,
+      question: questionPretty,
+      questionMessageId: userMessage.id,
+    };
     return this.buildBotAction(botUser, this.askForAnswerLine());
   }
 
-  onMessageEdited(roomId: RoomId, updatedMessage: ChatMessage, botUser: User): BotAction | null {
+  onMessageEdited(
+    roomId: BotEngineRoomId,
+    updatedMessage: ChatMessage,
+    botUser: User
+  ): BotAction | null {
     if (updatedMessage.sender?.isBot) return null;
 
     const raw = (updatedMessage.content ?? '').trim();
@@ -135,21 +129,23 @@ export class BotEngine {
 
     const mem = this.ensureRoom(roomId);
 
-    // 1) Edited an ANSWER that the bot already learned -> update memory
+    // 1) Edited an ANSWER that was already learned -> update memory.
     const keyFromAnswer = mem.keyByAnswerMessageId.get(updatedMessage.id);
     if (keyFromAnswer) {
       const entry = mem.qaByKey.get(keyFromAnswer);
       if (entry) {
-        const now = Date.now();
         entry.answer = raw;
-        entry.updatedAt = now;
+        entry.updatedAt = Date.now();
         mem.qaByKey.set(entry.key, entry);
 
-        return this.buildBotAction(botUser, this.updatedAnswerLine(entry.question, entry.answer));
+        return this.buildBotAction(
+          botUser,
+          this.updatedAnswerLine(entry.question, entry.answer)
+        );
       }
     }
 
-    // 2) Edited a QUESTION that already has an answer -> update key + answer lookup
+    // 2) Edited a QUESTION that already has an answer -> update key + mappings.
     const keyFromQuestion = mem.keyByQuestionMessageId.get(updatedMessage.id);
     if (keyFromQuestion) {
       const entry = mem.qaByKey.get(keyFromQuestion);
@@ -164,7 +160,7 @@ export class BotEngine {
         entry.key = nextKey;
         entry.updatedAt = now;
 
-        // Update maps (move key if changed)
+        // Move maps if key changed.
         if (oldKey !== nextKey) {
           mem.qaByKey.delete(oldKey);
           mem.qaByKey.set(nextKey, entry);
@@ -174,27 +170,30 @@ export class BotEngine {
           mem.qaByKey.set(nextKey, entry);
         }
 
-        // If it is a question now, answer it (fresh bot message)
+        // If it became a question, answer it immediately.
         if (this.isQuestion(raw)) {
-          return this.buildBotAction(botUser, this.rememberedLine(entry.answer));
+          return this.buildBotAction(
+            botUser,
+            this.rememberedLine(entry.answer)
+          );
         }
 
-        // Not a question -> don't spam; memory is still updated.
+        // If not a question – keep memory updated but don't spam.
         return null;
       }
     }
 
-    // 3) Otherwise treat edit like a "new message" for bot logic
+    // 3) Otherwise treat edit as a fresh message for bot logic.
     return this.onUserMessage(roomId, updatedMessage, botUser);
   }
 
-  private ensureRoom(roomId: RoomId): RoomMemory {
+  private ensureRoom(roomId: BotEngineRoomId): BotEngineRoomMemory {
     const existing = this.rooms.get(roomId);
     if (existing) return existing;
 
-    const next: RoomMemory = {
+    const next: BotEngineRoomMemory = {
       pending: null,
-      qaByKey: new Map<string, QaEntry>(),
+      qaByKey: new Map<string, BotEngineQaEntry>(),
       keyByQuestionMessageId: new Map<string, string>(),
       keyByAnswerMessageId: new Map<string, string>(),
     };
@@ -227,11 +226,7 @@ export class BotEngine {
   }
 
   private normalizeQuestionKey(text: string): string {
-    return text
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, ' ')
-      .replace(/\?+$/g, '?');
+    return text.trim().toLowerCase().replace(/\s+/g, ' ').replace(/\?+$/g, '?');
   }
 
   private pickTypingMs(): number {
@@ -245,54 +240,44 @@ export class BotEngine {
     return lines[idx] ?? lines[0] ?? '';
   }
 
+  private format(template: string, vars: Record<string, string>): string {
+    return template.replace(/\{(\w+)\}/g, (_, k: string) => vars[k] ?? '');
+  }
+
   private missingQuestionMarkLine(): string {
-    return this.pickOne([
-      'I can only treat something as a question if it ends with a "?". Add one and I’ll behave.',
-      'No "?" no magic. Add a question mark and I’ll file it properly.',
-      'I’m a bot, not a mind reader. Toss in a "?" so I know it’s a question.',
-      'Give me a "?" at the end and I’ll switch into answer-machine mode.',
-    ]);
+    return this.pickOne(BOT_ENGINE_TEXT.MISSING_QUESTION_MARK);
   }
 
   private askForAnswerLine(): string {
-    return this.pickOne([
-      'New question unlocked. Reply with the answer in your next message and I’ll remember it.',
-      'I don’t know this one yet. Send the answer next and I’ll store it forever (or until the server restarts).',
-      'Fresh mystery. Drop the answer in your next message and I’ll learn it.',
-      'I’ve got nothing for that yet. Next message: the answer. I’ll do the remembering.',
-    ]);
+    return this.pickOne(BOT_ENGINE_TEXT.ASK_FOR_ANSWER);
   }
 
   private savedLine(question: string, answer: string): string {
-    const base = this.pickOne([
-      'Saved. Next time someone asks, I’ve got you.',
-      'Locked in. I will not forget. Probably.',
-      'Stored. I am now 0.001% smarter.',
-      'Saved. That knowledge is mine now. Thanks, human.',
-    ]);
+    const base = this.pickOne(BOT_ENGINE_TEXT.SAVED_PREFIXES);
 
-    return `${base} Q: "${question}" A: "${answer}"`;
+    return this.format(BOT_ENGINE_TEXT.TEMPLATES.SAVED_LINE, {
+      base,
+      question,
+      answer,
+    });
   }
 
   private updatedAnswerLine(question: string, answer: string): string {
-    const base = this.pickOne([
-      'Updated. My memory just got a patch.',
-      'Edited accepted. Memory rewritten.',
-      'Reality has been revised. I have updated the answer.',
-      'Version control says: new answer saved.',
-    ]);
+    const base = this.pickOne(BOT_ENGINE_TEXT.UPDATED_PREFIXES);
 
-    return `${base} Q: "${question}" A: "${answer}"`;
+    return this.format(BOT_ENGINE_TEXT.TEMPLATES.UPDATED_LINE, {
+      base,
+      question,
+      answer,
+    });
   }
 
   private rememberedLine(answer: string): string {
-    const intro = this.pickOne([
-      'I remember this. The answer is:',
-      'Memory check: passed. Answer:',
-      'Seen this one before. Answer:',
-      'Yep. We already solved this. Answer:',
-    ]);
+    const intro = this.pickOne(BOT_ENGINE_TEXT.REMEMBERED_PREFIXES);
 
-    return `${intro} "${answer}"`;
+    return this.format(BOT_ENGINE_TEXT.TEMPLATES.REMEMBERED_LINE, {
+      intro,
+      answer,
+    });
   }
 }
