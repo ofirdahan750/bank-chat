@@ -494,7 +494,6 @@ describe('registerSocketHandlers (socket-handler)', () => {
       user: makeUser({ id: 'u1', username: 'Ofir' }),
     });
 
-    // No valid reaction => handler should return early => no io.to(...).emit(...)
     (ioMock.to as unknown as jest.Mock).mockClear();
 
     socket.trigger('TOGGLE_REACTION', {
