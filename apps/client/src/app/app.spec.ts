@@ -18,7 +18,7 @@ describe('AppComponent', () => {
   });
 
   it('should render the title from UIText', async () => {
-    // We validate the UI pulls the title from the centralized constants.
+    // We validate the UI pulls the title from the centralized constants
     await TestBed.configureTestingModule({
       imports: [AppComponent],
       providers: [provideRouter([])],
