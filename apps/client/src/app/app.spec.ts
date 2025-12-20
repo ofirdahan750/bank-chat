@@ -26,7 +26,7 @@ describe('AppComponent', () => {
 
     const fixture = TestBed.createComponent(AppComponent);
 
-    // Trigger initial template render.
+    // Trigger initial template render
     fixture.detectChanges();
 
     const el: HTMLElement = fixture.nativeElement as HTMLElement;
