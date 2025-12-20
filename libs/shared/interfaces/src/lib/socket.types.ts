@@ -34,4 +34,3 @@ export interface ToggleReactionPayload {
   messageId: string;
   reaction: ReactionKey;
 }
-

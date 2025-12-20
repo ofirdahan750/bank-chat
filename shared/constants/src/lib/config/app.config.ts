@@ -1,8 +1,10 @@
 export const AppConfig = (() => {
   const LOCAL_BACKEND_URL = 'http://localhost:3000';
-  const PROD_BACKEND_URL = 'https://commercial-merola-ofirdahan-01b4f190.koyeb.app';
+  const PROD_BACKEND_URL =
+    'https://commercial-merola-ofirdahan-01b4f190.koyeb.app';
 
-  const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
+  const hostname =
+    typeof window !== 'undefined' ? window.location.hostname : '';
 
   const isLocal =
     hostname === 'localhost' ||
