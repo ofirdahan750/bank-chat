@@ -1,0 +1,137 @@
+{
+  "rooms": {
+    "global": {
+      "messages": [
+        {
+          "id": "429c9ee8-bc10-494f-b87d-1abb625cca56",
+          "sender": {
+            "id": "ofir",
+            "username": "ofir",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "asf",
+          "timestamp": 1766245055293,
+          "type": "text"
+        },
+        {
+          "id": "23562070-bc1b-4459-9178-8fd0472060a6",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Give me a \"?\" at the end and I’ll switch into answer-machine mode.",
+          "timestamp": 1766245056383,
+          "type": "system"
+        },
+        {
+          "id": "50ad5bd1-63bf-4c88-be17-8a78303b0010",
+          "sender": {
+            "id": "ofir",
+            "username": "ofir",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "hello ?",
+          "timestamp": 1766245062179,
+          "type": "text",
+          "editedAt": 1766245075846,
+          "edits": [
+            {
+              "previousContent": "hi ?",
+              "editedAt": 1766245075846
+            }
+          ]
+        },
+        {
+          "id": "05c5ef6d-9fa7-4aff-9071-88d9756be053",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Seen this one before. Answer: \"yes\"",
+          "timestamp": 1766245076803,
+          "type": "system"
+        },
+        {
+          "id": "78ea1030-e2e1-43ee-8b44-071b2fe765cf",
+          "sender": {
+            "id": "ofir",
+            "username": "ofir",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "yes",
+          "timestamp": 1766245067877,
+          "type": "text"
+        },
+        {
+          "id": "7028c3e5-b461-4699-a056-7a5267c5b1b2",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Saved. That knowledge is mine now. Thanks, human. Q: \"hi ?\" A: \"yes\"",
+          "timestamp": 1766245068531,
+          "type": "system"
+        },
+        {
+          "id": "f7b29639-5e11-453e-8b47-e9a5c5d167bf",
+          "sender": {
+            "id": "ofir",
+            "username": "ofir",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "hello ?",
+          "timestamp": 1766245081215,
+          "type": "text",
+          "editedAt": 1766245088427,
+          "edits": [
+            {
+              "previousContent": "hello?",
+              "editedAt": 1766245088427
+            }
+          ]
+        },
+        {
+          "id": "22bce660-b0bb-44d3-8dfc-9d792b9c4936",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Seen this one before. Answer: \"yes\"",
+          "timestamp": 1766245089047,
+          "type": "system"
+        }
+      ],
+      "botMemory": {
+        "pending": null,
+        "qa": [
+          {
+            "key": "hello ?",
+            "question": "hello ?",
+            "answer": "yes",
+            "questionMessageId": "50ad5bd1-63bf-4c88-be17-8a78303b0010",
+            "answerMessageId": "78ea1030-e2e1-43ee-8b44-071b2fe765cf",
+            "updatedAt": 1766245075847
+          }
+        ]
+      },
+      "botReplies": {
+        "429c9ee8-bc10-494f-b87d-1abb625cca56": "23562070-bc1b-4459-9178-8fd0472060a6",
+        "50ad5bd1-63bf-4c88-be17-8a78303b0010": "05c5ef6d-9fa7-4aff-9071-88d9756be053",
+        "78ea1030-e2e1-43ee-8b44-071b2fe765cf": "7028c3e5-b461-4699-a056-7a5267c5b1b2",
+        "f7b29639-5e11-453e-8b47-e9a5c5d167bf": "22bce660-b0bb-44d3-8dfc-9d792b9c4936"
+      }
+    }
+  }
+}
