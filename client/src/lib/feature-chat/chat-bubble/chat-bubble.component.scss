@@ -2,6 +2,34 @@
 @use 'mixins' as mix;
 @use 'variables' as v;
 
+/* Local tokens (keep sizes consistent + readable) */
+$sender-font: fn.rem(13px);
+$sender-lh: fn.lh(13px, 18px);
+
+$content-font: fn.rem(15px);
+$content-lh: fn.lh(15px, 21px);
+
+$meta-font: fn.rem(12px);
+$meta-lh: fn.lh(12px, 16px);
+
+$history-font: fn.rem(14px);
+$history-lh: fn.lh(14px, 20px);
+
+$icon-size: fn.rem(28px);
+$icon-glyph: fn.rem(18px);
+
+$reaction-font: fn.rem(13px);
+$reaction-lh: fn.lh(13px, 18px);
+$reaction-emoji: fn.rem(16px);
+
+$gap-2xs: fn.rem(4px);
+$gap-xs: fn.rem(6px);
+$gap-sm: fn.rem(8px);
+$gap-md: fn.rem(10px);
+
+$border-subtle: rgba(255, 255, 255, 0.08);
+$border-reaction: rgba(255, 255, 255, 0.12);
+
 .chat-bubble {
   width: fit-content;
   max-width: 72%;
@@ -30,9 +58,10 @@
   }
 
   &__sender {
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 6px;
+    font-size: $sender-font;
+    line-height: $sender-lh;
+    font-weight: v.$font-weight-semibold;
+    margin-bottom: $gap-xs;
     color: var(--text-muted);
     text-transform: capitalize;
   }
@@ -40,18 +69,20 @@
   &__content {
     white-space: pre-wrap;
     word-break: break-word;
-    line-height: 1.35;
-    font-size: 15px;
+    font-size: $content-font;
+    line-height: $content-lh;
+    letter-spacing: fn.rem(0.1px);
   }
 
   &__meta {
-    margin-top: 6px;
+    margin-top: $gap-xs;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 10px;
+    gap: $gap-md;
     color: var(--text-muted);
-    font-size: 12px;
+    font-size: $meta-font;
+    line-height: $meta-lh;
   }
 
   &__time {
@@ -64,70 +95,95 @@
     padding: 0;
     color: var(--text-muted);
     cursor: pointer;
+    font-size: inherit;
+    line-height: inherit;
+
     text-decoration: underline;
-    text-underline-offset: 2px;
+    text-underline-offset: fn.rem(2px);
     transition: color v.$transition-base;
 
     &:hover {
       color: var(--text);
     }
+
+    &:focus-visible {
+      @include mix.focus-ring();
+      border-radius: v.$radius-sm;
+    }
   }
 
   &__icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 9999px;
+    width: $icon-size;
+    height: $icon-size;
+    border-radius: v.$radius-pill;
     display: grid;
     place-items: center;
+
     border: 1px solid var(--border);
     background: rgba(255, 255, 255, 0.04);
     cursor: pointer;
+
     transition: transform 120ms ease, background-color 180ms ease;
 
     &:hover {
       background: rgba(255, 255, 255, 0.07);
-      transform: translateY(-1px);
+      transform: translateY(fn.rem(-1px));
     }
 
     &:active {
       transform: translateY(0);
     }
 
+    &:focus-visible {
+      @include mix.focus-ring();
+    }
+
     mat-icon {
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
-      line-height: 18px;
+      font-size: $icon-glyph;
+      width: $icon-glyph;
+      height: $icon-glyph;
+      line-height: $icon-glyph;
     }
   }
 
   &__reactions {
-    margin-top: 10px;
+    margin-top: $gap-md;
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: $gap-sm;
     justify-content: flex-end;
   }
 
   &__reaction {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
+    gap: $gap-xs;
+
+    padding: $gap-xs fn.rem(10px);
+    min-height: fn.rem(32px);
+
     border-radius: v.$radius-pill;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid $border-reaction;
     background: rgba(255, 255, 255, 0.03);
     cursor: pointer;
+
+    font-size: $reaction-font;
+    line-height: $reaction-lh;
+
     transition: transform v.$transition-fast,
       background-color v.$transition-base, border-color v.$transition-base;
 
     &:hover {
-      transform: translateY(-1px);
+      transform: translateY(fn.rem(-1px));
       background: rgba(255, 255, 255, 0.06);
     }
 
     &:active {
       transform: translateY(0);
+    }
+
+    &:focus-visible {
+      @include mix.focus-ring();
     }
 
     &--active {
@@ -137,39 +193,46 @@
   }
 
   &__reaction-emoji {
+    font-size: $reaction-emoji;
     line-height: 1;
+    transform: translateY(fn.rem(0.5px));
   }
 
   &__reaction-count {
-    font-size: 12px;
+    font-size: $meta-font;
+    line-height: $meta-lh;
     color: var(--text);
     opacity: 0.9;
   }
 
   &__history {
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin-top: $gap-md;
+    padding-top: $gap-md;
+    border-top: 1px solid $border-subtle;
+
     display: grid;
-    gap: 10px;
+    gap: $gap-md;
   }
 
   &__history-item {
     display: grid;
-    gap: 4px;
-    padding: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    gap: $gap-2xs;
+
+    padding: fn.rem(10px);
+    border: 1px solid $border-subtle;
     border-radius: v.$radius-md;
     background: rgba(0, 0, 0, 0.12);
   }
 
   &__history-time {
-    font-size: 12px;
+    font-size: $meta-font;
+    line-height: $meta-lh;
     color: var(--text-muted);
   }
 
   &__history-content {
-    font-size: 14px;
+    font-size: $history-font;
+    line-height: $history-lh;
     color: var(--text);
     white-space: pre-wrap;
     word-break: break-word;
@@ -177,7 +240,7 @@
 
   &__edit {
     display: grid;
-    gap: 10px;
+    gap: $gap-md;
   }
 
   &__edit-input {
@@ -189,7 +252,33 @@
   &__edit-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
+    gap: $gap-md;
+  }
+
+  /* Small screens: slightly tighter bubble and more compact reaction pills */
+  @media (max-width: v.$bp-sm) {
+    max-width: 88%;
+    padding: v.$space-3;
+
+    &__content {
+      font-size: fn.rem(14px);
+      line-height: fn.lh(14px, 20px);
+    }
+
+    &__reactions {
+      gap: $gap-xs;
+    }
+
+    &__reaction {
+      padding: fn.rem(5px) fn.rem(9px);
+      min-height: fn.rem(30px);
+      font-size: fn.rem(12px);
+      line-height: fn.lh(12px, 16px);
+    }
+
+    &__reaction-emoji {
+      font-size: fn.rem(15px);
+    }
   }
 }
 
@@ -221,7 +310,7 @@
     box-shadow: 0 0 0 0 rgba(11, 95, 255, 0);
   }
   35% {
-    box-shadow: 0 0 0 6px rgba(11, 95, 255, 0.18);
+    box-shadow: 0 0 0 fn.rem(6px) rgba(11, 95, 255, 0.18);
   }
   100% {
     box-shadow: 0 0 0 0 rgba(11, 95, 255, 0);
