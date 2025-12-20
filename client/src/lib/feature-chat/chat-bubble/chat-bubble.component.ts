@@ -68,15 +68,15 @@ export class ChatBubbleComponent implements OnChanges {
   // Use the constant list directly (no extra local types/mappers).
   protected readonly reactionOptions = UI_TEXT.CHAT_BUBBLE.REACTION_OPTIONS;
 
-  protected readonly isEditing = signal(false);
-  protected readonly showHistory = signal(false);
+  readonly isEditing = signal(false);
+  readonly showHistory = signal(false);
 
   private readonly timeFormatter: Intl.DateTimeFormat = new Intl.DateTimeFormat(
     undefined,
     { hour: '2-digit', minute: '2-digit' }
   );
 
-  protected readonly editForm: ChatBubbleEditForm = this.fb.group({
+  readonly editForm: ChatBubbleEditForm = this.fb.group({
     content: this.fb.control('', {
       validators: [
         Validators.required,
