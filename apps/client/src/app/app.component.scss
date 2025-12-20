@@ -7,7 +7,6 @@ app-root {
     color: vars.$text-color;
 
     &__container {
-      // Put plain declarations BEFORE nested rules to avoid Sass mixed-decls deprecation.
       padding-top: vars.$space-5;
       padding-bottom: vars.$space-5;
 

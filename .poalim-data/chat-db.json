@@ -1,1 +1,39 @@
- 
+{
+  "rooms": {
+    "global": {
+      "messages": [
+        {
+          "id": "f916aded-3afa-47eb-bd5b-cdfbe6076f67",
+          "sender": {
+            "id": "ofir dahan",
+            "username": "ofir dahan",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "hi",
+          "timestamp": 1766254457040,
+          "type": "text"
+        },
+        {
+          "id": "405886b8-4ccc-49cd-b60d-14392a487fca",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "I can only treat something as a question if it ends with a \"?\". Add one and I’ll behave.",
+          "timestamp": 1766254457572,
+          "type": "system"
+        }
+      ],
+      "botMemory": {
+        "pending": null,
+        "qa": []
+      },
+      "botReplies": {
+        "f916aded-3afa-47eb-bd5b-cdfbe6076f67": "405886b8-4ccc-49cd-b60d-14392a487fca"
+      }
+    }
+  }
+}
