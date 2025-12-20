@@ -7,7 +7,7 @@ import {
   runInInjectionContext,
   signal,
 } from '@angular/core';
-import { AppConfig, ChatUi, UIText } from '@poalim/constants';
+import { AppConfig, ChatUi, UI_TEXT } from '@poalim/constants';
 import { LocalStorageService, SocketClientService } from '@poalim/client-data-access';
 import { ChatMessage, ReactionKey, User } from '@poalim/shared-interfaces';
 
@@ -215,7 +215,7 @@ export class ChatStore {
     const msg: ChatMessage = {
       id: crypto.randomUUID(),
       sender: this.bot(),
-      content: UIText.BOT.DEFAULT_GREETING,
+      content: UI_TEXT.BOT.DEFAULT_GREETING,
       timestamp: Date.now(),
       type: 'system',
     };

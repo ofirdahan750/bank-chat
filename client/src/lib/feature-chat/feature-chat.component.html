@@ -7,8 +7,8 @@
       animate.enter="anim-enter-panel"
     >
       <header class="feature-chat__header">
-        <h2 class="feature-chat__title">{{ uiText.LOGIN.TITLE }}</h2>
-        <p class="feature-chat__subtitle">{{ uiText.LOGIN.SUBTITLE }}</p>
+        <h2 class="feature-chat__title">{{ UI_TEXT.LOGIN.TITLE }}</h2>
+        <p class="feature-chat__subtitle">{{ UI_TEXT.LOGIN.SUBTITLE }}</p>
       </header>
 
       <form class="feature-chat__form" [formGroup]="nicknameForm" (ngSubmit)="submitNickname()">
@@ -18,16 +18,16 @@
           type="text"
           autocomplete="nickname"
           [attr.maxlength]="chatUi.USER.MAX_USERNAME_LENGTH"
-          [placeholder]="uiText.LOGIN.INPUT_PLACEHOLDER"
+          [placeholder]="UI_TEXT.LOGIN.INPUT_PLACEHOLDER"
           [formControl]="nicknameForm.controls.username"
         />
 
         @if (nicknameForm.controls.username.touched && nicknameForm.controls.username.hasError('required')) {
-          <div class="feature-chat__error" role="alert">{{ uiText.LOGIN.ERROR_REQUIRED }}</div>
+          <div class="feature-chat__error" role="alert">{{ UI_TEXT.LOGIN.ERROR_REQUIRED }}</div>
         } @else if (nicknameForm.controls.username.touched && nicknameForm.controls.username.hasError('minlength')) {
-          <div class="feature-chat__error" role="alert">{{ uiText.LOGIN.ERROR_MIN_LENGTH }}</div>
+          <div class="feature-chat__error" role="alert">{{ UI_TEXT.LOGIN.ERROR_MIN_LENGTH }}</div>
         } @else if (nicknameForm.controls.username.touched && nicknameForm.controls.username.hasError('maxlength')) {
-          <div class="feature-chat__error" role="alert">{{ uiText.LOGIN.ERROR_MAX_LENGTH }}</div>
+          <div class="feature-chat__error" role="alert">{{ UI_TEXT.LOGIN.ERROR_MAX_LENGTH }}</div>
         }
 
         <button
@@ -36,7 +36,7 @@
           [disabled]="nicknameForm.invalid"
           [attr.aria-disabled]="nicknameForm.invalid"
         >
-          {{ uiText.LOGIN.BUTTON }}
+          {{ UI_TEXT.LOGIN.BUTTON }}
         </button>
       </form>
     </div>
@@ -67,7 +67,7 @@
       <div class="feature-chat__messages" role="log" aria-live="polite" aria-relevant="additions">
         @if (store.messages().length === 0) {
           <div class="feature-chat__empty" animate.enter="anim-enter-soft">
-            <div>{{ uiText.CHAT.EMPTY_STATE }}</div>
+            <div>{{ UI_TEXT.CHAT.EMPTY_STATE }}</div>
           </div>
         } @else {
           @for (m of store.messages(); track trackById($index, m)) {
@@ -91,7 +91,7 @@
           class="app-input feature-chat__composer-input"
           type="text"
           [attr.maxlength]="config.MAX_MSG_LENGTH"
-          [placeholder]="uiText.CHAT.INPUT_PLACEHOLDER"
+          [placeholder]="UI_TEXT.CHAT.INPUT_PLACEHOLDER"
           [formControl]="composerForm.controls.content"
         />
 
@@ -107,7 +107,7 @@
 
       @if (composerForm.controls.content.touched && composerForm.controls.content.hasError('required')) {
         <div class="feature-chat__error feature-chat__error--composer" role="alert">
-          {{ uiText.CHAT.ERROR_REQUIRED }}
+          {{ UI_TEXT.CHAT.ERROR_REQUIRED }}
         </div>
       }
     </div>

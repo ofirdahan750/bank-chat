@@ -11,7 +11,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { AppConfig, ChatUi, UIText } from '@poalim/constants';
+import { AppConfig, ChatUi, UI_TEXT } from '@poalim/constants';
 import { ChatMessage, ReactionKey } from '@poalim/shared-interfaces';
 import {
   ChatBubbleComponent,
@@ -33,7 +33,7 @@ export class FeatureChat implements OnInit {
   private readonly fb = inject(NonNullableFormBuilder);
   protected readonly store = inject(ChatStore);
 
-  protected readonly uiText = UIText;
+  protected readonly UI_TEXT = UI_TEXT;
   protected readonly config = AppConfig;
   protected readonly chatUi = ChatUi;
 

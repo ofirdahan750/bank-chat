@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { UIText } from '@poalim/constants';
+import { UI_TEXT } from '@poalim/constants';
 
 @Component({
   selector: 'app-root',
@@ -12,5 +12,5 @@ import { UIText } from '@poalim/constants';
   encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent {
-  protected readonly title = UIText.LOGIN.TITLE;
+  protected readonly title = UI_TEXT.LOGIN.TITLE;
 }

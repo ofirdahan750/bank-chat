@@ -724,6 +724,30 @@
           "content": "Saved. Next time someone asks, I’ve got you. Q: \"test?\" A: \"it's a test\"",
           "timestamp": 1766228395858,
           "type": "system"
+        },
+        {
+          "id": "0b177904-6dc1-418b-b3d1-5f89435e0439",
+          "sender": {
+            "id": "שדבשדב",
+            "username": "שדבשדב",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "dasdasd",
+          "timestamp": 1766228692366,
+          "type": "text"
+        },
+        {
+          "id": "5a9b79ae-b6fd-43ca-aaa8-6785b07c042d",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "I’m a bot, not a mind reader. Toss in a \"?\" so I know it’s a question.",
+          "timestamp": 1766228693223,
+          "type": "system"
         }
       ],
       "botMemory": {
@@ -799,7 +823,8 @@
         "f6869baf-e8e8-4b88-9712-8dff6bd9939f": "6a6a2d32-ddd5-4864-8a32-636c44813b29",
         "b252e0b3-0131-4e5f-a08c-a250529878fa": "0ec25df9-3c5e-45e6-b11c-81c59a56e2ad",
         "aad52d00-7234-4f86-b468-def3a5b60c82": "2ffe92ec-5f9f-4da9-9f9d-d181c3c23a85",
-        "61b03ab5-1837-4334-a236-8a6b4177ad9a": "0d467a3a-d32e-49a5-8a96-31e0fd9b02e2"
+        "61b03ab5-1837-4334-a236-8a6b4177ad9a": "0d467a3a-d32e-49a5-8a96-31e0fd9b02e2",
+        "0b177904-6dc1-418b-b3d1-5f89435e0439": "5a9b79ae-b6fd-43ca-aaa8-6785b07c042d"
       }
     }
   }

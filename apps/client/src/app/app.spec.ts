@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { UIText } from '@poalim/constants';
+import { UI_TEXT } from '@poalim/constants';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
@@ -33,6 +33,6 @@ describe('AppComponent', () => {
     const titleEl = el.querySelector('.app-shell__title');
 
     expect(titleEl).toBeTruthy();
-    expect((titleEl?.textContent ?? '').trim()).toBe(UIText.LOGIN.TITLE);
+    expect((titleEl?.textContent ?? '').trim()).toBe(UI_TEXT.LOGIN.TITLE);
   });
 });

@@ -1,4 +1,4 @@
-export const UIText = {
+export const UI_TEXT = {
   LOGIN: {
     TITLE: 'Welcome to Poalim Chat',
     SUBTITLE: 'Please choose a nickname to start',
