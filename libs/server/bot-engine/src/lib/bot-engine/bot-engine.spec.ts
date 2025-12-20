@@ -1,5 +1,3 @@
-// libs/server/bot-engine/src/lib/bot-engine/bot-engine.spec.ts
-
 import { BotEngine } from './bot-engine';
 import type {
   ChatMessage,
