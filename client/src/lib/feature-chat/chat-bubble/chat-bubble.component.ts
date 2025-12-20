@@ -37,7 +37,6 @@ type ReactionOption = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: {
-    // Works with Angular 20+ compiler animations API (no BrowserAnimationsModule)
     'animate.enter': 'anim-enter-bubble',
   },
 })
