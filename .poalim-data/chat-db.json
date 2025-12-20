@@ -25,18 +25,138 @@
           "content": "New question unlocked. Reply with the answer in your next message and I’ll remember it.",
           "timestamp": 1766241928233,
           "type": "system"
+        },
+        {
+          "id": "8693cdd7-17ad-44a6-9576-a43ad3610319",
+          "sender": {
+            "id": "ofir",
+            "username": "ofir",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "hi",
+          "timestamp": 1766242336352,
+          "type": "text"
+        },
+        {
+          "id": "cd4b4d4f-7802-424a-a3aa-5ad302998ebc",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Saved. That knowledge is mine now. Thanks, human. Q: \"hello?\" A: \"hi\"",
+          "timestamp": 1766242337035,
+          "type": "system"
+        },
+        {
+          "id": "c7bfc31b-327a-4e15-927d-c1c464d5213b",
+          "sender": {
+            "id": "ofir",
+            "username": "ofir",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "how are you ?",
+          "timestamp": 1766242343250,
+          "type": "text"
+        },
+        {
+          "id": "5f4f629f-ca16-4470-a52c-2ce151c71dac",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Fresh mystery. Drop the answer in your next message and I’ll learn it.",
+          "timestamp": 1766242343994,
+          "type": "system"
+        },
+        {
+          "id": "c1f16a65-670b-4a11-9a72-eab3bc79d5f4",
+          "sender": {
+            "id": "ofir",
+            "username": "ofir",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "good :)",
+          "timestamp": 1766242347794,
+          "type": "text",
+          "editedAt": 1766242352090,
+          "edits": [
+            {
+              "previousContent": "good!",
+              "editedAt": 1766242352090
+            }
+          ]
+        },
+        {
+          "id": "aa06be8f-ac24-46ea-847c-b95d239249cd",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Version control says: new answer saved. Q: \"how are you ?\" A: \"good :)\"",
+          "timestamp": 1766242353022,
+          "type": "system"
+        },
+        {
+          "id": "47fd0c1e-13be-4b1a-b158-ff3819a64d61",
+          "sender": {
+            "id": "ofir",
+            "username": "ofir",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "how are you ?",
+          "timestamp": 1766242363079,
+          "type": "text"
+        },
+        {
+          "id": "61351023-c296-4ba1-9b5d-d3cd8aab68ed",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Yep. We already solved this. Answer: \"good :)\"",
+          "timestamp": 1766242364067,
+          "type": "system"
         }
       ],
       "botMemory": {
-        "pending": {
-          "key": "hello?",
-          "question": "hello?",
-          "questionMessageId": "1bc18c27-4c91-4a3f-81d3-5062e69bcdd3"
-        },
-        "qa": []
+        "pending": null,
+        "qa": [
+          {
+            "key": "hello?",
+            "question": "hello?",
+            "answer": "hi",
+            "questionMessageId": "1bc18c27-4c91-4a3f-81d3-5062e69bcdd3",
+            "answerMessageId": "8693cdd7-17ad-44a6-9576-a43ad3610319",
+            "updatedAt": 1766242336357
+          },
+          {
+            "key": "how are you ?",
+            "question": "how are you ?",
+            "answer": "good :)",
+            "questionMessageId": "c7bfc31b-327a-4e15-927d-c1c464d5213b",
+            "answerMessageId": "c1f16a65-670b-4a11-9a72-eab3bc79d5f4",
+            "updatedAt": 1766242352091
+          }
+        ]
       },
       "botReplies": {
-        "1bc18c27-4c91-4a3f-81d3-5062e69bcdd3": "1b18b5cd-a146-440d-82d5-751bfb6889b1"
+        "1bc18c27-4c91-4a3f-81d3-5062e69bcdd3": "1b18b5cd-a146-440d-82d5-751bfb6889b1",
+        "8693cdd7-17ad-44a6-9576-a43ad3610319": "cd4b4d4f-7802-424a-a3aa-5ad302998ebc",
+        "c7bfc31b-327a-4e15-927d-c1c464d5213b": "5f4f629f-ca16-4470-a52c-2ce151c71dac",
+        "c1f16a65-670b-4a11-9a72-eab3bc79d5f4": "aa06be8f-ac24-46ea-847c-b95d239249cd",
+        "47fd0c1e-13be-4b1a-b158-ff3819a64d61": "61351023-c296-4ba1-9b5d-d3cd8aab68ed"
       }
     }
   }
