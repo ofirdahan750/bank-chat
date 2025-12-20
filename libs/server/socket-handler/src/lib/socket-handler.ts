@@ -53,10 +53,10 @@ const loadDb = (): PersistedDb => {
       SERVER_PERSISTENCE_CONFIG.FILE_ENCODING
     );
 
-    const parsed: unknown = JSON.parse(raw);
+    const parsed = JSON.parse(raw);
 
     if (!parsed || typeof parsed !== 'object') return { rooms: {} };
-    const obj = parsed as { rooms?: unknown };
+    const obj = parsed as { rooms?: any };
 
     if (!obj.rooms || typeof obj.rooms !== 'object') return { rooms: {} };
 
@@ -81,7 +81,7 @@ const saveDb = (db: PersistedDb): void => {
   fs.renameSync(tmpPath, DATA_FILE_PATH);
 };
 
-const isReactionKey = (value: unknown): value is ReactionKey => {
+const isReactionKey = (value: string): value is ReactionKey => {
   if (typeof value !== 'string') return false;
 
   // Keep server validation in sync with the shared union.
@@ -89,7 +89,7 @@ const isReactionKey = (value: unknown): value is ReactionKey => {
 };
 
 const normalizeRoomId = (
-  candidate: unknown,
+  candidate: string,
   fallback: BotEngineRoomId
 ): BotEngineRoomId => {
   if (typeof candidate !== 'string') return fallback;

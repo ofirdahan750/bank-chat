@@ -3,43 +3,91 @@
     "global": {
       "messages": [
         {
-          "id": "f916aded-3afa-47eb-bd5b-cdfbe6076f67",
+          "id": "6c60e221-1e8a-4d94-a254-59d9a9904bbb",
           "sender": {
             "id": "ofir dahan",
             "username": "ofir dahan",
             "isBot": false,
             "color": "#3b82f6"
           },
-          "content": "hi",
-          "timestamp": 1766254457040,
+          "content": "how are you ?",
+          "timestamp": 1766256462137,
           "type": "text"
         },
         {
-          "id": "405886b8-4ccc-49cd-b60d-14392a487fca",
+          "id": "9dd70126-9422-4973-a876-854ae080375c",
           "sender": {
             "id": "bot",
             "username": "Poalim Bot",
             "isBot": true,
             "color": "#ed1d24"
           },
-          "content": "I can only treat something as a question if it ends with a \"?\". Add one and I’ll behave.",
-          "timestamp": 1766254457572,
+          "content": "New question unlocked. Reply with the answer in your next message and I’ll remember it.",
+          "timestamp": 1766256463125,
           "type": "system"
         },
         {
-          "id": "a1315d32-c7cd-4f1e-b555-b7d2b4e89f9c",
+          "id": "3da23463-fedb-4f26-a35f-b6f1618245df",
           "sender": {
             "id": "ofir dahan",
             "username": "ofir dahan",
             "isBot": false,
             "color": "#3b82f6"
           },
-          "content": "hi ?",
-          "timestamp": 1766256190879,
+          "content": "Good!",
+          "timestamp": 1766256464837,
           "type": "text"
         },
         {
-          "id": "69aebe56-1209-4e88-9bd8-f5c432c9ac7d",
+          "id": "84a9c17d-cec2-4abb-b3ad-089422ce3d5d",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Locked in. I will not forget. Probably. Q: \"how are you ?\" A: \"Good!\"",
+          "timestamp": 1766256465611,
+          "type": "system"
+        },
+        {
+          "id": "344429e5-462e-433e-b685-bd28974279b2",
+          "sender": {
+            "id": "ofir dahan",
+            "username": "ofir dahan",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "how are you ?",
+          "timestamp": 1766256472566,
+          "type": "text"
+        },
+        {
+          "id": "e430ff67-559b-40eb-a5aa-c18a17ffd130",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Yep. We already solved this. Answer: \"Good!\"",
+          "timestamp": 1766256473460,
+          "type": "system"
+        },
+        {
+          "id": "9a869527-32a9-4f96-a321-d5b3789f5899",
+          "sender": {
+            "id": "ofir dahan",
+            "username": "ofir dahan",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "Are you ok ?",
+          "timestamp": 1766256480681,
+          "type": "text"
+        },
+        {
+          "id": "3dc592d7-5dbf-4e07-a940-cc80b8e43940",
           "sender": {
             "id": "bot",
             "username": "Poalim Bot",
@@ -47,31 +95,38 @@
             "color": "#ed1d24"
           },
           "content": "I don’t know this one yet. Send the answer next and I’ll store it forever (or until the server restarts).",
-          "timestamp": 1766256191853,
+          "timestamp": 1766256481660,
           "type": "system"
         },
         {
-          "id": "a707fa51-89d1-471f-934e-7c16b850b76b",
+          "id": "c2e585cc-0b08-4bbc-bab9-a078f5c31b74",
           "sender": {
             "id": "ofir dahan",
             "username": "ofir dahan",
             "isBot": false,
             "color": "#3b82f6"
           },
-          "content": "hello",
-          "timestamp": 1766256194042,
-          "type": "text"
+          "content": "Awesome! good",
+          "timestamp": 1766256505673,
+          "type": "text",
+          "editedAt": 1766256511568,
+          "edits": [
+            {
+              "previousContent": "Awesome!",
+              "editedAt": 1766256511568
+            }
+          ]
         },
         {
-          "id": "94423fcf-318f-4094-9e4b-d6d9a8f0d988",
+          "id": "a7f7de37-8dfe-45b0-9732-565ed07dece9",
           "sender": {
             "id": "bot",
             "username": "Poalim Bot",
             "isBot": true,
             "color": "#ed1d24"
           },
-          "content": "Stored. I am now 0.001% smarter. Q: \"hi ?\" A: \"hello\"",
-          "timestamp": 1766256194806,
+          "content": "Updated. My memory just got a patch. Q: \"Are you ok ?\" A: \"Awesome! good\"",
+          "timestamp": 1766256512615,
           "type": "system"
         }
       ],
@@ -79,19 +134,29 @@
         "pending": null,
         "qa": [
           {
-            "key": "hi ?",
-            "question": "hi ?",
-            "answer": "hello",
-            "questionMessageId": "a1315d32-c7cd-4f1e-b555-b7d2b4e89f9c",
-            "answerMessageId": "a707fa51-89d1-471f-934e-7c16b850b76b",
-            "updatedAt": 1766256194050
+            "key": "how are you ?",
+            "question": "how are you ?",
+            "answer": "Good!",
+            "questionMessageId": "6c60e221-1e8a-4d94-a254-59d9a9904bbb",
+            "answerMessageId": "3da23463-fedb-4f26-a35f-b6f1618245df",
+            "updatedAt": 1766256464840
+          },
+          {
+            "key": "are you ok ?",
+            "question": "Are you ok ?",
+            "answer": "Awesome! good",
+            "questionMessageId": "9a869527-32a9-4f96-a321-d5b3789f5899",
+            "answerMessageId": "c2e585cc-0b08-4bbc-bab9-a078f5c31b74",
+            "updatedAt": 1766256511571
           }
         ]
       },
       "botReplies": {
-        "f916aded-3afa-47eb-bd5b-cdfbe6076f67": "405886b8-4ccc-49cd-b60d-14392a487fca",
-        "a1315d32-c7cd-4f1e-b555-b7d2b4e89f9c": "69aebe56-1209-4e88-9bd8-f5c432c9ac7d",
-        "a707fa51-89d1-471f-934e-7c16b850b76b": "94423fcf-318f-4094-9e4b-d6d9a8f0d988"
+        "6c60e221-1e8a-4d94-a254-59d9a9904bbb": "9dd70126-9422-4973-a876-854ae080375c",
+        "3da23463-fedb-4f26-a35f-b6f1618245df": "84a9c17d-cec2-4abb-b3ad-089422ce3d5d",
+        "344429e5-462e-433e-b685-bd28974279b2": "e430ff67-559b-40eb-a5aa-c18a17ffd130",
+        "9a869527-32a9-4f96-a321-d5b3789f5899": "3dc592d7-5dbf-4e07-a940-cc80b8e43940",
+        "c2e585cc-0b08-4bbc-bab9-a078f5c31b74": "a7f7de37-8dfe-45b0-9732-565ed07dece9"
       }
     }
   }
