@@ -25,6 +25,10 @@ export const UI_TEXT = {
     EMPTY_STATE: 'Start the conversation by sending a message',
   },
 
+  TOOLTIP_TEXT: {
+    LOGOUT_BUTTON: 'Logout from the chat room',
+  },
+
   CHAT_BUBBLE: {
     EDITED_BADGE: 'Edited',
     EDIT_FORM_SAVE: 'Save',

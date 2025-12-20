@@ -98,7 +98,10 @@
         class="feature-chat__logout"
         (click)="logout()"
         [attr.aria-label]="UI_TEXT.A11Y.LOGOUT_BUTTON"
-        [title]="UI_TEXT.A11Y.LOGOUT_BUTTON"
+        [matTooltip]="UI_TEXT.TOOLTIP_TEXT.LOGOUT_BUTTON"
+        matTooltipClass="chat-logout-tooltip"
+        matTooltipPosition="below"
+        [matTooltipShowDelay]="150"
       >
         <mat-icon aria-hidden="true">logout</mat-icon>
       </button>

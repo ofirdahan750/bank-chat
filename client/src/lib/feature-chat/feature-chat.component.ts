@@ -26,15 +26,19 @@ import {
   FeatureChatNicknameFormValue,
   ReactionToggleEvent,
 } from '@poalim/shared-interfaces';
-import {
-  ChatBubbleComponent,
-} from './chat-bubble/chat-bubble.component';
+import { ChatBubbleComponent } from './chat-bubble/chat-bubble.component';
 import { ChatStore } from './services/chat-store/chat-store.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-feature-chat',
   standalone: true,
-  imports: [ReactiveFormsModule, MatIconModule, ChatBubbleComponent],
+  imports: [
+    ReactiveFormsModule,
+    MatIconModule,
+    ChatBubbleComponent,
+    MatTooltipModule,
+  ],
   templateUrl: './feature-chat.component.html',
   styleUrl: './feature-chat.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

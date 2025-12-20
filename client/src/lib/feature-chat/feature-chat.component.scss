@@ -125,11 +125,14 @@ app-feature-chat {
       border: 1px solid var(--border);
       background: rgba(255, 255, 255, 0.04);
       cursor: pointer;
+      color: rgba(236, 240, 247, 0.86);
       transition: transform v.$transition-fast,
-        background-color v.$transition-base, border-color v.$transition-base;
+        background-color v.$transition-base, border-color v.$transition-base,
+        color v.$transition-base;
 
       &:hover {
         background: rgba(255, 255, 255, 0.07);
+        color: rgba(244, 247, 252, 0.9);
         transform: translateY(fn.rem(-1px));
       }
 
@@ -142,6 +145,7 @@ app-feature-chat {
         width: fn.rem(20px);
         height: fn.rem(20px);
         line-height: fn.rem(20px);
+        color: inherit;
       }
     }
 
@@ -297,4 +301,15 @@ app-feature-chat {
 
 .anim-enter-soft {
   animation: anim-fade-up-in-soft 140ms ease-out both;
+}
+
+.chat-logout-tooltip .mdc-tooltip__surface {
+  background: rgba(39, 45, 54, 0.96);
+  color: rgba(236, 240, 247, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: fn.rem(13px);
+  line-height: fn.lh(15px, 16px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
 }

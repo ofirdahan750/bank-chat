@@ -21,12 +21,12 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { AppConfig, UI_TEXT } from '@poalim/constants';
 import {
+  ChatBubbleEditForm,
   ChatMessage,
   EditSubmitEvent,
   ReactionKey,
   ReactionToggleEvent,
 } from '@poalim/shared-interfaces';
-import { ChatBubbleEditForm } from './chat-bubble.types';
 
 @Component({
   selector: 'app-chat-bubble',

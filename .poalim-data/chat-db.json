@@ -1,0 +1,43 @@
+{
+  "rooms": {
+    "global": {
+      "messages": [
+        {
+          "id": "1bc18c27-4c91-4a3f-81d3-5062e69bcdd3",
+          "sender": {
+            "id": "ofir dahan",
+            "username": "ofir dahan",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "hello?",
+          "timestamp": 1766241927609,
+          "type": "text"
+        },
+        {
+          "id": "1b18b5cd-a146-440d-82d5-751bfb6889b1",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "New question unlocked. Reply with the answer in your next message and I’ll remember it.",
+          "timestamp": 1766241928233,
+          "type": "system"
+        }
+      ],
+      "botMemory": {
+        "pending": {
+          "key": "hello?",
+          "question": "hello?",
+          "questionMessageId": "1bc18c27-4c91-4a3f-81d3-5062e69bcdd3"
+        },
+        "qa": []
+      },
+      "botReplies": {
+        "1bc18c27-4c91-4a3f-81d3-5062e69bcdd3": "1b18b5cd-a146-440d-82d5-751bfb6889b1"
+      }
+    }
+  }
+}
