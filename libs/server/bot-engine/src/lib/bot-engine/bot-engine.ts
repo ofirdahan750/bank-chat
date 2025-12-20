@@ -1,9 +1,14 @@
-// libs/server/bot-engine/src/lib/bot-engine/bot-engine.ts
-
 import { randomUUID } from 'crypto';
 import { BOT_ENGINE_TEXT } from '@poalim/constants';
-import { BotAction, BotEngineQaEntry, BotEngineRoomId, BotEngineRoomMemory, ChatMessage, PersistedBotRoomMemory, User } from '@poalim/shared-interfaces';
-
+import {
+  BotAction,
+  BotEngineQaEntry,
+  BotEngineRoomId,
+  BotEngineRoomMemory,
+  ChatMessage,
+  PersistedBotRoomMemory,
+  User,
+} from '@poalim/shared-interfaces';
 
 export class BotEngine {
   // Per-room in-memory state (rebuilt from persisted JSON on server start).
