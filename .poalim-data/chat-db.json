@@ -12,7 +12,24 @@
           },
           "content": "hi?",
           "timestamp": 1766237036596,
-          "type": "text"
+          "type": "text",
+          "reactions": {
+            "heart": [
+              "שדבשדב"
+            ],
+            "like": [
+              "שדבשדב"
+            ],
+            "wow": [
+              "שדבשדב"
+            ],
+            "laugh": [
+              "שדבשדב"
+            ],
+            "sad": [
+              "שדבשדב"
+            ]
+          }
         },
         {
           "id": "899b028d-cbde-4447-82df-f54caca4e50d",
@@ -49,6 +66,71 @@
           "content": "Stored. I am now 0.001% smarter. Q: \"hi?\" A: \"yes\"",
           "timestamp": 1766237040112,
           "type": "system"
+        },
+        {
+          "id": "703b4284-738a-4740-b043-f092046dae77",
+          "sender": {
+            "id": "ofir",
+            "username": "ofir",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "ascas",
+          "timestamp": 1766238799518,
+          "type": "text"
+        },
+        {
+          "id": "41d4886e-99a9-42f3-9a0f-b02036a7401d",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "No \"?\" no magic. Add a question mark and I’ll file it properly.",
+          "timestamp": 1766238800088,
+          "type": "system"
+        },
+        {
+          "id": "1f62ae78-f0ca-4715-8afd-569ef807df3a",
+          "sender": {
+            "id": "שדבשדב",
+            "username": "שדבשדב",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "asc",
+          "timestamp": 1766238817215,
+          "type": "text"
+        },
+        {
+          "id": "6aab607f-2be4-40b4-b52c-636e754b486e",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "I’m a bot, not a mind reader. Toss in a \"?\" so I know it’s a question.",
+          "timestamp": 1766238818119,
+          "type": "system",
+          "reactions": {
+            "sad": [
+              "שדבשדב"
+            ],
+            "wow": [
+              "שדבשדב"
+            ],
+            "laugh": [
+              "שדבשדב"
+            ],
+            "heart": [
+              "שדבשדב"
+            ],
+            "like": [
+              "שדבשדב"
+            ]
+          }
         }
       ],
       "botMemory": {
@@ -66,7 +148,9 @@
       },
       "botReplies": {
         "66dded61-ba77-460b-bc40-c074ad09b568": "899b028d-cbde-4447-82df-f54caca4e50d",
-        "2f0192a5-8570-409c-b141-dd5be7405bc8": "563d113f-52b0-4a55-a273-f7103b699bda"
+        "2f0192a5-8570-409c-b141-dd5be7405bc8": "563d113f-52b0-4a55-a273-f7103b699bda",
+        "703b4284-738a-4740-b043-f092046dae77": "41d4886e-99a9-42f3-9a0f-b02036a7401d",
+        "1f62ae78-f0ca-4715-8afd-569ef807df3a": "6aab607f-2be4-40b4-b52c-636e754b486e"
       }
     }
   }

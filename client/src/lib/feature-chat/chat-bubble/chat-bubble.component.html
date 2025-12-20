@@ -1,111 +1,125 @@
 <article
+  #bubbleEl
   class="chat-bubble"
-  [class.chat-bubble--mine]="isMine"
-  [class.chat-bubble--bot]="message.sender.isBot"
-  [class.chat-bubble--pulse]="pulse()"
+  [ngClass]="{
+    'chat-bubble--mine': isMine,
+    'chat-bubble--bot': message.sender.isBot
+  }"
 >
   @if (message.sender.id && !isMine && !message.sender.isBot) {
-    <div class="chat-bubble__sender" animate.enter="anim-enter-soft">
-      {{ message.sender.username }}
-    </div>
-  }
+  <div class="chat-bubble__sender" animate.enter="anim-enter-soft">
+    {{ message.sender.username }}
+  </div>
+  } @if (!isEditing()) {
+  <div class="chat-bubble__content" animate.enter="anim-enter-soft">
+    {{ message.content }}
+  </div>
 
-  @if (!isEditing()) {
-    <div class="chat-bubble__content" animate.enter="anim-enter-soft">
-      {{ message.content }}
-    </div>
+  <div class="chat-bubble__meta" animate.enter="anim-enter-soft">
+    <span class="chat-bubble__time">{{ timeLabel }}</span>
 
-    <div class="chat-bubble__meta" animate.enter="anim-enter-soft">
-      <span class="chat-bubble__time">{{ timeLabel }}</span>
-
-      @if (message.edits?.length) {
-        <button type="button" class="chat-bubble__edited" (click)="toggleHistory()">
-          {{ UI_TEXT.CHAT_BUBBLE.EDITED_BADGE }}
-        </button>
-      }
-
-      @if (canEdit) {
-        <button
-          type="button"
-          class="chat-bubble__icon"
-          (click)="startEdit()"
-          [attr.aria-label]="UI_TEXT.A11Y.EDIT_MESSAGE_BUTTON"
-          [attr.title]="UI_TEXT.A11Y.EDIT_MESSAGE_BUTTON"
-        >
-          <mat-icon aria-hidden="true">edit</mat-icon>
-        </button>
-      }
-    </div>
-
-    <div
-      class="chat-bubble__reactions"
-      role="group"
-      [attr.aria-label]="UI_TEXT.A11Y.REACTIONS_GROUP"
-      animate.enter="anim-enter-soft"
+    @if (message.edits?.length) {
+    <button type="button" class="chat-bubble__edited" (click)="toggleHistory()">
+      {{ UI_TEXT.CHAT_BUBBLE.EDITED_BADGE }}
+    </button>
+    } @if (canEdit) {
+    <button
+      type="button"
+      class="chat-bubble__icon"
+      (click)="startEdit()"
+      [attr.aria-label]="UI_TEXT.A11Y.EDIT_MESSAGE_BUTTON"
+      [attr.title]="UI_TEXT.A11Y.EDIT_MESSAGE_BUTTON"
     >
-      @for (r of reactionOptions; track r.KEY) {
-        <button
-          type="button"
-          class="chat-bubble__reaction"
-          [class.chat-bubble__reaction--active]="hasReacted(r.KEY)"
-          (click)="toggleReaction(r.KEY)"
-          [attr.aria-label]="r.LABEL"
-          [attr.title]="r.LABEL"
-        >
-          <span class="chat-bubble__reaction-emoji" aria-hidden="true">{{ r.EMOJI }}</span>
-
-          @if (reactionCount(r.KEY) > 0) {
-            <span class="chat-bubble__reaction-count">{{ reactionCount(r.KEY) }}</span>
-          }
-        </button>
-      }
-    </div>
-
-    @if (showHistory() && (message.edits?.length ?? 0) > 0) {
-      <div
-        class="chat-bubble__history"
-        role="region"
-        [attr.aria-label]="UI_TEXT.A11Y.EDIT_HISTORY_REGION"
-        animate.enter="anim-enter-soft"
-        animate.leave="anim-leave-soft"
-      >
-        @for (e of message.edits!; track $index) {
-          <div class="chat-bubble__history-item">
-            <div class="chat-bubble__history-time">{{ formatHistoryTime(e.editedAt) }}</div>
-            <div class="chat-bubble__history-content">{{ e.previousContent }}</div>
-          </div>
-        }
-      </div>
+      <mat-icon aria-hidden="true">edit</mat-icon>
+    </button>
     }
-  } @else {
-    <form
-      class="chat-bubble__edit"
-      [formGroup]="editForm"
-      (ngSubmit)="saveEdit()"
-      animate.enter="anim-enter-soft"
-      animate.leave="anim-leave-soft"
+  </div>
+
+  <div
+    class="chat-bubble__reactions"
+    role="group"
+    [attr.aria-label]="UI_TEXT.A11Y.REACTIONS_GROUP"
+    animate.enter="anim-enter-soft"
+  >
+    @for (reactionOption of reactionOptions; track reactionOption.KEY) {
+    <button
+      type="button"
+      class="chat-bubble__reaction"
+      [ngClass]="{
+        'chat-bubble__reaction--active': hasReacted(reactionOption.KEY)
+      }"
+      (click)="toggleReaction(reactionOption.KEY)"
+      [attr.aria-label]="reactionOption.LABEL"
+      [attr.title]="reactionOption.LABEL"
     >
-      <input
-        matInput
-        class="app-input chat-bubble__edit-input"
-        type="text"
-        [attr.maxlength]="AppConfig.MAX_MSG_LENGTH"
-        formControlName="content"
-      />
+      <span class="chat-bubble__reaction-emoji" aria-hidden="true">
+        {{ reactionOption.EMOJI }}
+      </span>
 
-      <div class="chat-bubble__edit-actions">
-        <button
-          type="submit"
-          class="app-btn app-btn--primary"
-          [disabled]="editForm.invalid || editForm.controls.content.value.trim() === message.content.trim()"
-        >
-          {{ UI_TEXT.CHAT_BUBBLE.EDIT_FORM_SAVE }}
-        </button>
+      @if (reactionCount(reactionOption.KEY) > 0) {
+      <span class="chat-bubble__reaction-count">
+        {{ reactionCount(reactionOption.KEY) }}
+      </span>
+      }
+    </button>
+    }
+  </div>
 
-        <button type="button" class="app-btn app-btn--ghost" (click)="cancelEdit()">
-          {{ UI_TEXT.CHAT_BUBBLE.EDIT_FORM_CANCEL }}
-        </button>
+  @if (showHistory() && (message.edits?.length ?? 0) > 0) {
+  <div
+    class="chat-bubble__history"
+    role="region"
+    [attr.aria-label]="UI_TEXT.A11Y.EDIT_HISTORY_REGION"
+    animate.enter="anim-enter-soft"
+    animate.leave="anim-leave-soft"
+  >
+    @for (edit of message.edits!; track $index) {
+    <div class="chat-bubble__history-item">
+      <div class="chat-bubble__history-time">
+        {{ formatHistoryTime(edit.editedAt) }}
       </div>
-    </form>
+      <div class="chat-bubble__history-content">
+        {{ edit.previousContent }}
+      </div>
+    </div>
+    }
+  </div>
+  } } @else {
+  <form
+    class="chat-bubble__edit"
+    [formGroup]="editForm"
+    (ngSubmit)="saveEdit()"
+    animate.enter="anim-enter-soft"
+    animate.leave="anim-leave-soft"
+  >
+    <input
+      matInput
+      class="app-input chat-bubble__edit-input"
+      type="text"
+      [attr.maxlength]="AppConfig.MAX_MSG_LENGTH"
+      formControlName="content"
+    />
+
+    <div class="chat-bubble__edit-actions">
+      <button
+        type="submit"
+        class="app-btn app-btn--primary"
+        [disabled]="
+          editForm.invalid ||
+          editForm.controls.content.value.trim() === message.content.trim()
+        "
+      >
+        {{ UI_TEXT.CHAT_BUBBLE.EDIT_FORM_SAVE }}
+      </button>
+
+      <button
+        type="button"
+        class="app-btn app-btn--ghost"
+        (click)="cancelEdit()"
+      >
+        {{ UI_TEXT.CHAT_BUBBLE.EDIT_FORM_CANCEL }}
+      </button>
+    </div>
+  </form>
   }
 </article>

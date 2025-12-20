@@ -118,7 +118,8 @@
     border: 1px solid rgba(255, 255, 255, 0.12);
     background: rgba(255, 255, 255, 0.03);
     cursor: pointer;
-    transition: transform v.$transition-fast, background-color v.$transition-base, border-color v.$transition-base;
+    transition: transform v.$transition-fast,
+      background-color v.$transition-base, border-color v.$transition-base;
 
     &:hover {
       transform: translateY(-1px);

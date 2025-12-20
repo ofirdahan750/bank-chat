@@ -21,13 +21,13 @@ import {
 } from '@poalim/constants';
 import {
   ChatMessage,
+  EditSubmitEvent,
   FeatureChatComposerFormValue,
   FeatureChatNicknameFormValue,
+  ReactionToggleEvent,
 } from '@poalim/shared-interfaces';
 import {
   ChatBubbleComponent,
-  EditSubmitEvent,
-  ReactionToggleEvent,
 } from './chat-bubble/chat-bubble.component';
 import { ChatStore } from './services/chat-store/chat-store.service';
 

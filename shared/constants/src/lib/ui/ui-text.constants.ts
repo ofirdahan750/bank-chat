@@ -29,7 +29,15 @@ export const UI_TEXT = {
     EDITED_BADGE: 'Edited',
     EDIT_FORM_SAVE: 'Save',
     EDIT_FORM_CANCEL: 'Cancel',
-    REACTION_OPTIONS: CHAT_REACTION_OPTIONS,
+
+    // Keep reaction options centralized (no free strings in UI).
+    REACTION_OPTIONS: [
+      { KEY: 'like', EMOJI: '👍', LABEL: 'Like' },
+      { KEY: 'heart', EMOJI: '❤️', LABEL: 'Heart' },
+      { KEY: 'laugh', EMOJI: '😂', LABEL: 'Laugh' },
+      { KEY: 'wow', EMOJI: '😮', LABEL: 'Wow' },
+      { KEY: 'sad', EMOJI: '😢', LABEL: 'Sad' },
+    ] as const,
   },
 
   BOT: {
@@ -47,7 +55,6 @@ export const UI_TEXT = {
     MESSAGE_INPUT_LABEL: 'Message',
     LOGOUT_BUTTON: 'Logout',
 
-    // ChatBubble A11y
     EDIT_MESSAGE_BUTTON: 'Edit message',
     REACTIONS_GROUP: 'Reactions',
     EDIT_HISTORY_REGION: 'Edit history',

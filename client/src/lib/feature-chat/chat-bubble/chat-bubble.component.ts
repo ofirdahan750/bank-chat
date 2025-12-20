@@ -1,15 +1,18 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnChanges,
   Output,
   SimpleChanges,
+  ViewChild,
   ViewEncapsulation,
   inject,
   signal,
 } from '@angular/core';
+import { NgClass } from '@angular/common';
 import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
@@ -17,15 +20,18 @@ import {
 } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { AppConfig, UI_TEXT } from '@poalim/constants';
-import { ChatMessage, ReactionKey } from '@poalim/shared-interfaces';
-
-export type EditSubmitEvent = { messageId: string; content: string };
-export type ReactionToggleEvent = { messageId: string; reaction: ReactionKey };
+import {
+  ChatMessage,
+  EditSubmitEvent,
+  ReactionKey,
+  ReactionToggleEvent,
+} from '@poalim/shared-interfaces';
+import { ChatBubbleEditForm } from './chat-bubble.types';
 
 @Component({
   selector: 'app-chat-bubble',
   standalone: true,
-  imports: [ReactiveFormsModule, MatIconModule],
+  imports: [ReactiveFormsModule, MatIconModule, NgClass],
   templateUrl: './chat-bubble.component.html',
   styleUrl: './chat-bubble.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,15 +43,21 @@ export type ReactionToggleEvent = { messageId: string; reaction: ReactionKey };
 export class ChatBubbleComponent implements OnChanges {
   private readonly fb: NonNullableFormBuilder = inject(NonNullableFormBuilder);
 
+  @ViewChild('bubbleEl', { static: true })
+  private readonly bubbleEl!: ElementRef<HTMLElement>;
+
   @Input({ required: true }) message!: ChatMessage;
   @Input({ required: true }) timeLabel!: string;
   @Input({ required: true }) meId!: string;
 
-  @Input() isMine = false;
-  @Input() canEdit = false;
+  @Input() isMine: boolean = false;
+  @Input() canEdit: boolean = false;
 
-  @Output() editSubmit = new EventEmitter<EditSubmitEvent>();
-  @Output() reactionToggle = new EventEmitter<ReactionToggleEvent>();
+  @Output() editSubmit: EventEmitter<EditSubmitEvent> =
+    new EventEmitter<EditSubmitEvent>();
+
+  @Output() reactionToggle: EventEmitter<ReactionToggleEvent> =
+    new EventEmitter<ReactionToggleEvent>();
 
   // Centralized copy (no free strings in template).
   protected readonly UI_TEXT = UI_TEXT;
@@ -53,22 +65,18 @@ export class ChatBubbleComponent implements OnChanges {
   // Centralized config (max length etc.).
   protected readonly AppConfig = AppConfig;
 
-  // Use the constant list directly (no extra types/mappers needed).
+  // Use the constant list directly (no extra local types/mappers).
   protected readonly reactionOptions = UI_TEXT.CHAT_BUBBLE.REACTION_OPTIONS;
 
-  readonly isEditing = signal(false);
-  readonly showHistory = signal(false);
-
-  readonly pulse = signal(false);
-  private pulseTimer: number | null = null;
-  private seenFirst = false;
+  protected readonly isEditing = signal(false);
+  protected readonly showHistory = signal(false);
 
   private readonly timeFormatter: Intl.DateTimeFormat = new Intl.DateTimeFormat(
     undefined,
     { hour: '2-digit', minute: '2-digit' }
   );
 
-  readonly editForm = this.fb.group({
+  protected readonly editForm: ChatBubbleEditForm = this.fb.group({
     content: this.fb.control('', {
       validators: [
         Validators.required,
@@ -78,31 +86,24 @@ export class ChatBubbleComponent implements OnChanges {
   });
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (!changes['message']) return;
+    const messageChange = changes['message'];
+    if (!messageChange || messageChange.firstChange) return;
 
-    if (!this.seenFirst) {
-      this.seenFirst = true;
-      return;
-    }
-
-    // Subtle visual feedback on updates (edit/reactions/bot overwrite).
-    this.triggerPulse();
+    // Visual feedback when the message object updates (edits/reactions/bot overwrite).
+    this.restartPulseAnimation();
   }
 
-  private triggerPulse(): void {
-    if (this.pulseTimer !== null) {
-      window.clearTimeout(this.pulseTimer);
-      this.pulseTimer = null;
-    }
+  private restartPulseAnimation(): void {
+    // Restart the CSS animation without timers/microtasks.
+    const el: HTMLElement = this.bubbleEl.nativeElement;
 
-    // Restart CSS animation reliably.
-    this.pulse.set(false);
-    queueMicrotask(() => this.pulse.set(true));
+    el.classList.remove('chat-bubble--pulse');
 
-    this.pulseTimer = window.setTimeout(() => {
-      this.pulse.set(false);
-      this.pulseTimer = null;
-    }, 420);
+    // Force reflow so the browser "sees" the removal before re-adding.
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    void el.offsetWidth;
+
+    el.classList.add('chat-bubble--pulse');
   }
 
   startEdit(): void {
@@ -146,7 +147,7 @@ export class ChatBubbleComponent implements OnChanges {
 
   hasReacted(key: ReactionKey): boolean {
     const ids: string[] = this.message.reactions?.[key] ?? [];
-    return !!this.meId && ids.includes(this.meId);
+    return Boolean(this.meId && ids.includes(this.meId));
   }
 
   formatHistoryTime(ts: number): string {
