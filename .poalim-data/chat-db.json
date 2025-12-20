@@ -128,6 +128,61 @@
           "content": "Updated. My memory just got a patch. Q: \"Are you ok ?\" A: \"Awesome! good\"",
           "timestamp": 1766256512615,
           "type": "system"
+        },
+        {
+          "id": "dbf405cd-749a-4e05-a8eb-34a671b10c5e",
+          "sender": {
+            "id": "ofir",
+            "username": "ofir",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "Is it test?",
+          "timestamp": 1766259370451,
+          "type": "text",
+          "editedAt": 1766259374085,
+          "edits": [
+            {
+              "previousContent": "Is it test",
+              "editedAt": 1766259374085
+            }
+          ]
+        },
+        {
+          "id": "72a5fa43-9abd-431b-a38d-2942c0f8a0db",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "I’ve got nothing for that yet. Next message: the answer. I’ll do the remembering.",
+          "timestamp": 1766259375126,
+          "type": "system"
+        },
+        {
+          "id": "039e80bc-36e5-47b4-8076-a4080424d27a",
+          "sender": {
+            "id": "ofir",
+            "username": "ofir",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "Yeah!",
+          "timestamp": 1766259380855,
+          "type": "text"
+        },
+        {
+          "id": "478d0f8a-8204-47d1-a56e-8aeb4fab8121",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Saved. Next time someone asks, I’ve got you. Q: \"Is it test?\" A: \"Yeah!\"",
+          "timestamp": 1766259381546,
+          "type": "system"
         }
       ],
       "botMemory": {
@@ -148,6 +203,14 @@
             "questionMessageId": "9a869527-32a9-4f96-a321-d5b3789f5899",
             "answerMessageId": "c2e585cc-0b08-4bbc-bab9-a078f5c31b74",
             "updatedAt": 1766256511571
+          },
+          {
+            "key": "is it test?",
+            "question": "Is it test?",
+            "answer": "Yeah!",
+            "questionMessageId": "dbf405cd-749a-4e05-a8eb-34a671b10c5e",
+            "answerMessageId": "039e80bc-36e5-47b4-8076-a4080424d27a",
+            "updatedAt": 1766259380858
           }
         ]
       },
@@ -156,7 +219,9 @@
         "3da23463-fedb-4f26-a35f-b6f1618245df": "84a9c17d-cec2-4abb-b3ad-089422ce3d5d",
         "344429e5-462e-433e-b685-bd28974279b2": "e430ff67-559b-40eb-a5aa-c18a17ffd130",
         "9a869527-32a9-4f96-a321-d5b3789f5899": "3dc592d7-5dbf-4e07-a940-cc80b8e43940",
-        "c2e585cc-0b08-4bbc-bab9-a078f5c31b74": "a7f7de37-8dfe-45b0-9732-565ed07dece9"
+        "c2e585cc-0b08-4bbc-bab9-a078f5c31b74": "a7f7de37-8dfe-45b0-9732-565ed07dece9",
+        "dbf405cd-749a-4e05-a8eb-34a671b10c5e": "72a5fa43-9abd-431b-a38d-2942c0f8a0db",
+        "039e80bc-36e5-47b4-8076-a4080424d27a": "478d0f8a-8204-47d1-a56e-8aeb4fab8121"
       }
     }
   }
