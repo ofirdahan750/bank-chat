@@ -11,9 +11,8 @@ import {
   ToggleReactionPayload,
   ReactionKey,
   User,
+  ConnectionState,
 } from '@poalim/shared-interfaces';
-
-type ConnectionState = 'disconnected' | 'connecting' | 'connected';
 
 @Injectable({ providedIn: 'root' })
 export class SocketClientService {
