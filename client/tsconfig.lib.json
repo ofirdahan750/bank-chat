@@ -14,5 +14,5 @@
     "src/**/*.test.ts",
     "jest.config.cts"
   ],
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "../libs/shared/interfaces/src/lib/feature-chat-forms.types.ts"]
 }

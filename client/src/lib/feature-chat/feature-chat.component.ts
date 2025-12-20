@@ -6,6 +6,7 @@ import {
   inject,
 } from '@angular/core';
 import {
+  FormGroup,
   NonNullableFormBuilder,
   ReactiveFormsModule,
   Validators,
@@ -34,8 +35,8 @@ import { ChatStore } from './services/chat-store/chat-store.service';
   encapsulation: ViewEncapsulation.None,
 })
 export class FeatureChat implements OnInit {
-  private readonly fb = inject(NonNullableFormBuilder);
-  protected readonly store = inject(ChatStore);
+  private readonly fb: NonNullableFormBuilder = inject(NonNullableFormBuilder);
+  protected readonly store: ChatStore = inject(ChatStore);
 
   // Text/labels are centralized to avoid "random strings" spread across the app.
   protected readonly UI_TEXT = UI_TEXT;
@@ -50,10 +51,13 @@ export class FeatureChat implements OnInit {
   protected readonly domIds = FEATURE_CHAT_DOM_IDS;
 
   // Reuse a single formatter instance (avoid creating Intl objects repeatedly).
-  private readonly timeFormatter = new Intl.DateTimeFormat(undefined, {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  private readonly timeFormatter: Intl.DateTimeFormat = new Intl.DateTimeFormat(
+    undefined,
+    {
+      hour: '2-digit',
+      minute: '2-digit',
+    }
+  );
 
   // Nickname form: minimal validation, then delegate to the store.
   protected readonly nicknameForm = this.fb.group({
@@ -83,13 +87,8 @@ export class FeatureChat implements OnInit {
 
   protected submitNickname(): void {
     // Mark touched to surface validation feedback (keyboard users included).
-    if (this.nicknameForm.invalid) {
-      this.nicknameForm.markAllAsTouched();
-      return;
-    }
-
-    const username = this.nicknameForm.controls.username.value.trim();
-    if (!username) {
+    const username: string = this.nicknameForm.controls.username.value.trim();
+    if (this.nicknameForm.invalid || username) {
       this.nicknameForm.markAllAsTouched();
       return;
     }
@@ -98,17 +97,11 @@ export class FeatureChat implements OnInit {
   }
 
   protected send(): void {
-    if (this.composerForm.invalid) {
+    const content: string = this.composerForm.controls.content.value.trim();
+    if (this.composerForm.invalid || !content) {
       this.composerForm.markAllAsTouched();
       return;
     }
-
-    const content = this.composerForm.controls.content.value.trim();
-    if (!content) {
-      this.composerForm.markAllAsTouched();
-      return;
-    }
-
     this.store.send(content);
 
     // Reset keeps the input clean and prevents sticky validation UI.
@@ -133,7 +126,7 @@ export class FeatureChat implements OnInit {
   }
 
   protected formatChatTime(timestamp: number): string {
-    const date = new Date(timestamp);
+    const date: Date = new Date(timestamp);
     if (Number.isNaN(date.getTime())) return '';
     return this.timeFormatter.format(date);
   }
