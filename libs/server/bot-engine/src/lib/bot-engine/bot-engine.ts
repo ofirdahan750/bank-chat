@@ -34,7 +34,7 @@ type RoomMemory = {
   keyByQuestionMessageId: Map<string, string>;
   keyByAnswerMessageId: Map<string, string>;
 };
-
+ 
 export class BotEngine {
   private readonly rooms = new Map<RoomId, RoomMemory>();
 
