@@ -652,6 +652,78 @@
           "content": "I’m a bot, not a mind reader. Toss in a \"?\" so I know it’s a question.",
           "timestamp": 1766172188904,
           "type": "system"
+        },
+        {
+          "id": "b252e0b3-0131-4e5f-a08c-a250529878fa",
+          "sender": {
+            "id": "שדבשדב",
+            "username": "שדבשדב",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "test",
+          "timestamp": 1766228378097,
+          "type": "text"
+        },
+        {
+          "id": "0ec25df9-3c5e-45e6-b11c-81c59a56e2ad",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "I can only treat something as a question if it ends with a \"?\". Add one and I’ll behave.",
+          "timestamp": 1766228378767,
+          "type": "system"
+        },
+        {
+          "id": "aad52d00-7234-4f86-b468-def3a5b60c82",
+          "sender": {
+            "id": "שדבשדב",
+            "username": "שדבשדב",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "test?",
+          "timestamp": 1766228381285,
+          "type": "text"
+        },
+        {
+          "id": "2ffe92ec-5f9f-4da9-9f9d-d181c3c23a85",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Fresh mystery. Drop the answer in your next message and I’ll learn it.",
+          "timestamp": 1766228382130,
+          "type": "system"
+        },
+        {
+          "id": "61b03ab5-1837-4334-a236-8a6b4177ad9a",
+          "sender": {
+            "id": "שדבשדב",
+            "username": "שדבשדב",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "it's a test",
+          "timestamp": 1766228395131,
+          "type": "text"
+        },
+        {
+          "id": "0d467a3a-d32e-49a5-8a96-31e0fd9b02e2",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Saved. Next time someone asks, I’ve got you. Q: \"test?\" A: \"it's a test\"",
+          "timestamp": 1766228395858,
+          "type": "system"
         }
       ],
       "botMemory": {
@@ -696,6 +768,14 @@
             "questionMessageId": "dc5bab3d-2bf4-42c8-94ea-df73f0cec5a0",
             "answerMessageId": "a8a9d4e8-e314-40a7-943b-7504d1bd4593",
             "updatedAt": 1766161193982
+          },
+          {
+            "key": "test?",
+            "question": "test?",
+            "answer": "it's a test",
+            "questionMessageId": "aad52d00-7234-4f86-b468-def3a5b60c82",
+            "answerMessageId": "61b03ab5-1837-4334-a236-8a6b4177ad9a",
+            "updatedAt": 1766228395134
           }
         ]
       },
@@ -716,7 +796,10 @@
         "f2d6271a-2520-491e-ac33-27b06416b76e": "76af334b-3fac-41a3-800c-5f5fc6eedbc6",
         "b8f93e55-78d7-45f8-8358-9bb7efb6bbb6": "dc14f316-8536-4fcd-abf2-30171a248774",
         "7989ca05-4faa-4731-ad1a-c7ec64a5365c": "a4a747eb-00ad-4a27-a315-fa0a86fd7bc6",
-        "f6869baf-e8e8-4b88-9712-8dff6bd9939f": "6a6a2d32-ddd5-4864-8a32-636c44813b29"
+        "f6869baf-e8e8-4b88-9712-8dff6bd9939f": "6a6a2d32-ddd5-4864-8a32-636c44813b29",
+        "b252e0b3-0131-4e5f-a08c-a250529878fa": "0ec25df9-3c5e-45e6-b11c-81c59a56e2ad",
+        "aad52d00-7234-4f86-b468-def3a5b60c82": "2ffe92ec-5f9f-4da9-9f9d-d181c3c23a85",
+        "61b03ab5-1837-4334-a236-8a6b4177ad9a": "0d467a3a-d32e-49a5-8a96-31e0fd9b02e2"
       }
     }
   }
