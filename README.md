@@ -1,96 +1,147 @@
-# PoalimChallenge
+# README.md
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+Poalim Challenge — Real-time Chat (Nx Monorepo)
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+A real-time chat application built as an Nx monorepo:
+- Client: Angular (standalone components) + Signals-based store
+- Transport: Socket.IO
+- Server: Socket handler + JSON persistence (bounded history)
+- Bot: lightweight rules-based “learn Q/A” engine (per room)
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+---
 
-## Run tasks
+## Table of Contents
 
-To run tasks with Nx use:
+- Requirements
+- Repo Layout
+- Quick Start
+- Configuration
+- CLI Cheatsheet
+- Testing
+- Deployment
+- Troubleshooting
+- Documentation Map
 
-```sh
-npx nx <target> <project-name>
-```
+---
 
-For example:
+## Requirements
 
-```sh
-npx nx build myproject
-```
+- Node.js (LTS recommended)
+- npm
+- (Optional) Watchman (macOS) — can reduce file watcher issues in large repos
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+---
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Repo Layout
 
-## Add new projects
+High-level structure:
 
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
+- apps/client/ — Angular app shell (router, layout)
+- client/src/lib/feature-chat/ — Chat feature (UI)
+- client/src/lib/feature-chat/services/chat-store/ — ChatStore (state + effects + optimistic updates)
+- libs/client/data-access/ — Socket client + LocalStorage wrapper
+- libs/server/socket-handler/ — Socket.IO handlers + persistence
+- libs/server/bot-engine/ — Bot logic (learns question/answer)
+- shared/ / libs/shared-* — shared constants + interfaces
 
-To install a new plugin you can use the `nx add` command. Here's an example of adding the React plugin:
-```sh
-npx nx add @nx/react
-```
+---
 
-Use the plugin's generator to create new projects. For example, to create a new React app or library:
+## Quick Start
 
-```sh
-# Generate an app
-npx nx g @nx/react:app demo
+### Install
+npm install
 
-# Generate a library
-npx nx g @nx/react:lib some-lib
-```
+### Discover Nx projects and targets
+npx nx show projects
+npx nx show project client
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+### Run (dev)
+npx nx serve client
+# server target name depends on your workspace:
+# npx nx show projects
+# npx nx serve <server-project>
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### Build
+npx nx build client
+# npx nx build <server-project>
 
-## Set up CI!
+---
 
-### Step 1
+## Configuration
 
-To connect to Nx Cloud, run the following command:
+Configuration values are centralized in constants (examples used in code):
+- AppConfig.SOCKET_URL
+- AppConfig.ROOM_ID
+- AppConfig.BOT_NAME
+- AppConfig.MIN_USERNAME_LENGTH
+- AppConfig.MAX_MSG_LENGTH
+- ChatUi (UI limits/defaults)
+- SocketEvents (event names)
 
-```sh
-npx nx connect
-```
+---
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+## CLI Cheatsheet
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+See docs/CLI.md for a full reference.
 
-### Step 2
+### Nx
+npx nx show projects
+npx nx show project client
 
-Use the following command to configure a CI workflow for your workspace:
+npx nx serve <project>
+npx nx build <project>
+npx nx test <project>
+npx nx lint <project>
 
-```sh
-npx nx g ci-workflow
-```
+npx nx run-many -t test --all
+npx nx run-many -t build --all
+npx nx affected -t test
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+npx nx reset
+npx nx graph
 
-## Install Nx Console
+### Jest (direct)
+npx jest path/to/file.spec.ts -c path/to/jest.config.ts
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+### Reset server persistence (local)
+rm -rf .poalim-data
+# or:
+rm -f .poalim-data/chat-db.json
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+---
 
-## Useful links
+## Testing
 
-Learn more:
+- Client unit tests: store/services
+- Server unit tests: socket-handler behavior
+- Bot engine unit tests
 
-- [Learn more about this workspace setup](https://nx.dev/getting-started/intro#learn-nx?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Run:
+npx nx test <project>
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+More details: docs/TESTING.md
+
+---
+
+## Deployment
+
+See docs/DEPLOYMENT.md
+
+---
+
+## Troubleshooting
+
+See docs/TROUBLESHOOTING.md
+
+---
+
+## Documentation Map
+
+- docs/ARCHITECTURE.md — big picture
+- docs/FEATURE_CHAT.md — UI behavior
+- docs/SOCKET_PROTOCOL.md — Socket.IO events and payloads
+- docs/PERSISTENCE.md — what’s stored and how to reset it
+- docs/TESTING.md — test strategy + recipes
+- docs/CLI.md — complete command reference
+- docs/DEPLOYMENT.md — deploy notes + reset instructions
+- docs/TROUBLESHOOTING.md — common issues
