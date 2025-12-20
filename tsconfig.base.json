@@ -16,7 +16,6 @@
     "baseUrl": ".",
     "paths": {
       "@poalim/shared-interfaces": ["libs/shared/interfaces/src/index.ts"],
-      "@poalim/ui-poalim": ["libs/client/ui-poalim/src/index.ts"],
       "@poalim/client-data-access": ["libs/client/data-access/src/index.ts"],
       "@poalim/bot-engine": ["libs/server/bot-engine/src/index.ts"],
       "@poalim/socket-handler": ["libs/server/socket-handler/src/index.ts"],

@@ -3,36 +3,19 @@
     "global": {
       "messages": [
         {
-          "id": "66dded61-ba77-460b-bc40-c074ad09b568",
+          "id": "e8828f3d-ac13-44dc-8806-1c3456a8ba52",
           "sender": {
-            "id": "ofir",
-            "username": "ofir",
+            "id": "ofir dahan",
+            "username": "ofir dahan",
             "isBot": false,
             "color": "#3b82f6"
           },
-          "content": "hi?",
-          "timestamp": 1766237036596,
-          "type": "text",
-          "reactions": {
-            "heart": [
-              "שדבשדב"
-            ],
-            "like": [
-              "שדבשדב"
-            ],
-            "wow": [
-              "שדבשדב"
-            ],
-            "laugh": [
-              "שדבשדב"
-            ],
-            "sad": [
-              "שדבשדב"
-            ]
-          }
+          "content": "hi ?",
+          "timestamp": 1766239325153,
+          "type": "text"
         },
         {
-          "id": "899b028d-cbde-4447-82df-f54caca4e50d",
+          "id": "9711e558-3eae-4e3f-b252-45e7dbbcfa31",
           "sender": {
             "id": "bot",
             "username": "Poalim Bot",
@@ -40,192 +23,127 @@
             "color": "#ed1d24"
           },
           "content": "New question unlocked. Reply with the answer in your next message and I’ll remember it.",
-          "timestamp": 1766237037511,
+          "timestamp": 1766239326121,
           "type": "system"
         },
         {
-          "id": "2f0192a5-8570-409c-b141-dd5be7405bc8",
+          "id": "638d1168-4ecc-43e2-b961-94bd30157f0b",
           "sender": {
-            "id": "ofir",
-            "username": "ofir",
+            "id": "ofir dahan",
+            "username": "ofir dahan",
             "isBot": false,
             "color": "#3b82f6"
           },
-          "content": "yes",
-          "timestamp": 1766237039519,
+          "content": "hello",
+          "timestamp": 1766239333390,
           "type": "text"
         },
         {
-          "id": "563d113f-52b0-4a55-a273-f7103b699bda",
+          "id": "26a239c7-88c7-46d6-a75d-33a44c04deec",
           "sender": {
             "id": "bot",
             "username": "Poalim Bot",
             "isBot": true,
             "color": "#ed1d24"
           },
-          "content": "Stored. I am now 0.001% smarter. Q: \"hi?\" A: \"yes\"",
-          "timestamp": 1766237040112,
+          "content": "Stored. I am now 0.001% smarter. Q: \"hi ?\" A: \"hello\"",
+          "timestamp": 1766239334213,
           "type": "system"
         },
         {
-          "id": "703b4284-738a-4740-b043-f092046dae77",
+          "id": "14fb1e88-0471-40df-ac8d-4757d555dc4e",
           "sender": {
-            "id": "ofir",
-            "username": "ofir",
+            "id": "ofir dahan",
+            "username": "ofir dahan",
             "isBot": false,
             "color": "#3b82f6"
           },
-          "content": "ascas",
-          "timestamp": 1766238799518,
+          "content": "hi",
+          "timestamp": 1766239336792,
           "type": "text"
         },
         {
-          "id": "41d4886e-99a9-42f3-9a0f-b02036a7401d",
+          "id": "22bb70c5-5312-48a0-b689-33b118d482ff",
           "sender": {
             "id": "bot",
             "username": "Poalim Bot",
             "isBot": true,
             "color": "#ed1d24"
           },
-          "content": "No \"?\" no magic. Add a question mark and I’ll file it properly.",
-          "timestamp": 1766238800088,
+          "content": "I can only treat something as a question if it ends with a \"?\". Add one and I’ll behave.",
+          "timestamp": 1766239337483,
           "type": "system"
         },
         {
-          "id": "1f62ae78-f0ca-4715-8afd-569ef807df3a",
+          "id": "13ce9e03-14de-418d-9d76-464abf7093c8",
           "sender": {
-            "id": "שדבשדב",
-            "username": "שדבשדב",
+            "id": "ofir dahan",
+            "username": "ofir dahan",
             "isBot": false,
             "color": "#3b82f6"
           },
-          "content": "asc",
-          "timestamp": 1766238817215,
+          "content": "hi?",
+          "timestamp": 1766239339821,
           "type": "text"
         },
         {
-          "id": "6aab607f-2be4-40b4-b52c-636e754b486e",
+          "id": "0e18cefc-6561-40e4-9a27-05d8cc77109f",
           "sender": {
             "id": "bot",
             "username": "Poalim Bot",
             "isBot": true,
             "color": "#ed1d24"
           },
-          "content": "I’m a bot, not a mind reader. Toss in a \"?\" so I know it’s a question.",
-          "timestamp": 1766238818119,
-          "type": "system",
-          "reactions": {
-            "sad": [
-              "שדבשדב"
-            ],
-            "wow": [
-              "שדבשדב"
-            ],
-            "laugh": [
-              "שדבשדב"
-            ],
-            "heart": [
-              "שדבשדב"
-            ],
-            "like": [
-              "שדבשדב"
-            ]
-          }
-        },
-        {
-          "id": "ae929330-0828-4d4a-be4e-904d5611bff4",
-          "sender": {
-            "id": "שדבשדב",
-            "username": "שדבשדב",
-            "isBot": false,
-            "color": "#3b82f6"
-          },
-          "content": "ofir dahan 2",
-          "timestamp": 1766239203206,
-          "type": "text"
-        },
-        {
-          "id": "6e8f7630-2318-458d-8636-ff16b1753559",
-          "sender": {
-            "id": "bot",
-            "username": "Poalim Bot",
-            "isBot": true,
-            "color": "#ed1d24"
-          },
-          "content": "I’m a bot, not a mind reader. Toss in a \"?\" so I know it’s a question.",
-          "timestamp": 1766239204242,
+          "content": "Fresh mystery. Drop the answer in your next message and I’ll learn it.",
+          "timestamp": 1766239340432,
           "type": "system"
         },
         {
-          "id": "332a1026-2db9-4c31-afb6-1df828245010",
+          "id": "0bfc1ce0-1905-44be-bef4-47423e46b983",
           "sender": {
-            "id": "ofir dahan 2",
-            "username": "ofir dahan 2",
+            "id": "ofir dahan",
+            "username": "ofir dahan",
             "isBot": false,
             "color": "#3b82f6"
           },
-          "content": "wow",
-          "timestamp": 1766239217199,
+          "content": "afs",
+          "timestamp": 1766239359908,
           "type": "text"
         },
         {
-          "id": "949b941b-f25e-4220-ae8e-2f3f4a827be2",
+          "id": "2ccb37e9-e7d5-40ee-a48f-9c3546068267",
           "sender": {
             "id": "bot",
             "username": "Poalim Bot",
             "isBot": true,
             "color": "#ed1d24"
           },
-          "content": "No \"?\" no magic. Add a question mark and I’ll file it properly.",
-          "timestamp": 1766239218159,
+          "content": "Saved. That knowledge is mine now. Thanks, human. Q: \"hi?\" A: \"afs\"",
+          "timestamp": 1766239360993,
           "type": "system"
         },
         {
-          "id": "c90fe079-1cf9-4387-92b7-33348af89f06",
+          "id": "9d72af8f-d204-4e50-9ad9-e02c5c11aa16",
           "sender": {
-            "id": "ofir dahan 2",
-            "username": "ofir dahan 2",
+            "id": "ofir dahan",
+            "username": "ofir dahan",
             "isBot": false,
             "color": "#3b82f6"
           },
-          "content": "wow?",
-          "timestamp": 1766239221652,
+          "content": "hi ?",
+          "timestamp": 1766239365655,
           "type": "text"
         },
         {
-          "id": "ba291999-9d50-40ca-a79c-f8be39c4d505",
+          "id": "53c635ef-6407-44c8-83bc-919fc9f82528",
           "sender": {
             "id": "bot",
             "username": "Poalim Bot",
             "isBot": true,
             "color": "#ed1d24"
           },
-          "content": "I’ve got nothing for that yet. Next message: the answer. I’ll do the remembering.",
-          "timestamp": 1766239222722,
-          "type": "system"
-        },
-        {
-          "id": "7e36fdb5-402d-4229-b4aa-00eb5b515577",
-          "sender": {
-            "id": "ofir dahan 2",
-            "username": "ofir dahan 2",
-            "isBot": false,
-            "color": "#3b82f6"
-          },
-          "content": "cool",
-          "timestamp": 1766239225148,
-          "type": "text"
-        },
-        {
-          "id": "9cf39def-b75d-4cee-93ff-1b42a42e6e90",
-          "sender": {
-            "id": "bot",
-            "username": "Poalim Bot",
-            "isBot": true,
-            "color": "#ed1d24"
-          },
-          "content": "Locked in. I will not forget. Probably. Q: \"wow?\" A: \"cool\"",
-          "timestamp": 1766239225732,
+          "content": "Yep. We already solved this. Answer: \"hello\"",
+          "timestamp": 1766239366174,
           "type": "system"
         }
       ],
@@ -233,32 +151,30 @@
         "pending": null,
         "qa": [
           {
-            "key": "hi?",
-            "question": "hi?",
-            "answer": "yes",
-            "questionMessageId": "66dded61-ba77-460b-bc40-c074ad09b568",
-            "answerMessageId": "2f0192a5-8570-409c-b141-dd5be7405bc8",
-            "updatedAt": 1766237039525
+            "key": "hi ?",
+            "question": "hi ?",
+            "answer": "hello",
+            "questionMessageId": "e8828f3d-ac13-44dc-8806-1c3456a8ba52",
+            "answerMessageId": "638d1168-4ecc-43e2-b961-94bd30157f0b",
+            "updatedAt": 1766239333394
           },
           {
-            "key": "wow?",
-            "question": "wow?",
-            "answer": "cool",
-            "questionMessageId": "c90fe079-1cf9-4387-92b7-33348af89f06",
-            "answerMessageId": "7e36fdb5-402d-4229-b4aa-00eb5b515577",
-            "updatedAt": 1766239225152
+            "key": "hi?",
+            "question": "hi?",
+            "answer": "afs",
+            "questionMessageId": "13ce9e03-14de-418d-9d76-464abf7093c8",
+            "answerMessageId": "0bfc1ce0-1905-44be-bef4-47423e46b983",
+            "updatedAt": 1766239359912
           }
         ]
       },
       "botReplies": {
-        "66dded61-ba77-460b-bc40-c074ad09b568": "899b028d-cbde-4447-82df-f54caca4e50d",
-        "2f0192a5-8570-409c-b141-dd5be7405bc8": "563d113f-52b0-4a55-a273-f7103b699bda",
-        "703b4284-738a-4740-b043-f092046dae77": "41d4886e-99a9-42f3-9a0f-b02036a7401d",
-        "1f62ae78-f0ca-4715-8afd-569ef807df3a": "6aab607f-2be4-40b4-b52c-636e754b486e",
-        "ae929330-0828-4d4a-be4e-904d5611bff4": "6e8f7630-2318-458d-8636-ff16b1753559",
-        "332a1026-2db9-4c31-afb6-1df828245010": "949b941b-f25e-4220-ae8e-2f3f4a827be2",
-        "c90fe079-1cf9-4387-92b7-33348af89f06": "ba291999-9d50-40ca-a79c-f8be39c4d505",
-        "7e36fdb5-402d-4229-b4aa-00eb5b515577": "9cf39def-b75d-4cee-93ff-1b42a42e6e90"
+        "e8828f3d-ac13-44dc-8806-1c3456a8ba52": "9711e558-3eae-4e3f-b252-45e7dbbcfa31",
+        "638d1168-4ecc-43e2-b961-94bd30157f0b": "26a239c7-88c7-46d6-a75d-33a44c04deec",
+        "14fb1e88-0471-40df-ac8d-4757d555dc4e": "22bb70c5-5312-48a0-b689-33b118d482ff",
+        "13ce9e03-14de-418d-9d76-464abf7093c8": "0e18cefc-6561-40e4-9a27-05d8cc77109f",
+        "0bfc1ce0-1905-44be-bef4-47423e46b983": "2ccb37e9-e7d5-40ee-a48f-9c3546068267",
+        "9d72af8f-d204-4e50-9ad9-e02c5c11aa16": "53c635ef-6407-44c8-83bc-919fc9f82528"
       }
     }
   }
