@@ -1,0 +1,73 @@
+{
+  "rooms": {
+    "global": {
+      "messages": [
+        {
+          "id": "66dded61-ba77-460b-bc40-c074ad09b568",
+          "sender": {
+            "id": "ofir",
+            "username": "ofir",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "hi?",
+          "timestamp": 1766237036596,
+          "type": "text"
+        },
+        {
+          "id": "899b028d-cbde-4447-82df-f54caca4e50d",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "New question unlocked. Reply with the answer in your next message and I’ll remember it.",
+          "timestamp": 1766237037511,
+          "type": "system"
+        },
+        {
+          "id": "2f0192a5-8570-409c-b141-dd5be7405bc8",
+          "sender": {
+            "id": "ofir",
+            "username": "ofir",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "yes",
+          "timestamp": 1766237039519,
+          "type": "text"
+        },
+        {
+          "id": "563d113f-52b0-4a55-a273-f7103b699bda",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Stored. I am now 0.001% smarter. Q: \"hi?\" A: \"yes\"",
+          "timestamp": 1766237040112,
+          "type": "system"
+        }
+      ],
+      "botMemory": {
+        "pending": null,
+        "qa": [
+          {
+            "key": "hi?",
+            "question": "hi?",
+            "answer": "yes",
+            "questionMessageId": "66dded61-ba77-460b-bc40-c074ad09b568",
+            "answerMessageId": "2f0192a5-8570-409c-b141-dd5be7405bc8",
+            "updatedAt": 1766237039525
+          }
+        ]
+      },
+      "botReplies": {
+        "66dded61-ba77-460b-bc40-c074ad09b568": "899b028d-cbde-4447-82df-f54caca4e50d",
+        "2f0192a5-8570-409c-b141-dd5be7405bc8": "563d113f-52b0-4a55-a273-f7103b699bda"
+      }
+    }
+  }
+}

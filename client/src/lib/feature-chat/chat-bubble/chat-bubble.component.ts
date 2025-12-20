@@ -16,17 +16,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { AppConfig } from '@poalim/constants';
+import { AppConfig, UI_TEXT } from '@poalim/constants';
 import { ChatMessage, ReactionKey } from '@poalim/shared-interfaces';
 
 export type EditSubmitEvent = { messageId: string; content: string };
 export type ReactionToggleEvent = { messageId: string; reaction: ReactionKey };
-
-type ReactionOption = {
-  key: ReactionKey;
-  emoji: string;
-  label: string;
-};
 
 @Component({
   selector: 'app-chat-bubble',
@@ -41,7 +35,7 @@ type ReactionOption = {
   },
 })
 export class ChatBubbleComponent implements OnChanges {
-  private readonly fb = inject(NonNullableFormBuilder);
+  private readonly fb: NonNullableFormBuilder = inject(NonNullableFormBuilder);
 
   @Input({ required: true }) message!: ChatMessage;
   @Input({ required: true }) timeLabel!: string;
@@ -53,6 +47,15 @@ export class ChatBubbleComponent implements OnChanges {
   @Output() editSubmit = new EventEmitter<EditSubmitEvent>();
   @Output() reactionToggle = new EventEmitter<ReactionToggleEvent>();
 
+  // Centralized copy (no free strings in template).
+  protected readonly UI_TEXT = UI_TEXT;
+
+  // Centralized config (max length etc.).
+  protected readonly AppConfig = AppConfig;
+
+  // Use the constant list directly (no extra types/mappers needed).
+  protected readonly reactionOptions = UI_TEXT.CHAT_BUBBLE.REACTION_OPTIONS;
+
   readonly isEditing = signal(false);
   readonly showHistory = signal(false);
 
@@ -60,15 +63,10 @@ export class ChatBubbleComponent implements OnChanges {
   private pulseTimer: number | null = null;
   private seenFirst = false;
 
-  protected readonly AppConfig = AppConfig;
-
-  readonly reactionOptions: readonly ReactionOption[] = [
-    { key: 'like', emoji: '👍', label: 'Like' },
-    { key: 'heart', emoji: '❤️', label: 'Heart' },
-    { key: 'laugh', emoji: '😂', label: 'Laugh' },
-    { key: 'wow', emoji: '😮', label: 'Wow' },
-    { key: 'sad', emoji: '😢', label: 'Sad' },
-  ] as const;
+  private readonly timeFormatter: Intl.DateTimeFormat = new Intl.DateTimeFormat(
+    undefined,
+    { hour: '2-digit', minute: '2-digit' }
+  );
 
   readonly editForm = this.fb.group({
     content: this.fb.control('', {
@@ -87,7 +85,7 @@ export class ChatBubbleComponent implements OnChanges {
       return;
     }
 
-    // Subtle "feedback" pulse on updates (edit/reactions/bot overwrite)
+    // Subtle visual feedback on updates (edit/reactions/bot overwrite).
     this.triggerPulse();
   }
 
@@ -97,7 +95,7 @@ export class ChatBubbleComponent implements OnChanges {
       this.pulseTimer = null;
     }
 
-    // restart CSS animation reliably
+    // Restart CSS animation reliably.
     this.pulse.set(false);
     queueMicrotask(() => this.pulse.set(true));
 
@@ -124,7 +122,7 @@ export class ChatBubbleComponent implements OnChanges {
       return;
     }
 
-    const next = this.editForm.controls.content.value.trim();
+    const next: string = this.editForm.controls.content.value.trim();
     if (!next || next === this.message.content.trim()) {
       this.cancelEdit();
       return;
@@ -147,16 +145,13 @@ export class ChatBubbleComponent implements OnChanges {
   }
 
   hasReacted(key: ReactionKey): boolean {
-    const ids = this.message.reactions?.[key] ?? [];
+    const ids: string[] = this.message.reactions?.[key] ?? [];
     return !!this.meId && ids.includes(this.meId);
   }
 
   formatHistoryTime(ts: number): string {
-    const date = new Date(ts);
+    const date: Date = new Date(ts);
     if (Number.isNaN(date.getTime())) return '';
-    return new Intl.DateTimeFormat(undefined, {
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(date);
+    return this.timeFormatter.format(date);
   }
 }

@@ -1,3 +1,11 @@
+const CHAT_REACTION_OPTIONS = [
+  { KEY: 'like', EMOJI: '👍', LABEL: 'Like' },
+  { KEY: 'heart', EMOJI: '❤️', LABEL: 'Heart' },
+  { KEY: 'laugh', EMOJI: '😂', LABEL: 'Laugh' },
+  { KEY: 'wow', EMOJI: '😮', LABEL: 'Wow' },
+  { KEY: 'sad', EMOJI: '😢', LABEL: 'Sad' },
+] as const;
+
 export const UI_TEXT = {
   LOGIN: {
     TITLE: 'Welcome to Poalim Chat',
@@ -17,6 +25,13 @@ export const UI_TEXT = {
     EMPTY_STATE: 'Start the conversation by sending a message',
   },
 
+  CHAT_BUBBLE: {
+    EDITED_BADGE: 'Edited',
+    EDIT_FORM_SAVE: 'Save',
+    EDIT_FORM_CANCEL: 'Cancel',
+    REACTION_OPTIONS: CHAT_REACTION_OPTIONS,
+  },
+
   BOT: {
     DEFAULT_GREETING: 'Hello! I am the Poalim Bot. Ask me anything!',
     DUPLICATE_ANSWER_PREFIX:
@@ -31,6 +46,11 @@ export const UI_TEXT = {
     NICKNAME_INPUT_LABEL: 'Nickname',
     MESSAGE_INPUT_LABEL: 'Message',
     LOGOUT_BUTTON: 'Logout',
+
+    // ChatBubble A11y
+    EDIT_MESSAGE_BUTTON: 'Edit message',
+    REACTIONS_GROUP: 'Reactions',
+    EDIT_HISTORY_REGION: 'Edit history',
   },
 } as const;
 

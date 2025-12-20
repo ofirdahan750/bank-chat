@@ -11,37 +11,51 @@
   }
 
   @if (!isEditing()) {
-    <div class="chat-bubble__content" animate.enter="anim-enter-soft">{{ message.content }}</div>
+    <div class="chat-bubble__content" animate.enter="anim-enter-soft">
+      {{ message.content }}
+    </div>
 
     <div class="chat-bubble__meta" animate.enter="anim-enter-soft">
       <span class="chat-bubble__time">{{ timeLabel }}</span>
 
       @if (message.edits?.length) {
         <button type="button" class="chat-bubble__edited" (click)="toggleHistory()">
-          Edited
+          {{ UI_TEXT.CHAT_BUBBLE.EDITED_BADGE }}
         </button>
       }
 
       @if (canEdit) {
-        <button type="button" class="chat-bubble__icon" (click)="startEdit()" aria-label="Edit message">
+        <button
+          type="button"
+          class="chat-bubble__icon"
+          (click)="startEdit()"
+          [attr.aria-label]="UI_TEXT.A11Y.EDIT_MESSAGE_BUTTON"
+          [attr.title]="UI_TEXT.A11Y.EDIT_MESSAGE_BUTTON"
+        >
           <mat-icon aria-hidden="true">edit</mat-icon>
         </button>
       }
     </div>
 
-    <div class="chat-bubble__reactions" role="group" aria-label="Reactions" animate.enter="anim-enter-soft">
-      @for (r of reactionOptions; track r.key) {
+    <div
+      class="chat-bubble__reactions"
+      role="group"
+      [attr.aria-label]="UI_TEXT.A11Y.REACTIONS_GROUP"
+      animate.enter="anim-enter-soft"
+    >
+      @for (r of reactionOptions; track r.KEY) {
         <button
           type="button"
           class="chat-bubble__reaction"
-          [class.chat-bubble__reaction--active]="hasReacted(r.key)"
-          (click)="toggleReaction(r.key)"
-          [attr.aria-label]="r.label"
+          [class.chat-bubble__reaction--active]="hasReacted(r.KEY)"
+          (click)="toggleReaction(r.KEY)"
+          [attr.aria-label]="r.LABEL"
+          [attr.title]="r.LABEL"
         >
-          <span class="chat-bubble__reaction-emoji" aria-hidden="true">{{ r.emoji }}</span>
+          <span class="chat-bubble__reaction-emoji" aria-hidden="true">{{ r.EMOJI }}</span>
 
-          @if (reactionCount(r.key) > 0) {
-            <span class="chat-bubble__reaction-count">{{ reactionCount(r.key) }}</span>
+          @if (reactionCount(r.KEY) > 0) {
+            <span class="chat-bubble__reaction-count">{{ reactionCount(r.KEY) }}</span>
           }
         </button>
       }
@@ -51,7 +65,7 @@
       <div
         class="chat-bubble__history"
         role="region"
-        aria-label="Edit history"
+        [attr.aria-label]="UI_TEXT.A11Y.EDIT_HISTORY_REGION"
         animate.enter="anim-enter-soft"
         animate.leave="anim-leave-soft"
       >
@@ -85,11 +99,11 @@
           class="app-btn app-btn--primary"
           [disabled]="editForm.invalid || editForm.controls.content.value.trim() === message.content.trim()"
         >
-          Save
+          {{ UI_TEXT.CHAT_BUBBLE.EDIT_FORM_SAVE }}
         </button>
 
         <button type="button" class="app-btn app-btn--ghost" (click)="cancelEdit()">
-          Cancel
+          {{ UI_TEXT.CHAT_BUBBLE.EDIT_FORM_CANCEL }}
         </button>
       </div>
     </form>
