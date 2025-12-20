@@ -25,14 +25,73 @@
           "content": "I can only treat something as a question if it ends with a \"?\". Add one and I’ll behave.",
           "timestamp": 1766254457572,
           "type": "system"
+        },
+        {
+          "id": "a1315d32-c7cd-4f1e-b555-b7d2b4e89f9c",
+          "sender": {
+            "id": "ofir dahan",
+            "username": "ofir dahan",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "hi ?",
+          "timestamp": 1766256190879,
+          "type": "text"
+        },
+        {
+          "id": "69aebe56-1209-4e88-9bd8-f5c432c9ac7d",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "I don’t know this one yet. Send the answer next and I’ll store it forever (or until the server restarts).",
+          "timestamp": 1766256191853,
+          "type": "system"
+        },
+        {
+          "id": "a707fa51-89d1-471f-934e-7c16b850b76b",
+          "sender": {
+            "id": "ofir dahan",
+            "username": "ofir dahan",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "hello",
+          "timestamp": 1766256194042,
+          "type": "text"
+        },
+        {
+          "id": "94423fcf-318f-4094-9e4b-d6d9a8f0d988",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Stored. I am now 0.001% smarter. Q: \"hi ?\" A: \"hello\"",
+          "timestamp": 1766256194806,
+          "type": "system"
         }
       ],
       "botMemory": {
         "pending": null,
-        "qa": []
+        "qa": [
+          {
+            "key": "hi ?",
+            "question": "hi ?",
+            "answer": "hello",
+            "questionMessageId": "a1315d32-c7cd-4f1e-b555-b7d2b4e89f9c",
+            "answerMessageId": "a707fa51-89d1-471f-934e-7c16b850b76b",
+            "updatedAt": 1766256194050
+          }
+        ]
       },
       "botReplies": {
-        "f916aded-3afa-47eb-bd5b-cdfbe6076f67": "405886b8-4ccc-49cd-b60d-14392a487fca"
+        "f916aded-3afa-47eb-bd5b-cdfbe6076f67": "405886b8-4ccc-49cd-b60d-14392a487fca",
+        "a1315d32-c7cd-4f1e-b555-b7d2b4e89f9c": "69aebe56-1209-4e88-9bd8-f5c432c9ac7d",
+        "a707fa51-89d1-471f-934e-7c16b850b76b": "94423fcf-318f-4094-9e4b-d6d9a8f0d988"
       }
     }
   }
