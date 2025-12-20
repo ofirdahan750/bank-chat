@@ -2,8 +2,6 @@
 @use '../styles/mixins' as mix;
 
 app-root {
-  display: block;
-
   .app-shell {
     min-height: 100dvh;
     color: vars.$text-color;

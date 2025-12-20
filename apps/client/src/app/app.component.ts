@@ -1,4 +1,8 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ViewEncapsulation,
+} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { UI_TEXT } from '@poalim/constants';
 

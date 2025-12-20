@@ -11,7 +11,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { AppConfig, ChatUi, FEATURE_CHAT_DOM_IDS, UI_TEXT } from '@poalim/constants';
+import {
+  AppConfig,
+  ChatUi,
+  FEATURE_CHAT_DOM_IDS,
+  UI_TEXT,
+} from '@poalim/constants';
 import {
   ChatBubbleComponent,
   EditSubmitEvent,

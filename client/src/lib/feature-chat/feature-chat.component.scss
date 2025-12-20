@@ -125,8 +125,8 @@ app-feature-chat {
       border: 1px solid var(--border);
       background: rgba(255, 255, 255, 0.04);
       cursor: pointer;
-      transition: transform v.$transition-fast, background-color v.$transition-base,
-        border-color v.$transition-base;
+      transition: transform v.$transition-fast,
+        background-color v.$transition-base, border-color v.$transition-base;
 
       &:hover {
         background: rgba(255, 255, 255, 0.07);

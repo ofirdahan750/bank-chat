@@ -19,7 +19,15 @@
               "previousContent": "asf?",
               "editedAt": 1766157034057
             }
-          ]
+          ],
+          "reactions": {
+            "sad": [
+              "שדבשדב"
+            ],
+            "laugh": [
+              "שדבשדב"
+            ]
+          }
         },
         {
           "id": "0beb2dc6-3b3b-4a4f-8e89-d06a9771d5bc",
@@ -31,7 +39,15 @@
           },
           "content": "I’ve got nothing for that yet. Next message: the answer. I’ll do the remembering.",
           "timestamp": 1766157029966,
-          "type": "system"
+          "type": "system",
+          "reactions": {
+            "like": [
+              "שדבשדב"
+            ],
+            "wow": [
+              "שדבשדב"
+            ]
+          }
         },
         {
           "id": "933a86fb-e92e-4c64-8ab9-70e0e8492f0a",
@@ -91,7 +107,24 @@
           },
           "content": "Memory check: passed. Answer: \"asf\"",
           "timestamp": 1766157042653,
-          "type": "system"
+          "type": "system",
+          "reactions": {
+            "wow": [
+              "שדבשדב"
+            ],
+            "laugh": [
+              "שדבשדב"
+            ],
+            "like": [
+              "שדבשדב"
+            ],
+            "heart": [
+              "שדבשדב"
+            ],
+            "sad": [
+              "שדבשדב"
+            ]
+          }
         },
         {
           "id": "af57a17d-653d-4aaf-a6da-15a44422dfcd",
@@ -127,7 +160,24 @@
           },
           "content": "Give me a \"?\" at the end and I’ll switch into answer-machine mode.",
           "timestamp": 1766157051648,
-          "type": "system"
+          "type": "system",
+          "reactions": {
+            "sad": [
+              "שדבשדב"
+            ],
+            "wow": [
+              "שדבשדב"
+            ],
+            "heart": [
+              "שדבשדב"
+            ],
+            "like": [
+              "שדבשדב"
+            ],
+            "laugh": [
+              "שדבשדב"
+            ]
+          }
         },
         {
           "id": "bc8bf1e4-9be5-46f3-b069-af25733a0e1a",
@@ -150,7 +200,12 @@
               "previousContent": "asfsafשדכשדכ",
               "editedAt": 1766158380495
             }
-          ]
+          ],
+          "reactions": {
+            "laugh": [
+              "שדבשדב"
+            ]
+          }
         },
         {
           "id": "4a01994f-e5df-47cb-b119-dfc147a9f8f2",
@@ -186,7 +241,24 @@
           },
           "content": "I don’t know this one yet. Send the answer next and I’ll store it forever (or until the server restarts).",
           "timestamp": 1766157056501,
-          "type": "system"
+          "type": "system",
+          "reactions": {
+            "laugh": [
+              "שדבשדב"
+            ],
+            "sad": [
+              "שדבשדב"
+            ],
+            "wow": [
+              "שדבשדב"
+            ],
+            "heart": [
+              "שדבשדב"
+            ],
+            "like": [
+              "שדבשדב"
+            ]
+          }
         },
         {
           "id": "57bacdbc-ef15-4f14-b0fc-fb515b2645e9",
@@ -217,7 +289,15 @@
           },
           "content": "Updated. My memory just got a patch. Q: \"asfafs?\" A: \"שדכ?\"",
           "timestamp": 1766157546248,
-          "type": "system"
+          "type": "system",
+          "reactions": {
+            "wow": [
+              "שדבשדב"
+            ],
+            "heart": [
+              "שדבשדב"
+            ]
+          }
         },
         {
           "id": "e74a1e5e-f002-4d06-bb4b-16deca1bb26f",
