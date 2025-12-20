@@ -183,6 +183,61 @@
           "content": "Saved. Next time someone asks, I’ve got you. Q: \"Is it test?\" A: \"Yeah!\"",
           "timestamp": 1766259381546,
           "type": "system"
+        },
+        {
+          "id": "24a5578b-672d-4b1a-9394-6998fe3ff124",
+          "sender": {
+            "id": "ofir dahan",
+            "username": "ofir dahan",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "Is it summer ?",
+          "timestamp": 1766262791527,
+          "type": "text"
+        },
+        {
+          "id": "895fa091-cc5d-45b3-aaf5-f965318a7165",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "I’ve got nothing for that yet. Next message: the answer. I’ll do the remembering.",
+          "timestamp": 1766262792199,
+          "type": "system"
+        },
+        {
+          "id": "0eae77d4-a764-48a2-bf8d-359e34a9d301",
+          "sender": {
+            "id": "ofir dahan",
+            "username": "ofir dahan",
+            "isBot": false,
+            "color": "#3b82f6"
+          },
+          "content": "No",
+          "timestamp": 1766262805149,
+          "type": "text",
+          "editedAt": 1766262809231,
+          "edits": [
+            {
+              "previousContent": "Nope",
+              "editedAt": 1766262809231
+            }
+          ]
+        },
+        {
+          "id": "55519307-88db-4b0b-bbce-0ff58cc7bf37",
+          "sender": {
+            "id": "bot",
+            "username": "Poalim Bot",
+            "isBot": true,
+            "color": "#ed1d24"
+          },
+          "content": "Version control says: new answer saved. Q: \"Is it summer ?\" A: \"No\"",
+          "timestamp": 1766262809780,
+          "type": "system"
         }
       ],
       "botMemory": {
@@ -211,6 +266,14 @@
             "questionMessageId": "dbf405cd-749a-4e05-a8eb-34a671b10c5e",
             "answerMessageId": "039e80bc-36e5-47b4-8076-a4080424d27a",
             "updatedAt": 1766259380858
+          },
+          {
+            "key": "is it summer ?",
+            "question": "Is it summer ?",
+            "answer": "No",
+            "questionMessageId": "24a5578b-672d-4b1a-9394-6998fe3ff124",
+            "answerMessageId": "0eae77d4-a764-48a2-bf8d-359e34a9d301",
+            "updatedAt": 1766262809234
           }
         ]
       },
@@ -221,7 +284,9 @@
         "9a869527-32a9-4f96-a321-d5b3789f5899": "3dc592d7-5dbf-4e07-a940-cc80b8e43940",
         "c2e585cc-0b08-4bbc-bab9-a078f5c31b74": "a7f7de37-8dfe-45b0-9732-565ed07dece9",
         "dbf405cd-749a-4e05-a8eb-34a671b10c5e": "72a5fa43-9abd-431b-a38d-2942c0f8a0db",
-        "039e80bc-36e5-47b4-8076-a4080424d27a": "478d0f8a-8204-47d1-a56e-8aeb4fab8121"
+        "039e80bc-36e5-47b4-8076-a4080424d27a": "478d0f8a-8204-47d1-a56e-8aeb4fab8121",
+        "24a5578b-672d-4b1a-9394-6998fe3ff124": "895fa091-cc5d-45b3-aaf5-f965318a7165",
+        "0eae77d4-a764-48a2-bf8d-359e34a9d301": "55519307-88db-4b0b-bbce-0ff58cc7bf37"
       }
     }
   }
