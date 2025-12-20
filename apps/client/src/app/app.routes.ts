@@ -7,4 +7,5 @@ export const appRoutes: Route[] = [
       import('@poalim-challenge/feature-chat').then((m) => m.FeatureChat),
   },
   { path: '**', redirectTo: '' },
+  
 ];
